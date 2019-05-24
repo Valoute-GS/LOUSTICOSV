@@ -1,0 +1,175 @@
+<!doctype html>
+
+<html lang="fr">
+
+<head>
+    <!-- meta -->
+    <meta charset="utf-8">
+    <title>LOUSTIC OSV</title>
+    <meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
+    <meta name="author" content="valentin_utiel">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- videoJS -->
+    <link href="css/video-js.css" rel="stylesheet">
+    <script src="js/videojs-ie8.min.js"></script>
+
+</head>
+
+<body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <!-- Debut du header -->
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h3 class="masthead-brand">LOUSTIC OSV - Tests</h3>
+                <nav class="nav nav-masthead justify-content-center">
+                    <a class="nav-link" href="index.html">Home</a>
+                    <a class="nav-link active" href="tests.html">Tests</a>
+                    <a class="nav-link" href="load.html">Charger</a>
+                    <a class="nav-link" href="res.html">Résultats</a>
+                </nav>
+            </div>
+            <!-- Boutons externes de controle du player -->
+            <div class="test test-preview" style="display: none">
+                <button type="button" class="btn btn-outline-success" id="btn-play"
+                    onclick="play()">Play</button>
+                <button type="button" class="btn btn-outline-danger" id="btn-pause"
+                    onclick="pause()">Pause</button>
+                <button type="button" class="btn btn-primary" id="btn-goto" onclick="jumpto()">Go to</button>
+            </div>
+            <div class="test test-chapter-selector" style="display: none">
+                <button type="button" class="btn btn-outline-success" id="btn-add-chapter"
+                    onclick="createChapterInput()">Ajouter un chapitre</button>
+                <button type="button" class="btn btn-outline-danger" id="btn-rm-chapter"
+                    onclick="removeChapterInput()">Retirer un chapitre</button>
+            </div>
+
+        </header>
+        <!-- FIN du header -->
+
+        <!-- DEBUT de la main part -->
+        <!-- Selection du type de de test-->
+        <main role="main" class="inner cover test test-selector">
+            <div class="container">
+                <div class="row">
+                    <div class="card col-sm" style="width: 18rem;">
+                        <img src="img/test_type_1.jpg" class="card-img-top" alt="type1">
+                        <div class="card-body">
+                            <h5 class="card-title">Lecture continue</h5>
+                            <p class="card-text">Lecteur simple, sans pause manuelle possible</p>
+                            <button type="button" class="btn btn-primary" id="btn-test-auto"
+                                onclick="mediaInput(1)">Démarrer</button>
+                        </div>
+                    </div>
+                    <div class="card col-sm" style="width: 18rem;">
+                        <img src="img/test_type_2.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Pause Manuelle</h5>
+                            <p class="card-text">Lecteur simple, avec lecture/pause manuelle possible</p>
+                            <button type="button" class="btn btn-primary" id="btn-test-man"
+                                onclick="mediaInput(2)">Démarrer</button>
+                        </div>
+                    </div>
+                    <div class="card col-sm" style="width: 18rem;">
+                        <img src="img/test_type_3.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Chapitres visibles</h5>
+                            <p class="card-text">Lecteur simple, avec lecture/pause manuelle possible, chapitres visible
+                                non cliquables</p>
+                            <button type="button" class="btn btn-primary" id="btn-test-chap"
+                                onclick="mediaInput(3)">Démarrer</button>
+                        </div>
+                    </div>
+                    <div class="card col-sm" style="width: 18rem;">
+                        <img src="img/test_type_4.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Chapitres visibles</h5>
+                            <p class="card-text">Lecteur simple, avec lecture/pause manuelle possible, chapitres non
+                                visibles non
+                                cliquables</p>
+                            <button type="button" class="btn btn-primary" id="btn-test-chap2"
+                                onclick="mediaInput(4)">Démarrer</button>
+                        </div>
+                    </div>
+                    <div class="card col-sm" style="width: 18rem;">
+                        <img src="img/test_type_5.jpg" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">Editeur</h5>
+                            <p class="card-text">Lecteur sur mesure</p>
+                            <button type="button" class="btn btn-primary" id="btn-test-custom"
+                                onclick="alert('Not implemented yet')">Démarrer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- Input file de la video -->
+        <main role="main" class="inner cover test test-media-input" style="display: none">
+            <h1 class="cover-heading">Choisissez une video</h1>
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" onchange="handleFiles(this.files)"
+                        id="inputGroupFile04" accept="video/mp4, video/webm, video/quicktime">
+                    <label class="custom-file-label" id="input-file-name" for="inputGroupFile04"></label>
+                </div>
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-primary" id="btn-file-selected" onclick="callConfigurator()" disabled>Sélectionner</button>
+                </div>
+            </div>
+
+        </main>
+        <!-- Video player -->
+        <main role="main" class="inner cover test test-preview" style="display: none">
+            <div class="full-vid">
+                <video oncontextmenu="return false;" onerror="alert('Veuillez selectionner une video valide');"
+                    id="player1" class="video-js vjs-default-skin vjs-big-play-centered" width="100%" height="100%"
+                    data-setup='{ "aspectRatio":"16:9", "fluid": true }'>
+                </video>
+            </div>
+        </main>
+        <!-- Chapter créator -->
+        <main role="main" class="inner cover test test-chapter-selector" style="display: none">
+            
+            <input type="text" class="form-control mb-4" id="config-name" placeholder="Choisir un nom de configuration">
+            <div class="row">
+                <div id="container" class="card col-sm" id="chap-container">
+                    <!-- Insertion JS d'inputs -->
+                </div>
+                <div class="col-sm">
+                    <!-- video player -->
+                    <div class="full-vid">
+                        <video oncontextmenu="return false;" id="player3"
+                            class="video-js vjs-default-skin vjs-big-play-centered"
+                            onerror="alert('Veuillez selectionner une video valide');" controls width="100%"
+                            height="100%" data-setup='{ "aspectRatio":"16:9", "fluid": true }'></video>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-outline-primary mt-3" id="btn-chapter-done"
+                            onclick="controlChapCreation()">Enregistrer</button>
+                            <a id="download-config" style="display:none"></a>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- FIN de la main part -->
+
+        <!-- Javascript -->
+        <script src='js/video.js'></script>
+        <script src="js/script.js"></script>
+
+        <!-- DEBUT du footer -->
+        <footer class="mastfoot mt-auto">
+            <div class="inner">
+                <p>LOUSTIC OSV</p>
+            </div>
+        </footer>
+        <!-- FIN du footer -->
+    </div>
+
+</body>
+
+</html>

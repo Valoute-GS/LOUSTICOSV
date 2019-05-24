@@ -1,0 +1,109 @@
+<!doctype html>
+
+<html lang="fr">
+
+<head>
+    <!-- meta -->
+    <meta charset="utf-8">
+    <title>LOUSTIC OSV</title>
+    <meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
+    <meta name="author" content="valentin_utiel">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- videoJS -->
+    <link href="css/video-js.css" rel="stylesheet">
+    <script src="js/videojs-ie8.min.js"></script>
+
+</head>
+
+<body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        <!-- Debut du header -->
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h3 class="masthead-brand">LOUSTIC OS - Créer</h3>
+                <nav class="nav nav-masthead justify-content-center">
+                    <a class="nav-link" href="index.html">Home</a>
+                </nav>
+            </div>
+
+        </header>
+        <!-- FIN du header -->
+
+        <!-- DEBUT de la main part -->
+        <!-- Page principale de configuration -->
+        <main role="main" class="inner cover configurator configurator-main">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Nom de la configuration">
+                <div class="ml-1">
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-outline-success" type="button" onclick="addPage()">Ajouter une
+                            page</button>
+                        <button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
+                            page</button>
+                    </div>
+                    <button class="btn btn-outline-primary" type="button">Terminer</button>
+                </div>
+            </div>
+
+            <div id="pcontainer" class="mt-5">
+                <!-- Insertion JS d'inputs pages -->
+            </div>
+
+        </main>
+        <!-- Configuration text -->
+        <main role="main" class="inner cover configurator configurator-text" style="display: none">
+            <button class="btn btn-primary" type="button" onclick="saveText()">Sauvegarder</button>
+            <div class="form-group">
+                <label for="text-input">Entrez du texte ici : </label>
+                <textarea class="form-control rounded-0" id="text-input" rows="10"></textarea>
+            </div>
+        </main>
+        <!-- Configuration video -->
+        <main role="main" class="inner cover configurator configurator-video" style="display: none">
+            <div class="mb-3">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-success" id="btn-add-chapter"
+                        onclick="createChapterInput()">Ajouter un chapitre</button>
+                    <button type="button" class="btn btn-outline-danger" id="btn-rm-chapter"
+                        onclick="removeChapterInput()">Retirer un chapitre</button>
+                </div>
+                <button type="button" class="btn btn-primary ml-3" id="btn-chapter-done"
+                        onclick="saveText()">Sauvegarder</button>
+            </div>
+
+            <div class="row">
+                <div id="chapcontainer" class="card col-sm" id="chap-container">
+                    <!-- Insertion JS d'inputs -->
+                </div>
+                <div class="col-sm">
+                    <!-- video player -->
+                    <div class="full-vid">
+                        <video oncontextmenu="return false;" id="player3"
+                            class="video-js vjs-default-skin vjs-big-play-centered"
+                            onerror="alert('Veuillez selectionner une video valide');" controls width="100%"
+                            height="100%" data-setup='{ "aspectRatio":"16:9", "fluid": true }'></video>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- FIN de la main part -->
+
+        <!-- Javascript -->
+        <script src='js/video.js'></script>
+        <script src="js/configurator.js"></script>
+
+        <!-- DEBUT du footer -->
+        <footer class="mastfoot mt-auto">
+            <div class="inner">
+                <p>LOUSTIC OSV</p>
+            </div>
+        </footer>
+        <!-- FIN du footer -->
+    </div>
+</body>
+
+</html>
