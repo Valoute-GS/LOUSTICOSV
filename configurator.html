@@ -37,7 +37,7 @@
         <!-- Page principale de configuration -->
         <main role="main" class="inner cover configurator configurator-main">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Nom de la configuration">
+                <input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
                 <div class="ml-1">
                     <div class="btn-group" role="group">
                         <button class="btn btn-outline-success" type="button" onclick="addPage()">Ajouter une
@@ -45,7 +45,7 @@
                         <button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
                             page</button>
                     </div>
-                    <button class="btn btn-outline-primary" type="button">Terminer</button>
+                    <button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Terminer</button>
                 </div>
             </div>
 
@@ -64,6 +64,7 @@
         </main>
         <!-- Configuration video -->
         <main role="main" class="inner cover configurator configurator-video" style="display: none">
+            
             <div class="mb-3">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-outline-success" id="btn-add-chapter"
@@ -72,7 +73,7 @@
                         onclick="removeChapterInput()">Retirer un chapitre</button>
                 </div>
                 <button type="button" class="btn btn-primary ml-3" id="btn-chapter-done"
-                        onclick="saveText()">Sauvegarder</button>
+                        onclick="saveVideo()">Sauvegarder</button>
             </div>
 
             <div class="row">
@@ -88,6 +89,20 @@
                             height="100%" data-setup='{ "aspectRatio":"16:9", "fluid": true }'></video>
                     </div>
                 </div>
+            </div>
+            <div class="input-group mt-3">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" onchange="handleFiles(this.files)"
+                        id="inputGroupVideo" accept="video/mp4, video/webm, video/quicktime">
+                    <label class="custom-file-label" id="input-file-name" for="inputGroupVideo">Choisir un fichier video</label>
+                </div>
+            </div>
+        </main>
+        <!-- Configuration survey -->
+        <main role="main" class="inner cover configurator configurator-survey" style="display: none">
+            <button class="btn btn-primary" type="button" onclick="saveSurvey()">Retour</button>
+            <div>
+                WORK IN PROGRESS
             </div>
         </main>
         <!-- FIN de la main part -->
