@@ -1,6 +1,7 @@
 /*eslint-env browser*/
 
 var nbPages = 0;
+var pagesState = []; //0: à configurer - 1 : configuré
 var myPlayer;
 
 /* =======DEBUT======= AJOUT SUPPRESSION PAGE =========================================*/
@@ -13,7 +14,7 @@ function addPage() {
     newPage.innerHTML = '<div class="input-group-prepend">' +
         '<span class="input-group-text">#' + nbPages + '</span>' +
         '</div>' +
-        '<input type="text" class="form-control" style="width: 40%" placeholder="Nom de la page">' +
+        '<input type="text" class="form-control" style="width: 40%" id="page-' + nbPages + '" placeholder="Nom de la page">' +
         '<select class="custom-select">' +
         '<option selected>Format ...</option>' +
         '<option value="1">Texte</option>' +
@@ -21,18 +22,23 @@ function addPage() {
         '<option value="3">Questions</option>' +
         '</select>' +
         '<div class="ml-1">' +
-        '<button class="btn btn-outline-dark" type="button" onclick="configPage(this)">Configurer</button>' +
+        '<button class="btn btn-warning" type="button" id="button-' + nbPages + '" onclick="configPage(this)">Configurer</button>' +
         '</div>';
 
     pcontainer.appendChild(newPage); //ajout de la nouvelle div newPages (cf HTML)
-    
-    
+    pagesState.push(0);
+    console.log(pagesState);
+
+
+
 }
+
 function rmPage() {
     if (nbPages > 0) { //si il y a des inputs dans la liste
         nbPages--;
         var select = document.getElementById('pcontainer');
         select.removeChild(select.lastChild);
+        pagesState.pop();
     }
 }
 /* ========FIN======== AJOUT SUPPRESSION PAGE =========================================*/
@@ -72,15 +78,28 @@ function configPage(e) {
     }
 }
 
+function updatePagesState() {
+    pagesState[currentPageNumber - 1] = 1;
+    var concernedButton = document.getElementById("button-" + currentPageNumber);
+    concernedButton.className = "btn btn-success";
+    concernedButton.innerHTML = "Configuré"
+}
 
 /* ======= TEXT =======*/
 function configText() {
     hideByClass("configurator");
+
+    // restauration de la cofiguration si deja faite
+    if (pagesState[currentPageNumber - 1] === 1) { //besoin de plus de controle, si changement de format, mais pour l'instant ca fait le taf
+        document.getElementById("text-input").value = myConfig.pages[currentPageNumber - 1].text;
+    }
+
     showByClass("configurator-text")
 }
+
 function saveText() {
     //sauvergarde des infos dans une donnee type json à inserer dans le tableau "pagesInfos" à l'indice "pageNumber"
-
+    saveTextConfig();
     hideByClass("configurator");
     showByClass("configurator-main")
 }
@@ -88,8 +107,26 @@ function saveText() {
 /* ======= VIDEO =======*/
 function configVideo() {
     hideByClass("configurator");
+
+    // restauration de la cofiguration si deja faite
+    if (pagesState[currentPageNumber - 1] === 1) { //besoin de plus de controle, si changement de format, mais pour l'instant ca fait le taf
+        // vide puis rempli les chapitres
+        chapcontainer.innerHTML = "";
+        nbOfChapters = 0;
+        var chaps = myConfig.pages[currentPageNumber-1].chapters;
+        for(var i = 0; i < chaps.length; i++){
+            createChapterInput();
+            document.getElementById("input-title-"+nbOfChapters).value = chaps[nbOfChapters-1].name;
+            document.getElementById("input-date-"+nbOfChapters).value = chaps[nbOfChapters-1].date;
+        }
+        //recharge la source
+        document.getElementById("input-file-name").innerHTML = myConfig.pages[currentPageNumber-1].videoName;
+        // TODO : ici
+    }
+
     showByClass("configurator-video")
 }
+
 function saveVideo() {
     //sauvergarde des infos dans une donnee type json à inserer dans le tableau "pagesInfos" à l'indice "pageNumber"
     saveVideoConfig();
@@ -102,6 +139,7 @@ function configSurvey() {
     hideByClass("configurator");
     showByClass("configurator-survey")
 }
+
 function saveSurvey() {
     //sauvergarde des infos dans une donnee type json à inserer dans le tableau "pagesInfos" à l'indice "pageNumber"
 
@@ -109,37 +147,35 @@ function saveSurvey() {
     showByClass("configurator-main")
 }
 
-
-
 /* ========FIN======== CONFIG PAGE ====================================================*/
 
+/* =======DEBUT======= VIDEO CREATOR ==================================================*/
+var nbOfChapters = 0;
+var fileUrl;
+var fileType;
+var fileName;
 
 function handleFiles(file) {
     document.getElementById("input-file-name").innerHTML = file[0].name;
     //infos sur la video courante
-    var fileUrl = URL.createObjectURL(file[0]);
-    var fileType = file[0].type;
-    var fileName = file[0].name;
-    
-    console.log(fileName);
-    //save dans le sessionStorage pour les recuper au besoin
-    sessionStorage.setItem("videoURL", fileUrl);
-    sessionStorage.setItem("videoType", fileType);
-    sessionStorage.setItem("videoName", fileName);
-    
-    myPlayer = videojs('player3', {});
+    fileUrl = URL.createObjectURL(file[0]);
+    fileType = file[0].type;
+    fileName = file[0].name;
+
+    console.log(fileName + ' loaded');
+
+    myPlayer = videojs('player', {});
     myPlayer.src({
-        type: sessionStorage.getItem("videoType"),
-        src: sessionStorage.getItem("videoURL")
+        type: fileType,
+        src: fileUrl
     });
     myPlayer.pause();
     myPlayer.load();
 }
 
-let nbOfChapters = 1;
-
 function createChapterInput() {
     //structure globale de l'input
+    nbOfChapters++;
     var div1 = document.createElement("div");
     div1.className = "input-group";
     div1.id = "chapter" + nbOfChapters;
@@ -151,48 +187,19 @@ function createChapterInput() {
         '<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="m:s">';
     chapcontainer.appendChild(div1);
     //mise a jour de l'indice du nouveau chapitre
-    nbOfChapters++;
+
 }
 
 function removeChapterInput() {
-    if (nbOfChapters > 1) { //si il y a des inputs dans la liste
-        nbOfChapters--;
+    if (nbOfChapters > 0) { //si il y a des inputs dans la liste
         document.getElementById("chapcontainer").removeChild(document.getElementById("chapter" + nbOfChapters));
+        nbOfChapters--;
     }
 }
 
+/* ========FIN======== VIDEO CREATOR ==================================================*/
 
-
-/* =======DEBUT======= TOOLS ==========================================================*/
-function hideByClass(className) {
-    var eltsToHide = document.getElementsByClassName(className);
-    for (var i = 0; i < eltsToHide.length; i++) {
-        eltsToHide[i].style.display = 'none';
-    }
-}
-
-function showByClass(className) {
-    var eltsToHide = document.getElementsByClassName(className);
-    for (var i = 0; i < eltsToHide.length; i++) {
-        eltsToHide[i].style.display = 'block';
-    }
-}
-/* ========FIN======== TOOLS ==========================================================*/
-
-
-
-
-/* ╠═══ ↓↓↓ ZONE DE CHANTIER ↓↓↓ ═════════════════════════════════════════════════════╣*/
-
-
-function finishConfig(){
-    var configName = document.getElementById("config-name").value;
-    myConfig.name = configName;
-    console.log(JSON.stringify(myConfig));
-    
-}
-
-
+/* =======DEBUT======= EXPORTS ========================================================*/
 class maConfig {
     constructor(name, pages) {
         this.name = name;
@@ -215,9 +222,18 @@ class ChapJson {
         this.date = date;
     }
 }
+class ConfigTextJson {
+    constructor(text) {
+        this.pageName = currentPageName;
+        this.pageNumber = currentPageNumber;
+        this.type = "text";
+        this.text = text;
+    }
+}
 
-var myConfig = new maConfig("",[]);
+var myConfig = new maConfig("", []);
 
+/* ======= VIDEO =======*/
 function saveVideoConfig() { //appui du bouton Terminer
     var chapterTitleElts = document.getElementsByClassName("form-control chapter-title");
     var chapterDateElts = document.getElementsByClassName("form-control chapter-date");
@@ -225,19 +241,47 @@ function saveVideoConfig() { //appui du bouton Terminer
     var chapters = [];
     var index = 0;
 
-    for (var elt of chapterTitleElts) { //on recupere les titres dans les inputs pour les chapitres
-        var newChap = new ChapJson(elt.value, "-1");
+    for (var eltTitle of chapterTitleElts) { //on recupere les titres dans les inputs pour les chapitres
+        var newChap = new ChapJson(eltTitle.value, "-1");
         chapters.push(newChap);
     }
-    for (var elt of chapterDateElts) { //on recupere les dates dans les inputs pour les chapitres
-        chapters[index].date = elt.value;
+    for (var eltDate of chapterDateElts) { //on recupere les dates dans les inputs pour les chapitres
+        chapters[index].date = eltDate.value;
         index++;
     }
-    
-    let newVideoConfig = new ConfigVideoJson(sessionStorage.getItem("videoName"), sessionStorage.getItem("videoType"), chapters);
-    
-    myConfig.pages[currentPageNumber -1] = newVideoConfig;
-    
+
+    let newVideoConfig = new ConfigVideoJson(fileName, fileType, chapters);
+
+    myConfig.pages[currentPageNumber - 1] = newVideoConfig; //On sauvergarde les infosde la page (type video) pour le futur export
+    updatePagesState();
+
+}
+
+/* ======= TEXT ========*/
+function saveTextConfig() { //appui du bouton Terminer
+
+    let newTextConfig = new ConfigTextJson(document.getElementById("text-input").value);
+
+    myConfig.pages[currentPageNumber - 1] = newTextConfig; //On sauvergarde les infosde la page (type video) pour le futur export
+    updatePagesState();
+}
+
+/* ======= CONFIG ======*/
+function finishConfig() {
+    if (configChecker()) {
+        var configName = document.getElementById("config-name").value;
+        myConfig.name = configName;
+        console.log(JSON.stringify(myConfig));
+    } else {
+        alert("Configuration incomplete ou erronée")
+    }
+
+    function configChecker() {
+        return pagesState.every(setTo1) &&
+            pagesState.length > 0 &&
+            configName !== null &&
+            configName !== "";
+    }
 
     /*
     //lien de telechargement du json
@@ -247,5 +291,31 @@ function saveVideoConfig() { //appui du bouton Terminer
     dlAnchorElem.setAttribute("download", "scene.json");
     dlAnchorElem.click();
     */
-
 }
+/* ========FIN======== EXPORTS ========================================================*/
+
+/* =======DEBUT======= TOOLS ==========================================================*/
+function hideByClass(className) {
+    var eltsToHide = document.getElementsByClassName(className);
+    for (var i = 0; i < eltsToHide.length; i++) {
+        eltsToHide[i].style.display = 'none';
+    }
+}
+
+function showByClass(className) {
+    var eltsToHide = document.getElementsByClassName(className);
+    for (var i = 0; i < eltsToHide.length; i++) {
+        eltsToHide[i].style.display = 'block';
+    }
+}
+
+function setTo1(pageState) {
+    return pageState === 1;
+}
+
+/* ========FIN======== TOOLS ==========================================================*/
+
+
+
+/* ╔══════════════════════════════════════════════════════════════════════════════════╗
+   ╠════════════════════════════ ↓↓↓ ZONE DE CHANTIER ↓↓↓ ════════════════════════════╣*/
