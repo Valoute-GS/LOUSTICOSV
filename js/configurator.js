@@ -1,10 +1,11 @@
 /*eslint-env browser*/
 
-var nbPages = 0;
+var nbPages = 0; //nb de page pour l'affichage au "compteur"
 var pagesState = []; //0: à configurer - 1 : configuré
+var myURLs = []; //liste des URL utilisés pendant les configs
 var myPlayer;
 
-/* =======DEBUT======= AJOUT SUPPRESSION PAGE =========================================*/
+/* ╔══════DEBUT══════╗ AJOUT SUPPRESSION PAGE =========================================*/
 function addPage() {
     //structure globale de l'input
     nbPages++;
@@ -41,12 +42,10 @@ function rmPage() {
         pagesState.pop();
     }
 }
-/* ========FIN======== AJOUT SUPPRESSION PAGE =========================================*/
+/* ╚═══════FIN═══════╝ AJOUT SUPPRESSION PAGE =========================================*/
 
-/* =======DEBUT======= CONFIG PAGE ====================================================*/
-var currentPage;
-var currentPageName
-var currentPageNumber;
+/* ╔══════DEBUT══════╗ CONFIG PAGE ====================================================*/
+var currentPage, currentPageName, currentPageNumber;
 var childNodes;
 var format;
 
@@ -57,16 +56,13 @@ function configPage(e) {
     format = childNodes[2].options[childNodes[2].selectedIndex].value;
     currentPageName = childNodes[1].value;
 
-    console.log(currentPageName);
-    console.log('Page numero ' + currentPageNumber);
-    //console.log(childNodes);
-
-
     switch (format) {
         case "1": //Texte
             configText();
+            maintitle.innerHTML = "TEXTE - Page " + currentPageNumber;
             break;
         case "2": //Video
+            maintitle.innerHTML = "VIDEO - Page " + currentPageNumber;
             configVideo();
             break;
         case "3": // Question
@@ -78,8 +74,8 @@ function configPage(e) {
     }
 }
 
-function updatePagesState() {
-    pagesState[currentPageNumber - 1] = 1;
+function updatePagesState(newState) {
+    pagesState[currentPageNumber - 1] = newState;
     var concernedButton = document.getElementById("button-" + currentPageNumber);
     concernedButton.className = "btn btn-success";
     concernedButton.innerHTML = "Configuré"
@@ -90,48 +86,61 @@ function configText() {
     hideByClass("configurator");
 
     // restauration de la cofiguration si deja faite
-    if (pagesState[currentPageNumber - 1] === 1) { //besoin de plus de controle, si changement de format, mais pour l'instant ca fait le taf
+    let state = pagesState[currentPageNumber - 1];
+    if (state === 0) { // vierge
+
+    } else if (state === 1) { // si c'est un text qui a deja ete config
         document.getElementById("text-input").value = myConfig.pages[currentPageNumber - 1].text;
+    } else { //deja config dans un autre format
+        document.getElementById("text-input").value = "";
     }
 
     showByClass("configurator-text")
 }
 
 function saveText() {
-    //sauvergarde des infos dans une donnee type json à inserer dans le tableau "pagesInfos" à l'indice "pageNumber"
-    saveTextConfig();
-    hideByClass("configurator");
-    showByClass("configurator-main")
+    if (saveTextConfig() == true) {
+        hideByClass("configurator");
+        maintitle.innerHTML = "LOUSTIC OS - Créer";
+        showByClass("configurator-main");
+    }
 }
 
 /* ======= VIDEO =======*/
 function configVideo() {
     hideByClass("configurator");
+    //reset
+    chapcontainer.innerHTML = "";
+    nbOfChapters = 0;
 
     // restauration de la cofiguration si deja faite
-    if (pagesState[currentPageNumber - 1] === 1) { //besoin de plus de controle, si changement de format, mais pour l'instant ca fait le taf
-        // vide puis rempli les chapitres
-        chapcontainer.innerHTML = "";
-        nbOfChapters = 0;
-        var chaps = myConfig.pages[currentPageNumber-1].chapters;
-        for(var i = 0; i < chaps.length; i++){
+    if (pagesState[currentPageNumber - 1] === 2) { //Si un format config a deja ete fait on le charge
+        //on remplit les chapitres
+        var chaps = myConfig.pages[currentPageNumber - 1].chapters;
+        for (var i = 0; i < chaps.length; i++) {
             createChapterInput();
-            document.getElementById("input-title-"+nbOfChapters).value = chaps[nbOfChapters-1].name;
-            document.getElementById("input-date-"+nbOfChapters).value = chaps[nbOfChapters-1].date;
+            document.getElementById("input-title-" + nbOfChapters).value = chaps[nbOfChapters - 1].name;
+            document.getElementById("input-date-" + nbOfChapters).value = chaps[nbOfChapters - 1].date;
         }
-        //recharge la source
-        document.getElementById("input-file-name").innerHTML = myConfig.pages[currentPageNumber-1].videoName;
-        // TODO : ici
+        //recharge la source et variables fileType/Name
+        fileType = myConfig.pages[currentPageNumber - 1].videoType;
+        fileName = myConfig.pages[currentPageNumber - 1].videoName;
+        document.getElementById("input-file-name").innerHTML = fileName;
+        myPlayer.src({
+            type: fileType,
+            src: myURLs[currentPageNumber]
+        });
     }
 
     showByClass("configurator-video")
 }
 
 function saveVideo() {
-    //sauvergarde des infos dans une donnee type json à inserer dans le tableau "pagesInfos" à l'indice "pageNumber"
-    saveVideoConfig();
-    hideByClass("configurator");
-    showByClass("configurator-main")
+    if (saveVideoConfig() == true) { //bug sans == true ???
+        hideByClass("configurator");
+        maintitle.innerHTML = "LOUSTIC OS - Créer";
+        showByClass("configurator-main");
+    }
 }
 
 /* ======= SURVEY =======*/
@@ -141,15 +150,14 @@ function configSurvey() {
 }
 
 function saveSurvey() {
-    //sauvergarde des infos dans une donnee type json à inserer dans le tableau "pagesInfos" à l'indice "pageNumber"
-
     hideByClass("configurator");
+    maintitle.innerHTML = "LOUSTIC OS - Créer"
     showByClass("configurator-main")
 }
 
-/* ========FIN======== CONFIG PAGE ====================================================*/
+/* ╚═══════FIN═══════╝ CONFIG PAGE ====================================================*/
 
-/* =======DEBUT======= VIDEO CREATOR ==================================================*/
+/* ╔══════DEBUT══════╗ VIDEO CREATOR ==================================================*/
 var nbOfChapters = 0;
 var fileUrl;
 var fileType;
@@ -159,10 +167,9 @@ function handleFiles(file) {
     document.getElementById("input-file-name").innerHTML = file[0].name;
     //infos sur la video courante
     fileUrl = URL.createObjectURL(file[0]);
+    myURLs[currentPageNumber] = fileUrl;
     fileType = file[0].type;
     fileName = file[0].name;
-
-    console.log(fileName + ' loaded');
 
     myPlayer = videojs('player', {});
     myPlayer.src({
@@ -197,9 +204,10 @@ function removeChapterInput() {
     }
 }
 
-/* ========FIN======== VIDEO CREATOR ==================================================*/
+/* ╚═══════FIN═══════╝ VIDEO CREATOR ==================================================*/
 
-/* =======DEBUT======= EXPORTS ========================================================*/
+
+/* ╔══════DEBUT══════╗ EXPORTS ========================================================*/
 class maConfig {
     constructor(name, pages) {
         this.name = name;
@@ -238,63 +246,84 @@ function saveVideoConfig() { //appui du bouton Terminer
     var chapterTitleElts = document.getElementsByClassName("form-control chapter-title");
     var chapterDateElts = document.getElementsByClassName("form-control chapter-date");
 
+    var complete = true;
+
     var chapters = [];
     var index = 0;
 
     for (var eltTitle of chapterTitleElts) { //on recupere les titres dans les inputs pour les chapitres
         var newChap = new ChapJson(eltTitle.value, "-1");
+
+        if (!isSomething(eltTitle.value)) {
+            complete = false;
+        }
         chapters.push(newChap);
     }
     for (var eltDate of chapterDateElts) { //on recupere les dates dans les inputs pour les chapitres
         chapters[index].date = eltDate.value;
+        if (!isSomething(eltDate.value)) {
+            complete = false;
+        }
         index++;
     }
 
-    let newVideoConfig = new ConfigVideoJson(fileName, fileType, chapters);
+    if (!isSomething(fileName)) {
+        complete = false;
+    }
 
-    myConfig.pages[currentPageNumber - 1] = newVideoConfig; //On sauvergarde les infosde la page (type video) pour le futur export
-    updatePagesState();
-
+    if (complete) {
+        let newVideoConfig = new ConfigVideoJson(fileName, fileType, chapters);
+        myConfig.pages[currentPageNumber - 1] = newVideoConfig; //On sauvergarde les infosde la page (type video) pour le futur export
+        updatePagesState(2);
+        return true;
+    } else {
+        alert("Configuration video incomplete");
+        return false;
+    }
 }
 
 /* ======= TEXT ========*/
 function saveTextConfig() { //appui du bouton Terminer
+    let newText = document.getElementById("text-input").value;
 
-    let newTextConfig = new ConfigTextJson(document.getElementById("text-input").value);
-
+    let newTextConfig = new ConfigTextJson(newText);
     myConfig.pages[currentPageNumber - 1] = newTextConfig; //On sauvergarde les infosde la page (type video) pour le futur export
-    updatePagesState();
+    updatePagesState(1);
+    return true;
 }
 
 /* ======= CONFIG ======*/
 function finishConfig() {
-    if (configChecker()) {
-        var configName = document.getElementById("config-name").value;
-        myConfig.name = configName;
+    myConfig.name = document.getElementById("config-name").value;
+
+    if (configChecker() == true) {
         console.log(JSON.stringify(myConfig));
+
+        //lien de telechargement du json
+        var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(myConfig));
+        var dlAnchorElem = document.getElementById('download-config');
+        dlAnchorElem.setAttribute("href", dataStr);
+        dlAnchorElem.setAttribute("download", "scene.json");
+        dlAnchorElem.click();
+        
+
     } else {
         alert("Configuration incomplete ou erronée")
     }
 
     function configChecker() {
-        return pagesState.every(setTo1) &&
+        return pagesState.every(isSet) &&
             pagesState.length > 0 &&
-            configName !== null &&
-            configName !== "";
+            isSomething(myConfig.name);
     }
 
-    /*
-    //lien de telechargement du json
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(myJson);
-    var dlAnchorElem = document.getElementById('download-config');
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", "scene.json");
-    dlAnchorElem.click();
-    */
-}
-/* ========FIN======== EXPORTS ========================================================*/
 
-/* =======DEBUT======= TOOLS ==========================================================*/
+
+
+}
+/* ╚═══════FIN═══════╝ EXPORTS ========================================================*/
+
+/* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
 function hideByClass(className) {
     var eltsToHide = document.getElementsByClassName(className);
     for (var i = 0; i < eltsToHide.length; i++) {
@@ -309,11 +338,17 @@ function showByClass(className) {
     }
 }
 
-function setTo1(pageState) {
-    return pageState === 1;
+function isSet(pageState) {
+    return pageState > 0;
 }
 
-/* ========FIN======== TOOLS ==========================================================*/
+function isSomething(params) {
+    if (params === "" || params === null || params === undefined) {
+        return false;
+    }
+    return true;
+}
+/* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
 
 
 
