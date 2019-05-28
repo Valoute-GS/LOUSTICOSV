@@ -27,21 +27,34 @@
 <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <!-- Debut du header -->
-        <header class="masthead mb-auto text-primary">
-            <div class="inner">
-                <h3 class="masthead-brand" id="maintitle">LOUSTIC OS - Créer</h3>
-                <nav class="nav nav-masthead justify-content-center">
-                    <a class="nav-link" href="index.html">Home</a>
-                    <a class="nav-link" href="load.html">Charger</a>
+        <header>
+                <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                    <a class="navbar-brand" id="maintitle" href="#">Loustic OS - Créer</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+                        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarColor01">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="index.html">Home</a>
+                            </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Créer <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="load.html">Charger</a>
+                            </li>
+                        </ul>
+                    </div>
                 </nav>
-            </div>
-        </header>
+            </header>
         <!-- FIN du header -->
         
         <!-- DEBUT de la main part -->
         <!-- Page principale de configuration -->
-        <main role="main" class="inner cover configurator configurator-main">
-            <div class="input-group">
+        <main role="main" class="configurator configurator-main">
+            <div class="input-group my-5">
                 <input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
                 <div class="ml-1">
                     <div class="btn-group" role="group">
@@ -54,13 +67,13 @@
                 </div>
             </div>
 
-            <div id="pcontainer" class="mt-5">
+            <div id="pcontainer">
                 <!-- Insertion JS d'inputs pages -->
             </div>
 
         </main>
         <!-- Configuration text -->
-        <main role="main" class="inner cover configurator configurator-text" style="display: none">
+        <main role="main" class="configurator configurator-text" style="display: none">
             <button class="btn btn-primary" type="button" onclick="saveText()">Sauvegarder</button>
             <div class="form-group">
                 <label for="text-input">Entrez du texte ici : </label>
@@ -68,9 +81,9 @@
             </div>
         </main>
         <!-- Configuration video -->
-        <main role="main" class="inner cover configurator configurator-video" style="display: none">
+        <main role="main" class="configurator configurator-video" style="display: none">
             
-            <div class="mb-3">
+            <div class="my-3">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-outline-success" id="btn-add-chapter"
                         onclick="createChapterInput()">Ajouter un chapitre</button>
@@ -82,7 +95,7 @@
             </div>
 
             <div class="row">
-                <div id="chapcontainer" class="card col-sm" id="chap-container">
+                <div id="chapcontainer" class="card col-sm py-3" id="chap-container">
                     <!-- Insertion JS d'inputs -->
                 </div>
                 <div class="col-sm">
@@ -104,7 +117,7 @@
             </div>
         </main>
         <!-- Configuration survey -->
-        <main role="main" class="inner cover configurator configurator-survey" style="display: none">
+        <main role="main" class="configurator configurator-survey" style="display: none">
             <button class="btn btn-primary" type="button" onclick="saveSurvey()">Retour</button>
             <div>
                 WORK IN PROGRESS

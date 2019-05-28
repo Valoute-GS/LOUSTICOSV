@@ -18,20 +18,34 @@
 <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <!-- debut du header -->
-        <header class="masthead mb-auto">
-            <div class="inner">
-                <h3 class="masthead-brand">LOUSTIC OS</h3>
-                <nav class="nav nav-masthead justify-content-center">
-                    <a class="nav-link active" href="index.html">Home</a>
-                </nav>
-            </div>
+        <header class="mb-auto">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <a class="navbar-brand" href="#">Loustic OS</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+                    aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarColor01">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="configurator.html">Créer</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="load.html">Charger</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </header>
         <!-- fin du header -->
         <!-- debut de la main part -->
         <main role="main" class="inner cover test test-selector">
             <div class="container">
                 <div class="row">
-                    <div class="card col-md">
+                    <div class="card col-md mx-1">
                         <h5 class="card-header">Créer</h5>
                         <div class="card-body">
                             <h5 class="card-title">Nouvelle configuration</h5>
@@ -39,13 +53,13 @@
                             <a href="configurator.html" class="btn btn-primary">Démarrer</a>
                         </div>
                     </div>
-                    <div class="card col-md">
-                            <h5 class="card-header">Charger</h5>
-                            <div class="card-body">
-                                <h5 class="card-title">Charger configuration</h5>
-                                <p class="card-text">Charger une configuration personnalisée et démarrer les tests</p>
-                                <a href="load.html" class="btn btn-primary">Démarrer</a>
-                            </div>
+                    <div class="card col-md mx-1">
+                        <h5 class="card-header">Charger</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">Charger configuration</h5>
+                            <p class="card-text">Charger une configuration personnalisée et démarrer les tests</p>
+                            <a href="load.html" class="btn btn-primary">Démarrer</a>
+                        </div>
                     </div>
                 </div>
             </div>

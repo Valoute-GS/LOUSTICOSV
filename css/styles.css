@@ -1,84 +1,14 @@
 /*
- * Globals
- */
-
-/* Links */
-a,
-a:focus,
-a:hover {
-    color: #fff;
-}
-
-/*
- * Video
- */
-.fixed-width {
-    width: 600px;
-    height: auto;
-}
-
-/*
  * Base structure
  */
 
 html,
 body {
     height: 100%;
-    background-color: #333;
 }
 
 body {
-    display: flex;
-    color: #fff;
-    box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
-}
-
-.cover-container {
-    max-width: 70em;
-}
-
-
-/*
- * Header
- */
-.masthead {
-    margin-bottom: 10rem;
-}
-
-.nav-masthead .nav-link {
-    padding: .25rem 0;
-    border-bottom: .25rem solid transparent;
-}
-
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link:focus {
-    border-bottom-color: rgb(62, 146, 83);
-}
-
-.nav-masthead .nav-link+.nav-link {
-    margin-left: 1rem;
-}
-
-.nav-masthead .active {
-    color: rgb(62, 115, 146);
-    border-bottom-color: #fff;
-}
-
-@media (min-width: 48em) {
-    .masthead-brand {
-        float: left;
-    }
-
-    .nav-masthead {
-        float: right;
-    }
-}
-
-/*
- * Cover
- */
-.cover {
-    padding: 0 0rem;
+    box-shadow: inset 0 0 10rem rgba(0, 0, 0, .5);
 }
 
 /*

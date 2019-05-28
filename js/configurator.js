@@ -10,7 +10,7 @@ function addPage() {
     //structure globale de l'input
     nbPages++;
     var newPage = document.createElement("div");
-    newPage.className = "input-group";
+    newPage.className = "input-group my-1";
     newPage.id = "page" + nbPages;
     newPage.innerHTML = '<div class="input-group-prepend">' +
         '<span class="input-group-text">#' + nbPages + '</span>' +
@@ -184,7 +184,7 @@ function createChapterInput() {
     //structure globale de l'input
     nbOfChapters++;
     var div1 = document.createElement("div");
-    div1.className = "input-group";
+    div1.className = "input-group my-1";
     div1.id = "chapter" + nbOfChapters;
     div1.innerHTML =
         '<div class="input-group-prepend">' +
