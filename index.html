@@ -2,36 +2,41 @@
 
 <html lang="fr">
 
-<head>
-    <!-- meta -->
-    <meta charset="utf-8">
-    <title>LOUSTIC OSV</title>
-    <meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
-    <meta name="author" content="valentin_utiel">
-
-    <!-- css -->
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-
-</head>
+    <head>
+        <!-- meta -->
+        <meta charset="utf-8">
+        <title>LOUSTIC OS</title>
+        <meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
+        <meta name="author" content="valentin_utiel">
+    
+        <!-- CSS -->
+        <link rel="stylesheet" href="css/styles.css">
+    
+        <!-- Bootstarp -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <script src="js/jquery-3.3.1.slim.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+    
+        <!-- videoJS -->
+        <link href="css/video-js.css" rel="stylesheet">
+        <script src="js/videojs-ie8.min.js"></script>
+    
+    </head>
 
 <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <!-- debut du header -->
-        <header class="mb-auto">
+        <!-- Debut du header -->
+        <header class="mb-1">
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <a class="navbar-brand" href="#">Loustic OS</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-                    aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarColor01">
+                <a class="navbar-brand" id="maintitle" href="#">Loustic OS</a>
+                <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                            <a class="nav-link active" href="#">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="configurator.html">Créer</a>
+                            <a class="nav-link" href="configurator.html">Créer <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="load.html">Charger</a>
@@ -40,9 +45,10 @@
                 </div>
             </nav>
         </header>
-        <!-- fin du header -->
+        <!-- FIN du header -->
+        
         <!-- debut de la main part -->
-        <main role="main" class="inner cover test test-selector">
+        <main role="main" class="inner cover test test-selector my-auto">
             <div class="container">
                 <div class="row">
                     <div class="card col-md mx-1">

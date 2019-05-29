@@ -5,40 +5,45 @@
 <head>
     <!-- meta -->
     <meta charset="utf-8">
-    <title>LOUSTIC OSV</title>
+    <title>LOUSTIC OS</title>
     <meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
     <meta name="author" content="valentin_utiel">
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Bootstarp -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery-3.3.1.slim.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 
     <!-- videoJS -->
     <link href="css/video-js.css" rel="stylesheet">
     <script src="js/videojs-ie8.min.js"></script>
+
+    <!-- RequiereJS -->
+    <script src="js/require.js"></script>
 
 </head>
 
 <body class="text-center">
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <!-- Debut du header -->
-        <header class="mb-auto">
+        <header class="mb-1">
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <a class="navbar-brand" href="index.html">Loustic OS - Charger</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-                    aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarColor01">
+                <a class="navbar-brand" id="maintitle" href="#">Loustic OS - Charger</a>
+                <div class="collapse navbar-collapse" id="navbar">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="index.html">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="configurator.html">Créer</a>
+                            <a class="nav-link" href="configurator.html">Créer <span
+                                    class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link" href="#">Charger <span class="sr-only">(current)</span></a>
+                            <a class="nav-link" href="#">Charger</a>
                         </li>
                     </ul>
                 </div>
@@ -47,6 +52,21 @@
         <!-- FIN du header -->
 
         <!-- DEBUT de la main part -->
+        <main role="main" class="load load-main">
+            <ul class="list-group" id="imported">
+            </ul>
+            <div class="input-group mt-3">
+                <div class="custom-file">
+                    <input type="file" multiple class="custom-file-input" id="input" onchange="loadFiles(this.files)"
+                        id="inputLoadConfig" accept="application/json, video/mp4, video/webm, video/quicktime">
+                    <label class="custom-file-label" id="input-file-name" for="inputGroupVideo">Charger une
+                        configuration et ses fichiers annexes</label>
+                </div>
+            </div>
+            <button class="btn btn-primary" type="button" onclick="test()">Text</button>
+
+        </main>
+
 
         <!-- FIN de la main part -->
 

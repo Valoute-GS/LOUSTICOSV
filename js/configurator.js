@@ -215,12 +215,13 @@ class maConfig {
     }
 }
 class ConfigVideoJson {
-    constructor(videoName, videoType, chapters) {
+    constructor(videoName, videoType, options, chapters) {
         this.pageName = currentPageName;
         this.pageNumber = currentPageNumber;
         this.type = "video";
         this.videoName = videoName;
         this.videoType = videoType;
+        this.options = options;
         this.chapters = chapters;
     }
 }
@@ -245,10 +246,11 @@ var myConfig = new maConfig("", []);
 function saveVideoConfig() { //appui du bouton Terminer
     var chapterTitleElts = document.getElementsByClassName("form-control chapter-title");
     var chapterDateElts = document.getElementsByClassName("form-control chapter-date");
-
+    var checkboxes = document.getElementsByClassName("custom-control-input");
     var complete = true;
 
     var chapters = [];
+    var options = [];
     var index = 0;
 
     for (var eltTitle of chapterTitleElts) { //on recupere les titres dans les inputs pour les chapitres
@@ -266,13 +268,16 @@ function saveVideoConfig() { //appui du bouton Terminer
         }
         index++;
     }
+    for (const checkbox of checkboxes) { //on recupere les options selectionnees ou non dans les checkboxes
+        options.push(checkbox.checked);
+    }
 
     if (!isSomething(fileName)) {
         complete = false;
     }
 
     if (complete) {
-        let newVideoConfig = new ConfigVideoJson(fileName, fileType, chapters);
+        let newVideoConfig = new ConfigVideoJson(fileName, fileType, options, chapters);
         myConfig.pages[currentPageNumber - 1] = newVideoConfig; //On sauvergarde les infosde la page (type video) pour le futur export
         updatePagesState(2);
         return true;
@@ -308,7 +313,11 @@ function finishConfig() {
         
 
     } else {
-        alert("Configuration incomplete ou erronée")
+        alertmain.innerHTML += '<div class="alert alert-warning alert-dismissible" role="alert">'+
+        '<strong>Erreur</strong> Configuration incomplete ou erronée '+
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
+        '<span aria-hidden="true">&times;'+
+        '</span></button></div>'
     }
 
     function configChecker() {
