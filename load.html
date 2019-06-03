@@ -22,9 +22,6 @@
     <link href="css/video-js.css" rel="stylesheet">
     <script src="js/videojs-ie8.min.js"></script>
 
-    <!-- RequiereJS -->
-    <script src="js/require.js"></script>
-
 </head>
 
 <body class="text-center">
@@ -52,10 +49,11 @@
         <!-- FIN du header -->
 
         <!-- DEBUT de la main part -->
+        <!-- Input config -->
         <main role="main" class="load load-main">
             <ul class="list-group" id="imported">
             </ul>
-            <div class="input-group mt-3">
+            <div class="input-group my-3">
                 <div class="custom-file">
                     <input type="file" multiple class="custom-file-input" id="input" onchange="loadFiles(this.files)"
                         id="inputLoadConfig" accept="application/json, video/mp4, video/webm, video/quicktime">
@@ -63,8 +61,58 @@
                         configuration et ses fichiers annexes</label>
                 </div>
             </div>
-            <button class="btn btn-primary" type="button" onclick="test()">Text</button>
+            <button class="btn btn-primary" type="button" onclick="controlConfig()">Choisir</button>
+        </main>
 
+        <!-- Config preview -->
+        <main role="main" class="load load-preview" style="display: none;">
+
+            <div class="card-columns" id="previewcol" style="display: flex">
+                <!-- insertion des previews ici -->
+            </div>
+            <div>
+                <button class="btn btn-primary" type="button" onclick="startConfig()">Démarrer</button>
+            </div>
+        </main>
+
+        <!-- input infos candidat -->
+        <main role="main" class="load load-form-infos" style="display: none;">
+            <form>
+                <div class="form-row">
+                    <div class="col">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">id : </span>
+                            </div>
+                            <input type="text" class="form-control" id="ident" placeholder="autogenerate, if you read this please reload" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="Nom">
+                    </div>
+                    <div class="col">
+                        <input type="text" class="form-control" placeholder="Prénom">
+                    </div>
+                </div>
+            </form>
+        </main>
+
+        <!-- Video player -->
+        <main role="main" class="load load-video" style="display: none">
+            <div class="full-vid">
+                <video oncontextmenu="return false;" onerror="alert('Veuillez selectionner une video valide');"
+                    id="player1" class="video-js vjs-default-skin vjs-big-play-centered" width="100%" height="100%"
+                    data-setup='{ "aspectRatio":"16:9", "fluid": true }'>
+                </video>
+            </div>
+
+        </main>
+
+        <!-- Text -->
+        <main role="main" class="load load-text" style="display: none">
+            <div id="text-input"></div>
         </main>
 
 
@@ -76,7 +124,7 @@
 
         <!-- DEBUT du footer -->
         <footer class="mastfoot mt-auto">
-            <div class="inner">
+            <div>
                 <p>LOUSTIC OSV</p>
             </div>
         </footer>

@@ -1,46 +1,107 @@
 /*eslint-env browser*/
-
-/* ╔══════DEBUT══════╗ AJOUT SUPPRESSION PAGE =========================================*/
-
-
-/* ╚═══════FIN═══════╝ AJOUT SUPPRESSION PAGE =========================================*/
-
-var myConfig;
-var myConfigFiles = [];
 var myPlayer;
 
+/* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
+var myConfig = "";
+var importedFiles = [];
+var nbJson = 0;
+
 function loadFiles(files) {
-    var nbJson = 0; //checker si on a pas importé pls config en mm temps
-    //on vide l'afficheur et la memoire
+    nbJson = 0; //checker si on a pas importé pls config en mm temps
+    //on vide l'affichage et la memoire
     imported.innerHTML = "";
     myConfig = "";
-    myConfigFiles = [];
+    importedFiles = [];
     //iteration sur les fichiers selectionnés
     for (const file of files) {
         if (file.type === "application/json") {
             nbJson++;
-            if (nbJson > 1) {
-                imported.innerHTML += '<li class="list-group-item list-group-item-danger my-1">' + file.name + '</li>';
-                alert("Erreur : plusieurs configuration.json ont été selectionnés")
+            if (nbJson > 1) { //On ne garde que le premier fichier json et on avertis si pls ont été choisis
+                alert("Le fichier : " + file.name + " n'a pas été importé, veuillez ne sélectionner qu'un fichier de configuration (.json)")
             } else {
                 imported.innerHTML += '<li class="list-group-item list-group-item-primary my-1">' + file.name + '</li>';
                 var selectedFile = file;
                 var reader = new FileReader();
-                reader.onload = function (event) {
-                    myConfig = JSON.parse(reader.result)
-                    
+                reader.onload = function () {
+                    myConfig = JSON.parse(reader.result);
                 };
                 reader.readAsText(selectedFile);
             }
         } else {
             imported.innerHTML += '<li class="list-group-item my-1">' + file.name + '</li>';
-
-            myConfigFiles.push(URL.createObjectURL(file));
+            importedFiles.push(file);
         }
     }
 }
+function controlConfig() { //check si tous les fichiers nécessaires sont disponibles (ceux en trop seront ignorés pour l'instant)
+    var isCorrect = true;
+    if (myConfig !== "") { //Si un config a été chargé
+        console.log(myConfig);
+        console.log(importedFiles);
 
-//TODO bug videojs non reconnu ! --'
+        //check les fichiers importés/necessaires
+        var imp = [];
+        for (const impFile of importedFiles) {
+            imp.push(impFile.name)
+        }
+        for (const page of myConfig.pages) {
+            if (page.type === "video") {
+                if(!imp.includes(page.videoName)){
+                    alert("Le fichier : " + page.videoName + " est maquant");
+                    isCorrect = false;
+                }
+            }
+        }
+              
+    } else {
+        alert("Veuillez sélectionner un fichier de configuration .json");
+        isCorrect = false;
+    }
+
+    if(isCorrect){
+        startConfig();
+    }
+}
+
+/* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
+
+
+/* ╔══════DEBUT══════╗  PREVIEW =======================================================*/
+function preview() {
+    hideByClass("load");
+    showByClass("load-preview");
+    console.log(myConfig.pages);
+
+    for (const page of myConfig.pages) {
+        previewcol.innerHTML +=
+            '<div class="card">' +
+            '<div class="card-body">' +
+            '<h5 class="card-title">' + page.pageName + '</h5>' +
+            '<p class="card-text">' + page.type + '</p>' +
+            '</div></div>';
+    }
+
+    /*myPlayer = videojs("player1")
+    myPlayer.src({
+        type: "video/mp4",
+        src: URL.createObjectURL(myConfigFiles[0])
+    });
+    document.getElementById("text-input").innerHTML += myConfig.pages[0].text; */
+}
+
+/* ╚═══════FIN═══════╝ PREVIEW  =======================================================*/
+
+/* ╔══════DEBUT══════╗ DEROULEMENT DU TEST ============================================*/
+function startConfig() {
+    hideByClass("load");
+    hideByClass("navbar")
+    showByClass("load-form-infos")
+
+    ident.value = generateUniqueID();
+}
+
+
+/* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
 function hideByClass(className) {
@@ -57,5 +118,9 @@ function showByClass(className) {
     }
 }
 
-/* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
+function generateUniqueID() {
+    id = "uniqueID"
+    return id;
+}
 
+/* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
