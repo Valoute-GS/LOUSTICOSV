@@ -1,6 +1,7 @@
 /*eslint-env browser*/
 var myPlayer;
 
+
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 var myConfig = "";
 var importedFiles = [];
@@ -98,10 +99,12 @@ function startConfig() {
     showByClass("load-form-infos")
 
     ident.value = generateUniqueID();
+    
 }
 
-
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
+
+
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
 function hideByClass(className) {
@@ -119,7 +122,8 @@ function showByClass(className) {
 }
 
 function generateUniqueID() {
-    id = "uniqueID"
+    id = myConfig.name.replace(/[^A-Z0-9]+/ig, "_") + Date.now();
+    
     return id;
 }
 
