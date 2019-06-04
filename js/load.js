@@ -1,5 +1,5 @@
 /*eslint-env browser*/
-var myPlayer;
+var myPlayer = videojs('myvideo');
 
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
@@ -104,7 +104,17 @@ function startConfig() {
 
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
+function playVideo() {
+    btnPlay.style.display = "none";    
+    btnPause.style.display = "inline";
+    myPlayer.play();
+}
 
+function pauseVideo() {
+    btnPlay.style.display = "inline";    
+    btnPause.style.display = "none";
+    myPlayer.pause();
+}
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
 function hideByClass(className) {
