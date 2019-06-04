@@ -47,7 +47,7 @@
 
         <!-- DEBUT de la main part -->
         <!-- Input config -->
-        <main role="main" class="load load-main" style="display: none">
+        <main role="main" class="load load-main">
             <ul class="list-group" id="imported">
             </ul>
             <div class="input-group my-3">
@@ -82,7 +82,7 @@
                                 <span class="input-group-text">id : </span>
                             </div>
                             <input type="text" class="form-control" id="ident"
-                                placeholder="autogenerate, if you read this please reload" disabled>
+                                placeholder="autogenerate, if you read this please reload config" disabled>
                         </div>
                     </div>
                 </div>
@@ -96,25 +96,26 @@
                 </div>
             </form>
             <div class="mt-3">
-                <button class="btn btn-primary" type="button" disabled>Text</button>
+                <button class="btn btn-primary" type="button">Let's go !</button>
             </div>
         </main>
 
         <!-- Video player -->
-        <main role="main" class="load load-video my-auto">
-            <button class="btn btn-success" id="btnPlay" onclick="playVideo()" type="button">PLAY</button>
-            <button class="btn btn-danger" id="btnPause" onclick="pauseVideo()" type="button">PAUSE</button>
+        <main role="main" class="load load-video my-auto" style="display: none;">
+            <div id="controls">
+                <button class="btn btn-success" id="btnPlay" onclick="playVideo()" type="button">PLAY</button>
+                <button class="btn btn-danger" id="btnPause" onclick="pauseVideo()" style="display: none"
+                    type="button">PAUSE</button>
+            </div>
             <div class="row mt-3 mx-auto" style="width: 100%">
                 <div class="card col-md my-auto bg-transparent border-0" id="chapcontainer">
-                    <div>Je suis le chapitre 1</div>
-                    <div>Je suis le chapitre 1</div>
-                    <div>Je suis le chapitre 1</div>
-                    <div>Je suis le chapitre 1</div>
+                    
                 </div>
                 <div class="col-md">
                     <!-- video player -->
-                    <video id='myvideo' class='video-js vjs-default-skin' preload="auto" oncontextmenu="return false" width="100%" height="100%"
-                    data-setup='{ "aspectRatio":"16:9", "fluid": true, "controls" : false}'>
+                    <video id='myvideo' class='video-js vjs-default-skin' preload="auto" oncontextmenu="return false"
+                        width="100%" height="100%"
+                        data-setup='{ "aspectRatio":"16:9", "fluid": true, "controls" : false}'>
                         <source src='videos/fingers.webm' type='video/webm'>
                         <p class='vjs-no-js'>
                             To view this video please enable JavaScript, and consider upgrading to a web browser that
@@ -122,10 +123,7 @@
                         </p>
                     </video>
                 </div>
-                </div>
             </div>
-
-
         </main>
 
         <!-- Text -->
@@ -138,9 +136,9 @@
 
 
         <!-- DEBUT du footer -->
-        <footer class="mastfoot mt-auto">
+        <footer class="mastfoot mt-auto navbar-fixed-bottom">
             <div>
-                <p>LOUSTIC OSV</p>
+                <p>V0.3</p>
             </div>
         </footer>
         <!-- FIN du footer -->

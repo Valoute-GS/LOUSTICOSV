@@ -1,12 +1,15 @@
 /*eslint-env browser*/
 var myPlayer = videojs('myvideo');
+var myConfig = ""; //json de la config chargé
+var importedFiles = []; //tab des fichiers (autre que le json) importés
 
+var currentPageNumber = 0;
+var currentFileNumber = 1;
+
+var startTime = 0;
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
-var myConfig = "";
-var importedFiles = [];
 var nbJson = 0;
-
 function loadFiles(files) {
     nbJson = 0; //checker si on a pas importé pls config en mm temps
     //on vide l'affichage et la memoire
@@ -95,26 +98,41 @@ function preview() {
 /* ╔══════DEBUT══════╗ DEROULEMENT DU TEST ============================================*/
 function startConfig() {
     hideByClass("load");
-    hideByClass("navbar")
-    showByClass("load-form-infos")
-
-    ident.value = generateUniqueID();
+    hideByClass("navbar");
+    showByClass("load-form-infos");
+    
+    startTime = Date.now();
+    
     
 }
 
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
+/* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
+function loadVideo() {
+    hideByClass("load");
+    showByClass("load-video");
+
+    myPlayer.src({
+        type: importedFiles[currentFileNumber].type,
+        src: URL.createObjectURL(importedFiles[currentFileNumber])
+    })
+    for (const chapter of myConfig.pages[currentPageNumber].chapters) {
+        chapcontainer.innerHTML += '<div>' + chapter.name + ' : ' + chapter.date + '</div>';
+    }
+}
 function playVideo() {
     btnPlay.style.display = "none";    
     btnPause.style.display = "inline";
     myPlayer.play();
 }
-
 function pauseVideo() {
     btnPlay.style.display = "inline";    
     btnPause.style.display = "none";
     myPlayer.pause();
 }
+
+/* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
 function hideByClass(className) {
@@ -123,18 +141,17 @@ function hideByClass(className) {
         eltsToHide[i].style.display = 'none';
     }
 }
-
 function showByClass(className) {
     var eltsToHide = document.getElementsByClassName(className);
     for (var i = 0; i < eltsToHide.length; i++) {
         eltsToHide[i].style.display = 'block';
     }
 }
-
 function generateUniqueID() {
     id = myConfig.name.replace(/[^A-Z0-9]+/ig, "_") + Date.now();
     
     return id;
 }
+//ident.value = generateUniqueID();
 
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/

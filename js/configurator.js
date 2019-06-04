@@ -308,7 +308,7 @@ function finishConfig() {
         var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(myConfig));
         var dlAnchorElem = document.getElementById('download-config');
         dlAnchorElem.setAttribute("href", dataStr);
-        dlAnchorElem.setAttribute("download", "scene.json");
+        dlAnchorElem.setAttribute("download", myConfig.name + ".json");
         dlAnchorElem.click();
         
 
