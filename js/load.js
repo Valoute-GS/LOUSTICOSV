@@ -98,6 +98,7 @@ function personnalInfos() { //phase d'initialisation
     hideByClass("navbar");
     showByClass("load-form-infos");
 
+    ident.value = generateUniqueID();
 
 
 }
@@ -110,9 +111,6 @@ function startConfig() {
 }
 
 function nextPage() {
-    console.log("PN : " + currentPageNumber);
-    console.log("Len : " + myConfig.pages.length);
-        
     if (myConfig.pages.length === currentPageNumber) {
         finishConfig();
     } else {
@@ -136,7 +134,7 @@ function finishConfig() {
     hideByClass("load");
     showByClass("load-finish");
     endTime = Date.now();
-    console.log((endTime - startTime) / 1000);
+    console.log("Temps écoulé : " + (endTime - startTime) / 1000);
 
 }
 
@@ -144,24 +142,57 @@ function finishConfig() {
 
 /* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
 function loadVideo() {
+    var currentPage = myConfig.pages[currentPageNumber];
+    var currentFile = importedFiles.get(currentPage.videoName);
+    //Pour plus de lisibilité du code on stock es options
+    const PAUSECHAP = currentPage.options[0]; //ca va etre chaud a faire ca
+    const PPLLOWED = currentPage.options[1];
+    const FREENAV = currentPage.options[2];
+    const VISIBLECHAP = currentPage.options[3];
+    const CLICKABLECHAP = currentPage.options[4];
+
     hideByClass("load");
     showByClass("load-video");
 
-    pauseVideo();
-    currentFileName = myConfig.pages[currentPageNumber].videoName;
-    console.log(importedFiles.get(currentFileName));
-
     myPlayer.src({
-        type: importedFiles.get(currentFileName).type,
-        src: URL.createObjectURL(importedFiles.get(currentFileName))
+        type: currentFile.type,
+        src: URL.createObjectURL(currentFile)
     })
-    myPlayer.load();
+    myPlayer.removeChild('BigPlayButton')
+    console.log(myPlayer);
 
-    //reset puis insertion des cahpitres
-    chapcontainer.innerHTML = "";
-    for (const chapter of myConfig.pages[currentPageNumber].chapters) {
-        chapcontainer.innerHTML += '<div>' + chapter.name + ' : ' + chapter.date + '</div>';
+    if (FREENAV) {
+        myPlayer.controls(true);
+        myPlayer.tech_.off('dblclick');
+        myPlayer.tech_.off('pointer-events');
+        myPlayer.controlBar.removeChild('FullscreenToggle')
+        myPlayer.controlBar.removeChild('VolumePanel')
+
+    } else {
+        myPlayer.controls(false);
     }
+    //reset puis insertion/affcihage des chapitres si besoin
+    chapcontainer.innerHTML = "";
+    if (VISIBLECHAP) {
+        chapcontainer.style.display = "block";
+        for (const chapter of myConfig.pages[currentPageNumber].chapters) {
+            chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-1">' + chapter.name + ' : ' +
+                '<button class="btn btn-sm btn-primary" type="button"> ' + chapter.date +
+                '</button>' +
+                '</li>';
+        }
+    } else {
+        chapcontainer.style.display = "none";
+    }
+
+    if (PPLLOWED) {
+        controls.style.display = "inline";
+    } else {
+        controls.style.display = "none";
+        playVideo();
+    }
+
+    myPlayer.load();
 }
 
 function playVideo() {
@@ -207,7 +238,6 @@ function showByClass(className) {
 
 function generateUniqueID() {
     id = myConfig.name.replace(/[^A-Z0-9]+/ig, "_") + Date.now();
-
     return id;
 }
 //ident.value = generateUniqueID();

@@ -24,7 +24,6 @@ body {
     margin-right: auto;
 }
 
-.vjs-default-skin.vjs-paused .vjs-big-play-button 
-{
+.vjs-default-skin.vjs-paused .vjs-big-play-button {
 display: none;
 }

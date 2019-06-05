@@ -8,6 +8,7 @@
     <title>LOUSTIC OS</title>
     <meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
     <meta name="author" content="valentin_utiel">
+    <link rel="icon" type="image/png" href="img/favicon.png" />
 
     <!-- CSS -->
     <link rel="stylesheet" href="css/styles.css">
@@ -111,14 +112,14 @@
             </div>
             <div class="row mt-3 mx-auto" style="width: 100%">
                 <!-- Chapters -->
-                <div class="card col-md my-auto bg-transparent border-0" id="chapcontainer">
+                <ul class="list-group col-md my-auto" id="chapcontainer">
                     <!-- Chapters are inserted and displayed in this div -->
-                </div>
+                </ul>
                 <!-- video player -->
                 <div class="col-md">
                     <video id='myvideo' class='video-js vjs-default-skin' preload="auto" oncontextmenu="return false"
-                        width="100%" height="100%"
-                        data-setup='{ "aspectRatio":"16:9", "fluid": true, "controls" : false}'>
+                        width="100%" height="100%" onpause="pauseVideo()" onplay="playVideo()" on
+                        data-setup='{ "aspectRatio":"16:9", "fluid": true}'>
                         <source src='videos/fingers.webm' type='video/webm'>
                         <p class='vjs-no-js'>
                             To view this video please enable JavaScript, and consider upgrading to a web browser that
@@ -136,13 +137,12 @@
         </main>
 
         <main role="main" class="load load-finish my-auto" style="display: none">
-                <div class="text-center mx-auto">
-                    <h1>Merci de votre attention</h1>
-                </div>
+            <div class="text-center mx-auto">
+                <h1>Merci de votre attention</h1>
+            </div>
         </main>
 
-        <!-- FIN de la main part -->
-
+        <!-- FIN de la main part -->           
 
         <!-- DEBUT du footer -->
         <footer class="mastfoot mt-auto navbar-fixed-bottom">
