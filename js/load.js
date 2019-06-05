@@ -1,21 +1,23 @@
 /*eslint-env browser*/
 var myPlayer = videojs('myvideo');
 var myConfig = ""; //json de la config chargé
-var importedFiles = []; //tab des fichiers (autre que le json) importés
+var importedFiles; //tab des fichiers (autre que le json) importés
 
 var currentPageNumber = 0;
-var currentFileNumber = 1;
+var currentFileName = "Robin.mp4"; //key of the map
 
 var startTime = 0;
+var endTime = 0;
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 var nbJson = 0;
-function loadFiles(files) {
+
+function loadFiles(files) { //import des fichiers + affichage
     nbJson = 0; //checker si on a pas importé pls config en mm temps
     //on vide l'affichage et la memoire
     imported.innerHTML = "";
     myConfig = "";
-    importedFiles = [];
+    importedFiles = new Map();
     //iteration sur les fichiers selectionnés
     for (const file of files) {
         if (file.type === "application/json") {
@@ -33,37 +35,38 @@ function loadFiles(files) {
             }
         } else {
             imported.innerHTML += '<li class="list-group-item my-1">' + file.name + '</li>';
-            importedFiles.push(file);
+            importedFiles.set(file.name, file);
         }
     }
 }
+
 function controlConfig() { //check si tous les fichiers nécessaires sont disponibles (ceux en trop seront ignorés pour l'instant)
     var isCorrect = true;
-    if (myConfig !== "") { //Si un config a été chargé
+    if (myConfig !== "") { //Si un config a été chargée
         console.log(myConfig);
         console.log(importedFiles);
 
         //check les fichiers importés/necessaires
         var imp = [];
-        for (const impFile of importedFiles) {
+        for (const impFile of importedFiles.values()) {
             imp.push(impFile.name)
         }
         for (const page of myConfig.pages) {
             if (page.type === "video") {
-                if(!imp.includes(page.videoName)){
+                if (!imp.includes(page.videoName)) {
                     alert("Le fichier : " + page.videoName + " est maquant");
                     isCorrect = false;
                 }
             }
         }
-              
+
     } else {
         alert("Veuillez sélectionner un fichier de configuration .json");
         isCorrect = false;
     }
 
-    if(isCorrect){
-        startConfig();
+    if (isCorrect) {
+        personnalInfos();
     }
 }
 
@@ -71,7 +74,7 @@ function controlConfig() { //check si tous les fichiers nécessaires sont dispon
 
 
 /* ╔══════DEBUT══════╗  PREVIEW =======================================================*/
-function preview() {
+function preview() { //Need work, affiches les infos de la config chargée
     hideByClass("load");
     showByClass("load-preview");
     console.log(myConfig.pages);
@@ -85,25 +88,56 @@ function preview() {
             '</div></div>';
     }
 
-    /*myPlayer = videojs("player1")
-    myPlayer.src({
-        type: "video/mp4",
-        src: URL.createObjectURL(myConfigFiles[0])
-    });
-    document.getElementById("text-input").innerHTML += myConfig.pages[0].text; */
 }
 
 /* ╚═══════FIN═══════╝ PREVIEW  =======================================================*/
 
 /* ╔══════DEBUT══════╗ DEROULEMENT DU TEST ============================================*/
-function startConfig() {
+function personnalInfos() { //phase d'initialisation
     hideByClass("load");
     hideByClass("navbar");
     showByClass("load-form-infos");
-    
+
+
+
+}
+
+function startConfig() {
+    hideByClass("load");
+    //initialisation des infos et de la lecture de la config
     startTime = Date.now();
-    
-    
+    nextPage();
+}
+
+function nextPage() {
+    console.log("PN : " + currentPageNumber);
+    console.log("Len : " + myConfig.pages.length);
+        
+    if (myConfig.pages.length === currentPageNumber) {
+        finishConfig();
+    } else {
+        switch (myConfig.pages[currentPageNumber].type) {
+            case "video":
+                loadVideo();
+                break;
+            case "text":
+                loadText();
+                break;
+
+            default:
+                break;
+        }
+    }
+    currentPageNumber++;
+
+}
+
+function finishConfig() {
+    hideByClass("load");
+    showByClass("load-finish");
+    endTime = Date.now();
+    console.log((endTime - startTime) / 1000);
+
 }
 
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
@@ -113,26 +147,48 @@ function loadVideo() {
     hideByClass("load");
     showByClass("load-video");
 
+    pauseVideo();
+    currentFileName = myConfig.pages[currentPageNumber].videoName;
+    console.log(importedFiles.get(currentFileName));
+
     myPlayer.src({
-        type: importedFiles[currentFileNumber].type,
-        src: URL.createObjectURL(importedFiles[currentFileNumber])
+        type: importedFiles.get(currentFileName).type,
+        src: URL.createObjectURL(importedFiles.get(currentFileName))
     })
+    myPlayer.load();
+
+    //reset puis insertion des cahpitres
+    chapcontainer.innerHTML = "";
     for (const chapter of myConfig.pages[currentPageNumber].chapters) {
         chapcontainer.innerHTML += '<div>' + chapter.name + ' : ' + chapter.date + '</div>';
     }
 }
+
 function playVideo() {
-    btnPlay.style.display = "none";    
+    btnPlay.style.display = "none";
     btnPause.style.display = "inline";
     myPlayer.play();
 }
+
 function pauseVideo() {
-    btnPlay.style.display = "inline";    
+    btnPlay.style.display = "inline";
     btnPause.style.display = "none";
     myPlayer.pause();
 }
 
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
+
+/* ╔══════DEBUT══════╗ TEXT  ==========================================================*/
+function loadText() {
+    hideByClass("load");
+    showByClass("load-text");
+
+    document.getElementById("text-display").innerHTML = "";
+    document.getElementById("text-display").innerHTML += myConfig.pages[currentPageNumber].text;
+}
+
+/* ╚═══════FIN═══════╝ TEXT  ==========================================================*/
+
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
 function hideByClass(className) {
@@ -141,15 +197,17 @@ function hideByClass(className) {
         eltsToHide[i].style.display = 'none';
     }
 }
+
 function showByClass(className) {
     var eltsToHide = document.getElementsByClassName(className);
     for (var i = 0; i < eltsToHide.length; i++) {
         eltsToHide[i].style.display = 'block';
     }
 }
+
 function generateUniqueID() {
     id = myConfig.name.replace(/[^A-Z0-9]+/ig, "_") + Date.now();
-    
+
     return id;
 }
 //ident.value = generateUniqueID();
