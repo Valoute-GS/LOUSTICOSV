@@ -48,7 +48,7 @@
         <!-- Page principale de configuration -->
         <main role="main" class="configurator configurator-main">
             <div id="alertmain"></div>
-            <div class="input-group my-5">
+            <div class="input-group mt-5 mb-3">
                 <input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
                 <div class="ml-1">
                     <div class="btn-group" role="group">
@@ -60,8 +60,17 @@
                     <button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Terminer</button>
                 </div>
             </div>
-
-            <div id="pcontainer">
+            <form>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input config-option" id="switch1">
+                    <label class="custom-control-label" for="switch1">Sommaire</label>
+                </div>
+                <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" class="custom-control-input config-option" id="switch2">
+                    <label class="custom-control-label" for="switch2">Option 2</label>
+                </div>
+            </form>
+            <div id="pcontainer" class="mt-3">
                 <!-- Insertion JS d'inputs pages -->
             </div>
 
@@ -89,23 +98,23 @@
             </div>
             <div class="mb-3">
                 <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" id="customCheck1">
+                    <input type="checkbox" class="custom-control-input video-option" id="customCheck1">
                     <label class="custom-control-label" for="customCheck1">Pause à chaque chapitre</label>
                 </div>
                 <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" id="customCheck2">
+                    <input type="checkbox" class="custom-control-input video-option" id="customCheck2">
                     <label class="custom-control-label" for="customCheck2">Play/Pause autorisé</label>
                 </div>
                 <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" id="customCheck3">
+                    <input type="checkbox" class="custom-control-input video-option" id="customCheck3">
                     <label class="custom-control-label" for="customCheck3">Navigation libre</label>
                 </div>
                 <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" id="customCheck4">
+                    <input type="checkbox" class="custom-control-input video-option" id="customCheck4">
                     <label class="custom-control-label" for="customCheck4">Chapitres visibles</label>
                 </div>
                 <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input" id="customCheck5">
+                    <input type="checkbox" class="custom-control-input video-option" id="customCheck5">
                     <label class="custom-control-label" for="customCheck5">Chapitres cliquables</label>
                 </div>
             </div>

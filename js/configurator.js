@@ -15,7 +15,7 @@ function addPage() {
     newPage.innerHTML = '<div class="input-group-prepend">' +
         '<span class="input-group-text">#' + nbPages + '</span>' +
         '</div>' +
-        '<input type="text" class="form-control" style="width: 40%" id="page-' + nbPages + '" placeholder="Nom de la page">' +
+        '<input type="text" class="form-control" style="width: 40%" id="page-' + nbPages + '" placeholder="Nom de la page" onchange="namePageUpdate(this)">' +
         '<select class="custom-select">' +
         '<option selected>Format ...</option>' +
         '<option value="1">Texte</option>' +
@@ -28,9 +28,6 @@ function addPage() {
 
     pcontainer.appendChild(newPage); //ajout de la nouvelle div newPages (cf HTML)
     pagesState.push(0);
-    console.log(pagesState);
-
-
 
 }
 
@@ -73,12 +70,17 @@ function configPage(e) {
             break;
     }
 }
-
 function updatePagesState(newState) {
     pagesState[currentPageNumber - 1] = newState;
     var concernedButton = document.getElementById("button-" + currentPageNumber);
     concernedButton.className = "btn btn-success";
     concernedButton.innerHTML = "Configuré"
+}
+function namePageUpdate(inputElt) { //petit patch un peu sale pour changer dynamiquement le nom de la page (si deja configurée)
+    var nthPage = inputElt.id.substring(5);
+    if(document.getElementById("button-"+nthPage).innerHTML === "Configuré"){
+        myConfig.pages[nthPage-1].pageName = inputElt.value;
+    }
 }
 
 /* ======= TEXT =======*/
@@ -209,8 +211,9 @@ function removeChapterInput() {
 
 /* ╔══════DEBUT══════╗ EXPORTS ========================================================*/
 class maConfig {
-    constructor(name, pages) {
+    constructor(name, options, pages) {
         this.name = name;
+        this.options = options;
         this.pages = pages; //tableau contenant les pages et leurs infos
     }
 }
@@ -240,13 +243,14 @@ class ConfigTextJson {
     }
 }
 
-var myConfig = new maConfig("", []);
+var myConfig = new maConfig("", [], []);
 
 /* ======= VIDEO =======*/
 function saveVideoConfig() { //appui du bouton Terminer
-    var chapterTitleElts = document.getElementsByClassName("form-control chapter-title");
-    var chapterDateElts = document.getElementsByClassName("form-control chapter-date");
-    var checkboxes = document.getElementsByClassName("custom-control-input");
+    var chapterTitleElts = document.getElementsByClassName("chapter-title");
+    var chapterDateElts = document.getElementsByClassName("chapter-date");
+    var videoOptionsElts = document.getElementsByClassName("video-option");
+    
     var complete = true;
 
     var chapters = [];
@@ -268,8 +272,8 @@ function saveVideoConfig() { //appui du bouton Terminer
         }
         index++;
     }
-    for (const checkbox of checkboxes) { //on recupere les options selectionnees ou non dans les checkboxes
-        options.push(checkbox.checked);
+    for (const videoOptionElt of videoOptionsElts) { //on recupere les options selectionnees ou non dans les checkboxes
+        options.push(videoOptionElt.checked);
     }
 
     if (!isSomething(fileName)) {
@@ -299,7 +303,13 @@ function saveTextConfig() { //appui du bouton Terminer
 
 /* ======= CONFIG ======*/
 function finishConfig() {
+    var options = [];
+    for (const optionElt of document.getElementsByClassName("config-option")) {
+        options.push(optionElt.checked);
+    }
+    //ajout des infos a la config
     myConfig.name = document.getElementById("config-name").value;
+    myConfig.options = options;
 
     if (configChecker() == true) {
         console.log(JSON.stringify(myConfig));
@@ -325,9 +335,6 @@ function finishConfig() {
             pagesState.length > 0 &&
             isSomething(myConfig.name);
     }
-
-
-
 
 }
 /* ╚═══════FIN═══════╝ EXPORTS ========================================================*/
