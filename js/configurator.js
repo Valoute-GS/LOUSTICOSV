@@ -70,16 +70,18 @@ function configPage(e) {
             break;
     }
 }
+
 function updatePagesState(newState) {
     pagesState[currentPageNumber - 1] = newState;
     var concernedButton = document.getElementById("button-" + currentPageNumber);
     concernedButton.className = "btn btn-success";
     concernedButton.innerHTML = "Configuré"
 }
+
 function namePageUpdate(inputElt) { //petit patch un peu sale pour changer dynamiquement le nom de la page (si deja configurée)
     var nthPage = inputElt.id.substring(5);
-    if(document.getElementById("button-"+nthPage).innerHTML === "Configuré"){
-        myConfig.pages[nthPage-1].pageName = inputElt.value;
+    if (document.getElementById("button-" + nthPage).innerHTML === "Configuré") {
+        myConfig.pages[nthPage - 1].pageName = inputElt.value;
     }
 }
 
@@ -192,8 +194,8 @@ function createChapterInput() {
         '<div class="input-group-prepend">' +
         '<span class="input-group-text">Chapitre ' + nbOfChapters + '</span>' +
         '</div>' +
-        '<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre">' +
-        '<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="m:s">';
+        '<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[a-zA-Z0-9_.,!:]*$">' +
+        '<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="HH:MM:SS" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)?([0-5]?[0-9])">';
     chapcontainer.appendChild(div1);
     //mise a jour de l'indice du nouveau chapitre
 
@@ -250,7 +252,7 @@ function saveVideoConfig() { //appui du bouton Terminer
     var chapterTitleElts = document.getElementsByClassName("chapter-title");
     var chapterDateElts = document.getElementsByClassName("chapter-date");
     var videoOptionsElts = document.getElementsByClassName("video-option");
-    
+
     var complete = true;
 
     var chapters = [];
@@ -259,16 +261,21 @@ function saveVideoConfig() { //appui du bouton Terminer
 
     for (var eltTitle of chapterTitleElts) { //on recupere les titres dans les inputs pour les chapitres
         var newChap = new ChapJson(eltTitle.value, "-1");
-
-        if (!isSomething(eltTitle.value)) {
+        if (!eltTitle.checkValidity()) {
             complete = false;
+            eltTitle.className = "form-control chapter-title border-danger";
+        }else{
+            eltTitle.className = "form-control chapter-title";
         }
         chapters.push(newChap);
     }
     for (var eltDate of chapterDateElts) { //on recupere les dates dans les inputs pour les chapitres
         chapters[index].date = eltDate.value;
-        if (!isSomething(eltDate.value)) {
+        if (!eltDate.checkValidity()) {
             complete = false;
+            eltDate.className = "form-control chapter-date border-danger";
+        }else{
+            eltDate.className = "form-control chapter-date";
         }
         index++;
     }
@@ -286,7 +293,7 @@ function saveVideoConfig() { //appui du bouton Terminer
         updatePagesState(2);
         return true;
     } else {
-        alert("Configuration video incomplete");
+        alert("Configuration video incomplete ou invalide");
         return false;
     }
 }
@@ -320,14 +327,14 @@ function finishConfig() {
         dlAnchorElem.setAttribute("href", dataStr);
         dlAnchorElem.setAttribute("download", myConfig.name + ".json");
         dlAnchorElem.click();
-        
+
 
     } else {
-        alertmain.innerHTML += '<div class="alert alert-warning alert-dismissible" role="alert">'+
-        '<strong>Erreur</strong> Configuration incomplete ou erronée '+
-        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-        '<span aria-hidden="true">&times;'+
-        '</span></button></div>'
+        alertmain.innerHTML += '<div class="alert alert-warning alert-dismissible" role="alert">' +
+            '<strong>Erreur</strong> Configuration incomplete ou erronée ' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+            '<span aria-hidden="true">&times;' +
+            '</span></button></div>'
     }
 
     function configChecker() {
