@@ -177,7 +177,7 @@ function loadVideo() {
         chapcontainer.style.display = "block";
         for (const chapter of myConfig.pages[currentPageNumber].chapters) {
             chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-1">' + chapter.name + ' : ' +
-                '<button class="btn btn-sm btn-primary" type="button"> ' + chapter.date +
+                '<button class="btn btn-sm btn-primary" type="button" onclick="gotoTime(this.innerHTML)">' + chapter.date +
                 '</button>' +
                 '</li>';
         }
@@ -205,6 +205,12 @@ function pauseVideo() {
     btnPlay.style.display = "inline";
     btnPause.style.display = "none";
     myPlayer.pause();
+}
+
+function gotoTime(time) {
+    console.log(time);
+
+    myPlayer.currentTime(toSeconds(time));
 }
 
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
@@ -240,6 +246,29 @@ function generateUniqueID() {
     id = myConfig.name.replace(/[^A-Z0-9]+/ig, "_") + Date.now();
     return id;
 }
+
+function toSeconds(time) {
+    var a = time.split(':'); // split au séparateur ":"
+    var seconds;
+    switch (a.length) {
+        case 1:
+            seconds = time
+            break;
+        case 2:
+            seconds = (+a[0]) * 60 + (+a[1]);
+            break;
+        case 3:
+            seconds = (+a[0]) * 3600 + (+a[1]) * 60 + (+a[2]);
+            break;
+
+        default:
+            break;
+    }
+
+    console.log(seconds);
+    return seconds;
+}
+
 //ident.value = generateUniqueID();
 
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
