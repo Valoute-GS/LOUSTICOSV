@@ -86,7 +86,8 @@
                 </div>
                 <div class="form-row">
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Nom" onchange="alert(this.checkValidity())" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)?([0-5]?[0-9])">
+                        <input type="text" class="form-control" placeholder="Nom" onchange="alert(this.checkValidity())"
+                            required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)?([0-5]?[0-9])">
                     </div>
                     <div class="col">
                         <input type="text" class="form-control" placeholder="Prénom">
@@ -115,8 +116,8 @@
                 <!-- video player -->
                 <div class="col-md">
                     <video id='myvideo' class='video-js vjs-default-skin' preload="auto" oncontextmenu="return false"
-                        width="100%" height="100%" onpause="pauseVideo()" onplay="playVideo()" on
-                        data-setup='{ "aspectRatio":"16:9", "fluid": true}'>
+                        width="100%" height="100%" onpause="pauseVideo()" onplay="playVideo()" 
+                        data-setup='{ "aspectRatio":"16:9", "fluid": true}'> <!--ontimeupdate="checkChapter()"-->
                         <source src='videos/fingers.webm' type='video/webm'>
                         <p class='vjs-no-js'>
                             To view this video please enable JavaScript, and consider upgrading to a web browser that
@@ -139,7 +140,7 @@
             </div>
         </main>
 
-        <!-- FIN de la main part -->           
+        <!-- FIN de la main part -->
 
         <!-- DEBUT du footer -->
         <footer class="mastfoot mt-auto navbar-fixed-bottom">

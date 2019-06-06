@@ -4,7 +4,7 @@ var myConfig = ""; //json de la config chargé
 var importedFiles; //tab des fichiers (autre que le json) importés
 
 var currentPageNumber = 0;
-var currentFileName = "Robin.mp4"; //key of the map
+var currentFileName = ""; //key of the map
 
 var startTime = 0;
 var endTime = 0;
@@ -151,12 +151,19 @@ function loadVideo() {
 
     hideByClass("load");
     showByClass("load-video");
-
+    
     myPlayer.src({
         type: currentFile.type,
         src: URL.createObjectURL(currentFile)
     })
     myPlayer.removeChild('BigPlayButton')
+
+    if (PPLLOWED) {
+        controls.style.display = "inline";
+    } else {
+        controls.style.display = "none";
+        playVideo();
+    }
 
     if (FREENAV) {
         myPlayer.controls(true);
@@ -174,7 +181,7 @@ function loadVideo() {
         chapcontainer.style.display = "block";
         for (const chapter of myConfig.pages[currentPageNumber].chapters) {
             chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-1">' + chapter.name + ' : ' +
-                '<button class="btn btn-sm btn-primary" type="button" onclick="gotoTime(this.innerHTML)">' + chapter.date +
+                '<button class="btn btn-sm btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.innerHTML)">' + chapter.date +
                 '</button>' +
                 '</li>';
         }
@@ -182,11 +189,12 @@ function loadVideo() {
         chapcontainer.style.display = "none";
     }
 
-    if (PPLLOWED) {
-        controls.style.display = "inline";
+    if (CLICKABLECHAP) {
+
     } else {
-        controls.style.display = "none";
-        playVideo();
+        for (const btn of document.getElementsByClassName("btn-chapter")) {
+            btn.disabled = "true";
+        }
     }
 
     myPlayer.load();
@@ -206,6 +214,11 @@ function pauseVideo() {
 
 function gotoTime(time) {
     myPlayer.currentTime(toSeconds(time));
+}
+
+function checkChapter() {
+    console.log("waw");
+
 }
 
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
