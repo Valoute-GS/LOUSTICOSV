@@ -44,7 +44,6 @@ function controlConfig() { //check si tous les fichiers nécessaires sont dispon
     var isCorrect = true;
     if (myConfig !== "") { //Si un config a été chargée
         console.log(myConfig);
-        console.log(importedFiles);
 
         //check les fichiers importés/necessaires
         var imp = [];
@@ -77,7 +76,6 @@ function controlConfig() { //check si tous les fichiers nécessaires sont dispon
 function preview() { //Need work, affiches les infos de la config chargée
     hideByClass("load");
     showByClass("load-preview");
-    console.log(myConfig.pages);
 
     for (const page of myConfig.pages) {
         previewcol.innerHTML +=
@@ -159,7 +157,6 @@ function loadVideo() {
         src: URL.createObjectURL(currentFile)
     })
     myPlayer.removeChild('BigPlayButton')
-    console.log(myPlayer);
 
     if (FREENAV) {
         myPlayer.controls(true);
@@ -208,8 +205,6 @@ function pauseVideo() {
 }
 
 function gotoTime(time) {
-    console.log(time);
-
     myPlayer.currentTime(toSeconds(time));
 }
 
@@ -249,7 +244,7 @@ function generateUniqueID() {
 
 function toSeconds(time) {
     var a = time.split(':'); // split au séparateur ":"
-    var seconds;
+    var seconds = 0;
     switch (a.length) {
         case 1:
             seconds = time
@@ -260,12 +255,10 @@ function toSeconds(time) {
         case 3:
             seconds = (+a[0]) * 3600 + (+a[1]) * 60 + (+a[2]);
             break;
-
         default:
+            alert("Heure du chapitre dans un format incorrect")
             break;
     }
-
-    console.log(seconds);
     return seconds;
 }
 

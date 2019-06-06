@@ -23,24 +23,21 @@
 </head>
 
 <body class="text-center">
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <div class="cover-container d-flex w-100 h-100 p-1 mx-auto flex-column">
         <!-- Debut du header -->
         <header class="mb-1">
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <a class="navbar-brand" id="maintitle" href="#">Loustic OS - Charger</a>
-                <div class="collapse navbar-collapse" id="navbar">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="configurator.html">Créer <span
-                                    class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Charger</a>
-                        </li>
-                    </ul>
+                <a class="navbar-brand" id="maintitle" href="index.html">LOUSTIC OS - Charger</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav ml-auto">
+                        <a class="nav-item nav-link" href="index.html">Accueil</a>
+                        <a class="nav-item nav-link" href="configurator.html">Créer</a>
+                        <a class="nav-item nav-link active" href="#">Charger<span class="sr-only">(current)</span></a>
+                    </div>
                 </div>
             </nav>
         </header>
@@ -89,7 +86,7 @@
                 </div>
                 <div class="form-row">
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Nom">
+                        <input type="text" class="form-control" placeholder="Nom" onchange="alert(this.checkValidity())" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)?([0-5]?[0-9])">
                     </div>
                     <div class="col">
                         <input type="text" class="form-control" placeholder="Prénom">
