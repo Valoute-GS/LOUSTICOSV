@@ -12,6 +12,8 @@ var startTimeOnPage = 0;
 var endTimeOnPage = 0;
 var timeOnPage = [];
 
+var testID;
+
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 var nbJson = 0;
 
@@ -106,7 +108,8 @@ function personnalInfos() { //phase d'initialisation
     hideByClass("navbar");
     showByClass("load-form-infos");
 
-    ident.value = generateUniqueID();
+    testID = generateUniqueID();
+    ident.value = testID;
 
 }
 
