@@ -56,7 +56,7 @@ function controlConfig() { //check si tous les fichiers nécessaires sont dispon
         for (const impFile of importedFiles.values()) {
             imp.push(impFile.name)
         }
-        for (const page of myConfig.pages) {
+        for (const page of myConfig.pages) { //check si les fichiers nécessaires ont bien été importés
             if (page.type === "video") {
                 if (!imp.includes(page.videoName)) {
                     errorMessages.add("Le fichier " + page.videoName + " est manquant");
@@ -65,14 +65,14 @@ function controlConfig() { //check si tous les fichiers nécessaires sont dispon
             }
         }
 
-    } else {
+    } else { //si aucun titre saisi
         errorMessages.add("Veuillez sélectionner un fichier de configuration .json");
         isCorrect = false;
     }
 
-    if (isCorrect) {
+    if (isCorrect) { //si tout est okay on passe a la suite
         personnalInfos();
-    }else{
+    } else { //sinon on affiches les erreurs
         for (const message of errorMessages) {
             mainerror.innerHTML += bAlert(message);
         }
@@ -108,37 +108,36 @@ function personnalInfos() { //phase d'initialisation
 
     ident.value = generateUniqueID();
 
-
 }
 
 function startConfig() {
     var correct = true;
-    for (const input of document.getElementsByClassName("infos-perso")) {
+    for (const input of document.getElementsByClassName("infos-perso")) { //on check les infos saisies et on met en valeurs les champs en fonction de leur validité
         if (!input.checkValidity()) {
             input.className = "form-control infos-perso border-danger";
             correct = false;
-        }else{
+        } else {
             input.className = "form-control infos-perso border-success";
         }
     }
-    if (correct) {
+    if (correct) { //Si tout est OK
         hideByClass("load");
         //initialisation des infos et de la lecture de la config
+
         //indexPage
-        
-        if(myConfig.options[0] === true){
+        if (myConfig.options[0] === true) { //on affiche la liste des pages si l'option dans la config est cochée
             for (const page of myConfig.pages) {
-                pagesNameIndex.innerHTML += '<a class="dropdown-item" onclick="jumpToPage('+(page.pageNumber-1)+')">· '+page.pageName+'</a>';
+                pagesNameIndex.innerHTML += '<a class="dropdown-item" onclick="jumpToPage(' + (page.pageNumber - 1) + ')">· ' + page.pageName + '</a>';
             }
             showByClass("pages-index");
         }
-        
+
         startTime = Date.now();
         nextPage();
     }
 }
 
-function nextPage() {
+function nextPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
     if (myConfig.pages.length === currentPageNumber) {
         finishConfig();
     } else {
@@ -157,12 +156,13 @@ function nextPage() {
     currentPageNumber++;
 
 }
-function jumpToPage(pageNumber){
+
+function jumpToPage(pageNumber) {
     currentPageNumber = pageNumber;
     nextPage();
 }
 
-function finishConfig() {
+function finishConfig() { //récup des infos et résulatats
     hideByClass("load");
     hideByClass("pages-index")
     showByClass("load-finish");
@@ -174,11 +174,11 @@ function finishConfig() {
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
 /* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
-function loadVideo() {
+function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
     var currentPage = myConfig.pages[currentPageNumber];
     var currentFile = importedFiles.get(currentPage.videoName);
     //Pour plus de lisibilité du code on stock es options
-    const PAUSECHAP = currentPage.options[0]; //ca va etre chaud a faire ca
+    const PAUSECHAP = currentPage.options[0]; //TODO:
     const PPLLOWED = currentPage.options[1];
     const FREENAV = currentPage.options[2];
     const VISIBLECHAP = currentPage.options[3];
@@ -187,19 +187,22 @@ function loadVideo() {
     hideByClass("load");
     showByClass("load-video");
 
+    //init player
     myPlayer.src({
         type: currentFile.type,
         src: URL.createObjectURL(currentFile)
     })
     myPlayer.removeChild('BigPlayButton')
 
+    //changements en fonction de la config
+    //PLAY PAUSE AUTORISES
     if (PPLLOWED) {
         controls.style.display = "inline";
     } else {
         controls.style.display = "none";
         playVideo();
     }
-
+    //BARRE DE NAVIGATION VISIBLE
     if (FREENAV) {
         myPlayer.controls(true);
         myPlayer.tech_.off('dblclick');
@@ -210,7 +213,7 @@ function loadVideo() {
     } else {
         myPlayer.controls(false);
     }
-    //reset puis insertion/affcihage des chapitres si besoin
+    //CHAPITRES VISIBLES
     chapcontainer.innerHTML = "";
     if (VISIBLECHAP) {
         chapcontainer.style.display = "block";
@@ -223,7 +226,7 @@ function loadVideo() {
     } else {
         chapcontainer.style.display = "none";
     }
-
+    //CHAPITRES CLIQUABLE
     if (CLICKABLECHAP) {
 
     } else {
@@ -251,15 +254,10 @@ function gotoTime(time) {
     myPlayer.currentTime(toSeconds(time));
 }
 
-function checkChapter() {
-    console.log("waw");
-
-}
-
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
 
 /* ╔══════DEBUT══════╗ TEXT  ==========================================================*/
-function loadText() {
+function loadText() { //page de type texte
     hideByClass("load");
     showByClass("load-text");
 
@@ -292,11 +290,11 @@ function generateUniqueID() {
 
 function bAlert(message) {
     return '<div class="alert alert-warning alert-dismissible" role="alert">' +
-    '<strong>Erreur</strong> '+ message +
-    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-    '<span aria-hidden="true">&times;' +
-    '</span></button></div>';
-    
+        '<strong>Erreur</strong> ' + message +
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+        '<span aria-hidden="true">&times;' +
+        '</span></button></div>';
+
 }
 
 function toSeconds(time) {

@@ -27,3 +27,8 @@ body {
 .vjs-default-skin.vjs-paused .vjs-big-play-button {
 display: none;
 }
+
+.active{
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
