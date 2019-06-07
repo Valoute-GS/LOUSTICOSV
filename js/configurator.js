@@ -265,7 +265,7 @@ function saveVideoConfig() { //appui du bouton Terminer
             complete = false;
             eltTitle.className = "form-control chapter-title border-danger";
         }else{
-            eltTitle.className = "form-control chapter-title";
+            eltTitle.className = "form-control chapter-title border-success";
         }
         chapters.push(newChap);
     }
@@ -275,7 +275,7 @@ function saveVideoConfig() { //appui du bouton Terminer
             complete = false;
             eltDate.className = "form-control chapter-date border-danger";
         }else{
-            eltDate.className = "form-control chapter-date";
+            eltDate.className = "form-control chapter-date border-success";
         }
         index++;
     }
@@ -293,7 +293,7 @@ function saveVideoConfig() { //appui du bouton Terminer
         updatePagesState(2);
         return true;
     } else {
-        alert("Configuration video incomplete ou invalide");
+        videoerror.innerHTML = bAlert("Configuration video incomplete ou invalide");
         return false;
     }
 }
@@ -330,11 +330,7 @@ function finishConfig() {
 
 
     } else {
-        alertmain.innerHTML += '<div class="alert alert-warning alert-dismissible" role="alert">' +
-            '<strong>Erreur</strong> Configuration incomplete ou erronée ' +
-            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-            '<span aria-hidden="true">&times;' +
-            '</span></button></div>'
+        alertmain.innerHTML = bAlert("Configuration incomplete ou erronée");
     }
 
     function configChecker() {
@@ -370,6 +366,15 @@ function isSomething(params) {
         return false;
     }
     return true;
+}
+
+function bAlert(message) {
+    return '<div class="alert alert-warning alert-dismissible" role="alert">' +
+    '<strong>Erreur</strong> '+ message +
+    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+    '<span aria-hidden="true">&times;' +
+    '</span></button></div>';
+    
 }
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
 

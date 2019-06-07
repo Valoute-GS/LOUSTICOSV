@@ -43,9 +43,24 @@
         </header>
         <!-- FIN du header -->
 
+        <!-- a déplacer plus tard-->
+        <div class="pages-index" style="display: none">
+            <div class="btn-group" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Pages
+                </button>
+                <div class="dropdown-menu" id="pagesNameIndex" aria-labelledby="btnGroupDrop1">
+
+                </div>
+            </div>
+        </div>
+
+
         <!-- DEBUT de la main part -->
         <!-- Input config -->
         <main role="main" class="load load-main">
+            <div id="mainerror"></div>
             <ul class="list-group" id="imported">
             </ul>
             <div class="input-group my-3">
@@ -86,11 +101,12 @@
                 </div>
                 <div class="form-row">
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Nom" onchange="alert(this.checkValidity())"
-                            required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)?([0-5]?[0-9])">
+                        <input type="text" class="form-control infos-perso" placeholder="Nom" required
+                            pattern="^[a-zA-Z0-9 ]*$">
                     </div>
                     <div class="col">
-                        <input type="text" class="form-control" placeholder="Prénom">
+                        <input type="text" class="form-control infos-perso" placeholder="Prénom" required
+                            pattern="^[a-zA-Z0-9 ]*$">
                     </div>
                 </div>
             </form>
@@ -116,8 +132,9 @@
                 <!-- video player -->
                 <div class="col-md">
                     <video id='myvideo' class='video-js vjs-default-skin' preload="auto" oncontextmenu="return false"
-                        width="100%" height="100%" onpause="pauseVideo()" onplay="playVideo()" 
-                        data-setup='{ "aspectRatio":"16:9", "fluid": true}'> <!--ontimeupdate="checkChapter()"-->
+                        width="100%" height="100%" onpause="pauseVideo()" onplay="playVideo()"
+                        data-setup='{ "aspectRatio":"16:9", "fluid": true}'>
+                        <!--ontimeupdate="checkChapter()"-->
                         <source src='videos/fingers.webm' type='video/webm'>
                         <p class='vjs-no-js'>
                             To view this video please enable JavaScript, and consider upgrading to a web browser that

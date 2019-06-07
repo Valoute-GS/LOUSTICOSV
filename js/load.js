@@ -8,6 +8,9 @@ var currentFileName = ""; //key of the map
 
 var startTime = 0;
 var endTime = 0;
+var startTimeOnPage = 0;
+var endTimeOnPage = 0;
+var timeOnPage = [];
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 var nbJson = 0;
@@ -42,6 +45,9 @@ function loadFiles(files) { //import des fichiers + affichage
 
 function controlConfig() { //check si tous les fichiers nécessaires sont disponibles (ceux en trop seront ignorés pour l'instant)
     var isCorrect = true;
+    var errorMessages = new Set([]);
+    mainerror.innerHTML = "";
+
     if (myConfig !== "") { //Si un config a été chargée
         console.log(myConfig);
 
@@ -53,19 +59,23 @@ function controlConfig() { //check si tous les fichiers nécessaires sont dispon
         for (const page of myConfig.pages) {
             if (page.type === "video") {
                 if (!imp.includes(page.videoName)) {
-                    alert("Le fichier : " + page.videoName + " est maquant");
+                    errorMessages.add("Le fichier " + page.videoName + " est manquant");
                     isCorrect = false;
                 }
             }
         }
 
     } else {
-        alert("Veuillez sélectionner un fichier de configuration .json");
+        errorMessages.add("Veuillez sélectionner un fichier de configuration .json");
         isCorrect = false;
     }
 
     if (isCorrect) {
         personnalInfos();
+    }else{
+        for (const message of errorMessages) {
+            mainerror.innerHTML += bAlert(message);
+        }
     }
 }
 
@@ -102,10 +112,30 @@ function personnalInfos() { //phase d'initialisation
 }
 
 function startConfig() {
-    hideByClass("load");
-    //initialisation des infos et de la lecture de la config
-    startTime = Date.now();
-    nextPage();
+    var correct = true;
+    for (const input of document.getElementsByClassName("infos-perso")) {
+        if (!input.checkValidity()) {
+            input.className = "form-control infos-perso border-danger";
+            correct = false;
+        }else{
+            input.className = "form-control infos-perso border-success";
+        }
+    }
+    if (correct) {
+        hideByClass("load");
+        //initialisation des infos et de la lecture de la config
+        //indexPage
+        
+        if(myConfig.options[0] === true){
+            for (const page of myConfig.pages) {
+                pagesNameIndex.innerHTML += '<a class="dropdown-item" onclick="jumpToPage('+(page.pageNumber-1)+')">· '+page.pageName+'</a>';
+            }
+            showByClass("pages-index");
+        }
+        
+        startTime = Date.now();
+        nextPage();
+    }
 }
 
 function nextPage() {
@@ -127,9 +157,14 @@ function nextPage() {
     currentPageNumber++;
 
 }
+function jumpToPage(pageNumber){
+    currentPageNumber = pageNumber;
+    nextPage();
+}
 
 function finishConfig() {
     hideByClass("load");
+    hideByClass("pages-index")
     showByClass("load-finish");
     endTime = Date.now();
     console.log("Temps écoulé : " + (endTime - startTime) / 1000);
@@ -151,7 +186,7 @@ function loadVideo() {
 
     hideByClass("load");
     showByClass("load-video");
-    
+
     myPlayer.src({
         type: currentFile.type,
         src: URL.createObjectURL(currentFile)
@@ -253,6 +288,15 @@ function showByClass(className) {
 function generateUniqueID() {
     id = myConfig.name.replace(/[^A-Z0-9]+/ig, "_") + Date.now();
     return id;
+}
+
+function bAlert(message) {
+    return '<div class="alert alert-warning alert-dismissible" role="alert">' +
+    '<strong>Erreur</strong> '+ message +
+    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+    '<span aria-hidden="true">&times;' +
+    '</span></button></div>';
+    
 }
 
 function toSeconds(time) {
