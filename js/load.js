@@ -1,7 +1,7 @@
 /*eslint-env browser*/
 var myPlayer = videojs('myvideo');
 var myConfig = ""; //json de la config chargé
-var importedFiles; //tab des fichiers (autre que le json) importés
+var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 
 var currentPageNumber = 0;
 var currentFileName = ""; //key of the map
@@ -15,14 +15,9 @@ var timeOnPage = [];
 var testID;
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
-var nbJson = 0;
+var nbJson = 0; //checker si on a pas importé pls config en mm temps
 
 function loadFiles(files) { //import des fichiers + affichage
-    nbJson = 0; //checker si on a pas importé pls config en mm temps
-    //on vide l'affichage et la memoire
-    imported.innerHTML = "";
-    myConfig = "";
-    importedFiles = new Map();
     //iteration sur les fichiers selectionnés
     for (const file of files) {
         if (file.type === "application/json") {
