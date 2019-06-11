@@ -141,6 +141,7 @@ function startConfig() {
 }
 
 function nextPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
+    startTimeOnPage = Date.now();
     if (myConfig.pages.length === currentPageNumber) {
         finishConfig();
     } else {

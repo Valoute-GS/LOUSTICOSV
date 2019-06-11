@@ -289,7 +289,7 @@ function saveVideoConfig() { //appui du bouton Terminer
 
     if (complete) {
         let newVideoConfig = new ConfigVideoJson(fileName, fileType, options, chapters);
-        myConfig.pages[currentPageNumber - 1] = newVideoConfig; //On sauvergarde les infosde la page (type video) pour le futur export
+        myConfig.pages[currentPageNumber - 1] = newVideoConfig; //On sauvergarde les infos de la page (type video) pour le futur export
         updatePagesState(2);
         return true;
     } else {
