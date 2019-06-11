@@ -4,13 +4,14 @@ var myConfig = ""; //json de la config chargé
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 
 var currentPageNumber = 0;
-var currentFileName = ""; //key of the map
 
 var startTime = 0;
 var endTime = 0;
-var startTimeOnPage = 0;
+/*var startTimeOnPage = 0;
 var endTimeOnPage = 0;
-var timeOnPage = [];
+var timeOnPage = [];*/
+
+var activities = []
 
 var testID;
 
@@ -136,7 +137,6 @@ function startConfig() {
 }
 
 function nextPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
-    startTimeOnPage = Date.now();
     if (myConfig.pages.length === currentPageNumber) {
         finishConfig();
     } else {
@@ -167,6 +167,8 @@ function finishConfig() { //récup des infos et résulatats
     showByClass("load-finish");
     endTime = Date.now();
     console.log("Temps écoulé : " + (endTime - startTime) / 1000);
+    console.log(activities);
+    
 
 }
 
@@ -185,6 +187,8 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 
     hideByClass("load");
     showByClass("load-video");
+    console.log(currentFile.name)
+    activities.push(currentFile.name);
 
     //init player
     myPlayer.src({
@@ -240,6 +244,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 function playVideo() {
     btnPlay.style.display = "none";
     btnPause.style.display = "inline";
+    activities.push(" |___ playVideo : " + Date.now());
     myPlayer.play();
 }
 
