@@ -7,11 +7,10 @@ var currentPageNumber = 0;
 
 var startTime = 0;
 var endTime = 0;
-/*var startTimeOnPage = 0;
-var endTimeOnPage = 0;
-var timeOnPage = [];*/
 
-var activities = []
+var startTimeOnPage = 0;
+
+var activities = "";
 
 var testID;
 
@@ -33,15 +32,22 @@ function loadFiles(files) { //import des fichiers + affichage
                     myConfig = JSON.parse(reader.result);
                 };
                 reader.readAsText(selectedFile);
+                //Quand la lecture est terminée on controle l'état de la config chargéeé
+                reader.onloadend = function () {
+                    controlConfig(false);
+
+                };
             }
-        } else {
+        } else { //fichier non-json
             imported.innerHTML += '<li class="list-group-item my-1">' + file.name + '</li>';
             importedFiles.set(file.name, file);
+
+            controlConfig(false);
         }
     }
 }
 
-function controlConfig() { //check si tous les fichiers nécessaires sont disponibles (ceux en trop seront ignorés pour l'instant)
+function controlConfig(continueToInfos) { //check si tous les fichiers nécessaires sont disponibles (ceux en trop seront ignorés pour l'instant)
     var isCorrect = true;
     var errorMessages = new Set([]);
     mainerror.innerHTML = "";
@@ -69,7 +75,9 @@ function controlConfig() { //check si tous les fichiers nécessaires sont dispon
     }
 
     if (isCorrect) { //si tout est okay on passe a la suite
-        personnalInfos();
+        if (continueToInfos) {
+            personnalInfos()
+        };
     } else { //sinon on affiches les erreurs
         for (const message of errorMessages) {
             mainerror.innerHTML += bAlert(message);
@@ -137,10 +145,17 @@ function startConfig() {
 }
 
 function nextPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
+    if (currentPageNumber > 0) {
+        activities += " |__________ Duration : " + (Date.now() - startTimeOnPage) / 1000 + "sec\n";
+    }
     if (myConfig.pages.length === currentPageNumber) {
         finishConfig();
     } else {
-        switch (myConfig.pages[currentPageNumber].type) {
+        var currentPage = myConfig.pages[currentPageNumber];
+        startTimeOnPage = Date.now();
+        activities += "Page " +currentPage.pageNumber + " : " +  currentPage.pageName + "-" + currentPage.type + " at : " + (startTimeOnPage - startTime) / 1000 + "sec\n";
+
+        switch (currentPage.type) {
             case "video":
                 loadVideo();
                 break;
@@ -166,9 +181,9 @@ function finishConfig() { //récup des infos et résulatats
     hideByClass("pages-index")
     showByClass("load-finish");
     endTime = Date.now();
-    console.log("Temps écoulé : " + (endTime - startTime) / 1000);
+    activities += "Temps écoulé : " + (endTime - startTime) / 1000 + "\n";
     console.log(activities);
-    
+
 
 }
 
@@ -187,20 +202,19 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 
     hideByClass("load");
     showByClass("load-video");
-    console.log(currentFile.name)
-    activities.push(currentFile.name);
 
     //init player
     myPlayer.src({
         type: currentFile.type,
         src: URL.createObjectURL(currentFile)
     })
-    myPlayer.removeChild('BigPlayButton')
+    //myPlayer.removeChild('BigPlayButton')
 
     //changements en fonction de la config
     //PLAY PAUSE AUTORISES
     if (PPLLOWED) {
         controls.style.display = "inline";
+        pauseVideo();
     } else {
         controls.style.display = "none";
         playVideo();
@@ -214,7 +228,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         myPlayer.controlBar.removeChild('VolumePanel')
 
     } else {
-        myPlayer.controls(false);
+        myPlayer.controls(true);
     }
     //CHAPITRES VISIBLES
     chapcontainer.innerHTML = "";
@@ -225,6 +239,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
                 '<button class="btn btn-sm btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.innerHTML)">' + chapter.date +
                 '</button>' +
                 '</li>';
+
         }
     } else {
         chapcontainer.style.display = "none";
@@ -244,17 +259,19 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 function playVideo() {
     btnPlay.style.display = "none";
     btnPause.style.display = "inline";
-    activities.push(" |___ playVideo : " + Date.now());
+    activities += " |___ playVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
     myPlayer.play();
 }
 
 function pauseVideo() {
     btnPlay.style.display = "inline";
     btnPause.style.display = "none";
+    activities += " |___ pauseVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
     myPlayer.pause();
 }
 
 function gotoTime(time) {
+    activities += " |___ use chapter : " + toSeconds(time) + "sec\n";
     myPlayer.currentTime(toSeconds(time));
 }
 
