@@ -7,6 +7,12 @@ L'application se découpe en deux grandes parties :
  - Une interface de **création** : onglet **Créer**
  - Une interface de **test** : onglet **Charger**
 
+### Sommaire :
+
+ - Installation
+ - Créer une configuration
+ - Charger une configuration
+
 # Installation
 Sous Windows :
 L'installation est très simple, il suffit de :
@@ -25,8 +31,8 @@ Elle est destinée à être utilisée par le chercheur qui veut créer une nouve
 
 Une **Configuration** est composée de :
 
- - Un **Titre** non nul
- - Une liste d'**Options** activables
+ - Un **Titre** nécessaire
+ - Des **Options** activables
  - Une liste non nulle de **Pages** configurables
 
 Chaque **Page** est définie par :
@@ -35,7 +41,20 @@ Chaque **Page** est définie par :
  - Un **Format** : vidéo/texte (d'autres formats sont prévus et en cours de développement)
 
 La page peut être configuré en appuyant sur le bouton **Configurer**, cette action menant sur une page spécifique en fonction du format sélectionné au préalable.
-La configuration, si valide, peut une fois finie être téléchargée via le bouton **Terminer**, cela entraine le téléchargement d'un fichier de configuration au format `.json`.
+Une page, une fois finie et valide, peut être sauvegardée via le bouton **Sauvegarder**
+La configuration, une fois finie et valide, peut être téléchargée via le bouton **Terminer**, cela entraine le téléchargement d'un fichier de configuration au format `.json`.
 
-## Format Vidéo
+### Format Vidéo
+Une page de type **Vidéo** est composée de :
+
+ - Un **fichier vidéo** : nécessaire au format .mp4 (conseillé), .webm, .mov (suivant les navigateurs certains formats ne son pas pris en charge), **fichier local** à importer dans le champ en bas de page
+ - Des **Options** activables : changeant la mise en forme et les interactions possible lors du test
+ - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **Timestamp** nécessaires
+
+### Format Texte
+Une page de type **Texte**  est simplement composé d'une zone de texte.
+
+# Charger une configuration
+Cette fonction est accessible depuis l'accueil ou bien depuis l'onglet **Charger** dans la barre de navigation.
+Elle est permet de charger une configuration précédemment créée et sauvegardée localement. Elle est ensuite exécutée (c'est ici que l'utilisateur prend la main afin de réaliser le test).
 

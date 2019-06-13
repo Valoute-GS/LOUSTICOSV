@@ -140,17 +140,27 @@ function startConfig() {
         }
 
         startTime = Date.now();
-        nextPage();
+        loadPage();
     }
 }
 
-function nextPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
+function loadPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
     if (currentPageNumber > 0) {
         activities += " |__________ Duration : " + (Date.now() - startTimeOnPage) / 1000 + "sec\n";
     }
-    if (myConfig.pages.length === currentPageNumber) {
+    if (currentPageNumber < 1) {
+        btnPrevPage.style.display = "none";
+    }else{
+        btnPrevPage.style.display = "block";
+    }
+    
+    if (myConfig.pages.length === currentPageNumber) { //si fini
+        btnNextPage.style.display = "none";
+        btnPrevPage.style.display = "none";
         finishConfig();
     } else {
+        btnNextPage.style.display = "block";
+
         var currentPage = myConfig.pages[currentPageNumber];
         startTimeOnPage = Date.now();
         activities += "Page " +currentPage.pageNumber + " : " +  currentPage.pageName + "-" + currentPage.type + " at : " + (startTimeOnPage - startTime) / 1000 + "sec\n";
@@ -167,13 +177,19 @@ function nextPage() { //charge la page suivante en fonction de son type et inc d
                 break;
         }
     }
-    currentPageNumber++;
 
 }
-
+function nextPage() {
+    currentPageNumber++;
+    loadPage();
+}
+function prevPage() {
+    currentPageNumber--;
+    loadPage();
+}
 function jumpToPage(pageNumber) {
     currentPageNumber = pageNumber;
-    nextPage();
+    loadPage();
 }
 
 function finishConfig() { //récup des infos et résulatats
@@ -228,7 +244,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         myPlayer.controlBar.removeChild('VolumePanel')
 
     } else {
-        myPlayer.controls(true);
+        myPlayer.controls(false);
     }
     //CHAPITRES VISIBLES
     chapcontainer.innerHTML = "";

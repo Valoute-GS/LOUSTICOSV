@@ -33,3 +33,24 @@ body {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 }
+
+#btnNextPage {
+    position: fixed;
+    /* Fixed/sticky position */
+    bottom: 20px;
+    /* Place the button at the bottom of the page */
+    right: 30px;
+    /* Place the button 30px from the right */
+    z-index: 99;
+    /* Make sure it does not overlap */
+}
+#btnPrevPage {
+    position: fixed;
+    /* Fixed/sticky position */
+    bottom: 20px;
+    /* Place the button at the bottom of the page */
+    left: 30px;
+    /* Place the button 30px from the right */
+    z-index: 99;
+    /* Make sure it does not overlap */
+}
