@@ -17,7 +17,7 @@ L'application se découpe en deux grandes parties :
 Sous Windows :
 L'installation est très simple, il suffit de :
 
- 1. Télécharger le dossier compressé sur la [Dropbox du LOUSTIC](%5BHandlebars%20templates%5D%28http://handlebarsjs.com/%29).
+ 1. Télécharger le dossier compressé sur la [Dropbox du LOUSTIC](https://www.dropbox.com/home/Valentin%20Utiel-%20stage%20outil%20suivi) ou sur [GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2) **Clone or Download -> Download ZIP**
  2. L'extraire dans le répertoire désiré.
  3. Entrer dans le dossier `./LOUSTIC_OS`
  4. Exécuter le ficher `index.html` dans votre navigateur préféré
