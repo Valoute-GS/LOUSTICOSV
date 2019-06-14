@@ -5,6 +5,8 @@ var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 
 var currentPageNumber = 0;
 
+//var pour observation de l'activité
+var myCsv = "data:text/csv;charset=utf-8,";
 var startTime = 0;
 var endTime = 0;
 
@@ -202,6 +204,13 @@ function finishConfig() { //récup des infos et résulatats
 
 
 }
+
+function dlcsv() {
+    myCsv += ""; //TODO: en fonction du modele 
+    dlAnchorElem.setAttribute("href", myCsv);
+    dlAnchorElem.setAttribute("download", "test" + ".csv");
+    dlAnchorElem.click();
+  }
 
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 

@@ -43,7 +43,7 @@
         </header>
         <!-- FIN du header -->
 
-        <!-- a déplacer plus tard-->
+        <!-- a déplacer plus tard ? -->
         <div class="pages-index" style="display: none">
             <div class="btn-group" role="group">
                 <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
@@ -126,16 +126,16 @@
             </div>
             <div class="row mt-3 mx-auto" style="width: 100%">
                 <!-- Chapters -->
-                <ul class="list-group col-md-3 my-auto" id="chapcontainer">
+                <ul class="list-group col-md my-auto" id="chapcontainer">
                     <!-- Chapters are inserted and displayed in this div -->
                 </ul>
                 <!-- video player -->
-                <div class="col-md">
+                <div class="col-md-9 mx-auto">
                     <video id='myvideo' class='video-js vjs-default-skin vjs-big-play-centered' preload="auto" oncontextmenu="return false"
                         width="100%" height="100%" onpause="pauseVideo()" onplay="playVideo()"
                         data-setup='{ "aspectRatio":"16:9", "fluid": true}'>
                         <!--ontimeupdate="checkChapter()"-->
-                        <source src='videos/fingers.webm' type='video/webm'>
+                        <source src='videos/Robin.mp4' type='video/mp4'>
                         <p class='vjs-no-js'>
                             To view this video please enable JavaScript, and consider upgrading to a web browser that
                             <a href='https://videojs.com/html5-video-support/' target='_blank'>supports HTML5 video</a>
@@ -157,6 +157,8 @@
             </div>
         </main>
 
+        
+        <a id='download-link'></a>
         <!-- FIN de la main part -->
 
         <!-- DEBUT du footer -->
