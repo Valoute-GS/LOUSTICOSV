@@ -1,5 +1,6 @@
 /*eslint-env browser*/
 var myPlayer = videojs('myvideo');
+
 var myConfig = ""; //json de la config chargé
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 
@@ -135,6 +136,10 @@ function startConfig() {
     if (correct) { //Si tout est OK
         hideByClass("load");
         //initialisation des infos et de la lecture de la config
+        //init player -> event quand click sur la bar de navigation
+        myPlayer.controlBar.progressControl.on('mouseup', function(event) {    
+            progressBarUsed();
+        });
 
         //indexPage
         if (myConfig.options[0] === true) { //on affiche la liste des pages si l'option dans la config est cochée
@@ -231,7 +236,6 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     const VISIBLECHAP = currentPage.options[3];
     const CLICKABLECHAP = currentPage.options[4];
 
-
     //on met a jour la liste des chapitres courants
     currentChapters = [];
     for (const chapter of myConfig.pages[currentPageNumber].chapters) {
@@ -249,10 +253,6 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         src: URL.createObjectURL(currentFile)
     })
 
-    var tabc = myPlayer.controlBar.children();
-    var pp = tabc[0];
-
-
     myPlayer.tech_.off('dblclick');
     myPlayer.controlBar.removeChild('FullscreenToggle');
     myPlayer.controlBar.removeChild('VolumePanel');
@@ -263,15 +263,16 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         document.querySelector(".vjs-tech").style.pointerEvents = "auto";
         document.querySelector(".vjs-play-control.vjs-control.vjs-button").style.display = "block";
 
-        pauseVideo();
+        pauseVideo(false);
     } else {
         document.querySelector(".vjs-tech").style.pointerEvents = "none";
         document.querySelector(".vjs-play-control.vjs-control.vjs-button").style.display = "none";
-        playVideo();
+        playVideo(false);
     }
     //BARRE DE NAVIGATION VISIBLE
     if (FREENAV) {
         document.querySelector(".vjs-progress-control").style.pointerEvents = "auto";
+
 
     } else {
         document.querySelector(".vjs-progress-control").style.pointerEvents = "none";
@@ -305,19 +306,31 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     myPlayer.load();
 }
 
-function playVideo() {
-    activities += " |___ playVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
+function playVideo(withLog) {
+    if (withLog) {
+        activities += " |___ playVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
+    }
     myPlayer.play();
 }
 
-function pauseVideo() {
-    activities += " |___ pauseVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
+function pauseVideo(withLog) {
+    if (withLog) {
+        activities += " |___ pauseVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
+    }
     myPlayer.pause();
 }
 
 function gotoTime(time) {
     activities += " |___ use chapter : " + toSeconds(time) + "sec\n";
     myPlayer.currentTime(toSeconds(time));
+}
+
+function progressBarUsed() {
+    activities += " |___ use timeline : " + myPlayer.currentTime() + "sec\n";
+}
+
+function videoEnded() {
+    activities += " |___ video ended : " + ((Date.now() - startTime) / 1000) + "sec\n";
 }
 
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
