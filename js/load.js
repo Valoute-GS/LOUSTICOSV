@@ -4,9 +4,12 @@ var myConfig = ""; //json de la config chargé
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 
 var currentPageNumber = 0;
+var currentChapters = [];
 
 //var pour observation de l'activité
-var myCsv = "data:text/csv;charset=utf-8,";
+var myCsvGeneral = "data:text/csv;charset=utf-8,";
+var myCsvLogs = "data:text/csv;charset=utf-8,";
+
 var startTime = 0;
 var endTime = 0;
 
@@ -152,10 +155,10 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
     }
     if (currentPageNumber < 1) {
         btnPrevPage.style.display = "none";
-    }else{
+    } else {
         btnPrevPage.style.display = "block";
     }
-    
+
     if (myConfig.pages.length === currentPageNumber) { //si fini
         btnNextPage.style.display = "none";
         btnPrevPage.style.display = "none";
@@ -165,7 +168,7 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 
         var currentPage = myConfig.pages[currentPageNumber];
         startTimeOnPage = Date.now();
-        activities += "Page " +currentPage.pageNumber + " : " +  currentPage.pageName + "-" + currentPage.type + " at : " + (startTimeOnPage - startTime) / 1000 + "sec\n";
+        activities += "Page " + currentPage.pageNumber + " : " + currentPage.pageName + "-" + currentPage.type + " at : " + (startTimeOnPage - startTime) / 1000 + "sec\n";
 
         switch (currentPage.type) {
             case "video":
@@ -181,14 +184,17 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
     }
 
 }
+
 function nextPage() {
     currentPageNumber++;
     loadPage();
 }
+
 function prevPage() {
     currentPageNumber--;
     loadPage();
 }
+
 function jumpToPage(pageNumber) {
     currentPageNumber = pageNumber;
     loadPage();
@@ -210,7 +216,7 @@ function dlcsv() {
     dlAnchorElem.setAttribute("href", myCsv);
     dlAnchorElem.setAttribute("download", "test" + ".csv");
     dlAnchorElem.click();
-  }
+}
 
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
@@ -225,6 +231,15 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     const VISIBLECHAP = currentPage.options[3];
     const CLICKABLECHAP = currentPage.options[4];
 
+
+    //on met a jour la liste des chapitres courants
+    currentChapters = [];
+    for (const chapter of myConfig.pages[currentPageNumber].chapters) {
+        currentChapters.push(toSeconds(chapter.date));
+    }
+    //currentChapters.sort(sortNumber)
+    //console.log(currentChapters);
+
     hideByClass("load");
     showByClass("load-video");
 
@@ -233,27 +248,34 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         type: currentFile.type,
         src: URL.createObjectURL(currentFile)
     })
-    //myPlayer.removeChild('BigPlayButton')
+
+    var tabc = myPlayer.controlBar.children();
+    var pp = tabc[0];
+
+
+    myPlayer.tech_.off('dblclick');
+    myPlayer.controlBar.removeChild('FullscreenToggle');
+    myPlayer.controlBar.removeChild('VolumePanel');
 
     //changements en fonction de la config
     //PLAY PAUSE AUTORISES
     if (PPLLOWED) {
-        controls.style.display = "inline";
+        document.querySelector(".vjs-tech").style.pointerEvents = "auto";
+        document.querySelector(".vjs-play-control.vjs-control.vjs-button").style.display = "block";
+
         pauseVideo();
     } else {
-        controls.style.display = "none";
+        document.querySelector(".vjs-tech").style.pointerEvents = "none";
+        document.querySelector(".vjs-play-control.vjs-control.vjs-button").style.display = "none";
         playVideo();
     }
     //BARRE DE NAVIGATION VISIBLE
     if (FREENAV) {
-        myPlayer.controls(true);
-        myPlayer.tech_.off('dblclick');
-        myPlayer.tech_.off('pointer-events');
-        myPlayer.controlBar.removeChild('FullscreenToggle')
-        myPlayer.controlBar.removeChild('VolumePanel')
+        document.querySelector(".vjs-progress-control").style.pointerEvents = "auto";
 
     } else {
-        myPlayer.controls(false);
+        document.querySelector(".vjs-progress-control").style.pointerEvents = "none";
+
     }
     //CHAPITRES VISIBLES
     chapcontainer.innerHTML = "";
@@ -269,28 +291,26 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     } else {
         chapcontainer.style.display = "none";
     }
+
     //CHAPITRES CLIQUABLE
     if (CLICKABLECHAP) {
-
+        //nothing to do
     } else {
         for (const btn of document.getElementsByClassName("btn-chapter")) {
             btn.disabled = "true";
         }
     }
 
+    //maj du player
     myPlayer.load();
 }
 
 function playVideo() {
-    btnPlay.style.display = "none";
-    btnPause.style.display = "inline";
     activities += " |___ playVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
     myPlayer.play();
 }
 
 function pauseVideo() {
-    btnPlay.style.display = "inline";
-    btnPause.style.display = "none";
     activities += " |___ pauseVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
     myPlayer.pause();
 }
@@ -362,6 +382,11 @@ function toSeconds(time) {
     }
     return seconds;
 }
+
+/*
+function sortNumber(a, b) {
+    return a - b;
+}*/
 
 //ident.value = generateUniqueID();
 
