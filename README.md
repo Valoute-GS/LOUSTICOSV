@@ -53,6 +53,9 @@ Une page de type **Vidéo** est composée de :
 
 ### Format Texte
 Une page de type **Texte**  est simplement composé d'une zone de texte.
+Elle peut cependant être formaté grace aux balises HTML simple pour personnaliser la zone de texte, à l'aide d'outil comme [Online HTML Editor](https://html-online.com/editor/).
+
+**ATTENTION** n'utiliser que des balises simples pour formater du texte (pas d'image, de vidéo, etc) sinon la configuration sera erronée et impossible à charger.
 
 # Charger une configuration
 Cette fonction est accessible depuis l'accueil ou bien depuis l'onglet **Charger** dans la barre de navigation.
