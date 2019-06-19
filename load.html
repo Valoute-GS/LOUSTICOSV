@@ -134,7 +134,7 @@
                 <!-- video player -->
                 <div class="col-md-9 mx-auto">
                     <video id='myvideo' class='video-js vjs-default-skin vjs-big-play-centered' preload="auto" oncontextmenu="return false"
-                        width="100%" height="100%" onpause="pauseVideo(true)" onplay="playVideo(true)" onended="videoEnded()"
+                        width="100%" height="100%" onpause="pauseVideo(true)" onplay="playVideo(true)" onended="videoEnded()" ontimeupdate="checkChap()"
                         data-setup='{ "aspectRatio":"16:9", "fluid": true}' controls>
                         <!--ontimeupdate="checkChapter()"-->
                         <source src='videos/defaut.mp4' type='video/mp4'>

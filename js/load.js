@@ -5,16 +5,22 @@ var myConfig = ""; //json de la config chargé
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 
 var currentPageNumber = 0;
-var currentChapters = [];
+var currentChapterNumber = 0;
+var currentChapters = new Map();;
+
+
+var myCsvGeneral;
+var myCsvLogs;
 
 //var pour observation de l'activité
-var myCsvGeneral = "data:text/csv;charset=utf-8,";
-var myCsvLogs = "data:text/csv;charset=utf-8,";
+//var myCsvGeneral;
+//var myCsvLogs = new CsvLogs();
 
 var startTime = 0;
 var endTime = 0;
 
 var startTimeOnPage = 0;
+var startTimeOnChapter = 0;
 
 var activities = "";
 
@@ -59,7 +65,6 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
     mainerror.innerHTML = "";
 
     if (myConfig !== "") { //Si un config a été chargée
-        console.log(myConfig);
 
         //check les fichiers importés/necessaires
         var imp = [];
@@ -137,9 +142,11 @@ function startConfig() {
         hideByClass("load");
         //initialisation des infos et de la lecture de la config
         //init player -> event quand click sur la bar de navigation
-        myPlayer.controlBar.progressControl.on('mouseup', function(event) {    
+        myPlayer.controlBar.progressControl.on('mouseup', function (event) {
             progressBarUsed();
         });
+        //init csv
+        myCsvLogs = new CsvLogs();
 
         //indexPage
         if (myConfig.options[0] === true) { //on affiche la liste des pages si l'option dans la config est cochée
@@ -156,7 +163,7 @@ function startConfig() {
 
 function loadPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
     if (currentPageNumber > 0) {
-        activities += " |__________ Duration : " + (Date.now() - startTimeOnPage) / 1000 + "sec\n";
+        activities += " |__________ Duration : " + duration(Date.now(), startTimeOnPage) + "sec\n";
     }
     if (currentPageNumber < 1) {
         btnPrevPage.style.display = "none";
@@ -170,11 +177,13 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
         finishConfig();
     } else {
         btnNextPage.style.display = "block";
+        pauseVideo(false); //pour pas que la video précédement chargée continue en fond si on est sur autre chose qu'une video
+        console.log(myCsvLogs);
+        
 
         var currentPage = myConfig.pages[currentPageNumber];
         startTimeOnPage = Date.now();
         activities += "Page " + currentPage.pageNumber + " : " + currentPage.pageName + "-" + currentPage.type + " at : " + (startTimeOnPage - startTime) / 1000 + "sec\n";
-
         switch (currentPage.type) {
             case "video":
                 loadVideo();
@@ -229,6 +238,9 @@ function dlcsv() {
 function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
     var currentPage = myConfig.pages[currentPageNumber];
     var currentFile = importedFiles.get(currentPage.videoName);
+
+    myCsvLogs.addLine("DEBUT");
+
     //Pour plus de lisibilité du code on stock es options
     const PAUSECHAP = currentPage.options[0]; //TODO:
     const PPLLOWED = currentPage.options[1];
@@ -237,12 +249,13 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     const CLICKABLECHAP = currentPage.options[4];
 
     //on met a jour la liste des chapitres courants
-    currentChapters = [];
+    currentChapters = new Map();
+    var index = 0;
     for (const chapter of myConfig.pages[currentPageNumber].chapters) {
-        currentChapters.push(toSeconds(chapter.date));
+        currentChapters.set(toSeconds(chapter.date), index);
+        index++;
     }
-    //currentChapters.sort(sortNumber)
-    //console.log(currentChapters);
+    currentChapters = new Map([...currentChapters.entries()].sort((a, b) => a[0] - b[0])); //tri par date
 
     hideByClass("load");
     showByClass("load-video");
@@ -333,6 +346,21 @@ function videoEnded() {
     activities += " |___ video ended : " + ((Date.now() - startTime) / 1000) + "sec\n";
 }
 
+function checkChap() { //check quel est le chapitre courant durant la lecture d'une video
+    var tmp = 0;
+    for (const chapterDate of currentChapters.keys()) {
+        if (myPlayer.currentTime() >= chapterDate) {
+            tmp = currentChapters.get(chapterDate) + 1;
+        }
+    }
+    if(tmp != currentChapterNumber){ //si on arrive a un nouveau chap
+        startTimeOnChapter = Date.now();
+    }
+    console.log("Reading chapter " + tmp);
+    currentChapterNumber = tmp;
+
+}
+
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
 
 /* ╔══════DEBUT══════╗ TEXT  ==========================================================*/
@@ -343,8 +371,69 @@ function loadText() { //page de type texte
     document.getElementById("text-display").innerHTML = "";
     document.getElementById("text-display").innerHTML += myConfig.pages[currentPageNumber].text;
 }
-
 /* ╚═══════FIN═══════╝ TEXT  ==========================================================*/
+
+
+/* ╔══════DEBUT══════╗ CSV ============================================================*/
+class Csv {
+    constructor() {
+        this.lines = [];
+        this.lines.push("data:text/csv;charset=utf-8,");
+    }
+
+    toString() {
+        var res = "";
+        for (const line of this.lines) {
+            res += line + "\n";
+        }
+        return res;
+    }
+}
+
+class CsvLogs extends Csv {
+    /*  En-tetes colonnes CSV de log
+    Timer;  
+    Current page;
+    Current chap;
+    Reached page;
+    Reached chap;
+    Action;
+    Time from test begining;
+    Time from page begining;
+    Time from chap begining;
+    Time from PLAY
+*/
+    constructor() {
+        super();
+        this.lines.push("Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Time from chap begining;Time from PLAY");
+    }
+
+    addLine(action) {
+        var d = new Date();
+        var myDate = d.toLocaleDateString() + "(" + d.toLocaleDateString("fr-FR", {weekday: "short"}) + ")-" + d.toLocaleTimeString();
+        var now = Date.now();
+        var tfbTest = duration(startTime, now);
+        var tfbPage = duration(startTimeOnPage, now);
+        var tfbChap = duration(startTimeOnChapter, now);
+        var tfPLAY = "not yet";
+
+        this.lines.push(myDate + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + "reachedPage" + ";" + "reachedChap" + ";" + action + ";" + tfbTest + ";" + tfbPage + ";" + tfbChap + ";" + tfPLAY);
+    }
+
+
+
+}
+
+/*
+console.log(myCsvLogs.toString());
+
+var dlAnchorElem = document.getElementById('download-link');
+  dlAnchorElem.setAttribute("href", myCsvLogs.toString());
+  dlAnchorElem.setAttribute("download", "test" + ".csv");
+  //dlAnchorElem.click();
+*/
+
+/* ╚═══════FIN═══════╝ CSV ============================================================*/
 
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
@@ -396,11 +485,15 @@ function toSeconds(time) {
     return seconds;
 }
 
-/*
+function duration(from, to) { //return en sec le temps écoulé entre deux dates
+    return (to - from) / 1000;
+}
+
+
+
 function sortNumber(a, b) {
     return a - b;
-}*/
+}
 
-//ident.value = generateUniqueID();
 
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
