@@ -179,11 +179,13 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
         btnNextPage.style.display = "block";
         pauseVideo(false); //pour pas que la video précédement chargée continue en fond si on est sur autre chose qu'une video
         console.log(myCsvLogs);
+        console.log(myCsvLogs.toString());
         
 
         var currentPage = myConfig.pages[currentPageNumber];
         startTimeOnPage = Date.now();
         activities += "Page " + currentPage.pageNumber + " : " + currentPage.pageName + "-" + currentPage.type + " at : " + (startTimeOnPage - startTime) / 1000 + "sec\n";
+        myCsvLogs.addLine("START_PAGE");
         switch (currentPage.type) {
             case "video":
                 loadVideo();
@@ -200,11 +202,13 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 }
 
 function nextPage() {
+    myCsvLogs.addLine("NEXT_PAGE");
     currentPageNumber++;
     loadPage();
 }
 
 function prevPage() {
+    myCsvLogs.addLine("PREV_PAGE");
     currentPageNumber--;
     loadPage();
 }
@@ -238,8 +242,9 @@ function dlcsv() {
 function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
     var currentPage = myConfig.pages[currentPageNumber];
     var currentFile = importedFiles.get(currentPage.videoName);
-
-    myCsvLogs.addLine("DEBUT");
+    myPlayer.one('play', function() {
+        firstPlay();
+    });
 
     //Pour plus de lisibilité du code on stock es options
     const PAUSECHAP = currentPage.options[0]; //TODO:
@@ -319,44 +324,49 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     myPlayer.load();
 }
 
+function firstPlay() {
+    startTimeOnChapter = Date.now();
+    myCsvLogs.addLine("VIDEO_START");
+}
+
 function playVideo(withLog) {
     if (withLog) {
-        activities += " |___ playVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
+       myCsvLogs.addLine("PLAY");
     }
     myPlayer.play();
 }
 
 function pauseVideo(withLog) {
     if (withLog) {
-        activities += " |___ pauseVideo (" + myPlayer.currentTime() + ")at : " + (Date.now() - startTime) / 1000 + "sec\n";
+        myCsvLogs.addLine("PAUSE");
     }
     myPlayer.pause();
 }
 
 function gotoTime(time) {
-    activities += " |___ use chapter : " + toSeconds(time) + "sec\n";
+    myCsvLogs.addLine("CHAP_USED");
     myPlayer.currentTime(toSeconds(time));
 }
 
 function progressBarUsed() {
-    activities += " |___ use timeline : " + myPlayer.currentTime() + "sec\n";
+    myCsvLogs.addLine("NAVBAR_USED");
 }
 
 function videoEnded() {
-    activities += " |___ video ended : " + ((Date.now() - startTime) / 1000) + "sec\n";
+    myCsvLogs.addLine("VIDEO_END");
 }
 
 function checkChap() { //check quel est le chapitre courant durant la lecture d'une video
     var tmp = 0;
-    for (const chapterDate of currentChapters.keys()) {
+    for (const chapterDate of currentChapters.keys()) { //on parcourt la liste des chaps
         if (myPlayer.currentTime() >= chapterDate) {
             tmp = currentChapters.get(chapterDate) + 1;
         }
-    }
+    }    
     if(tmp != currentChapterNumber){ //si on arrive a un nouveau chap
+        myCsvLogs.addLine("CHAP_ATT");
         startTimeOnChapter = Date.now();
     }
-    console.log("Reading chapter " + tmp);
     currentChapterNumber = tmp;
 
 }
@@ -411,13 +421,16 @@ class CsvLogs extends Csv {
     addLine(action) {
         var d = new Date();
         var myDate = d.toLocaleDateString() + "(" + d.toLocaleDateString("fr-FR", {weekday: "short"}) + ")-" + d.toLocaleTimeString();
+        var currPageNumber = 1 + currentPageNumber;
+        var currChapterNumber = currentChapterNumber;
         var now = Date.now();
-        var tfbTest = duration(startTime, now);
-        var tfbPage = duration(startTimeOnPage, now);
-        var tfbChap = duration(startTimeOnChapter, now);
+        var tfbTest = duration(startTime, now).toFixed(1);
+        var tfbPage = duration(startTimeOnPage, now).toFixed(1);        
+        var tfbChap = duration(startTimeOnChapter, now).toFixed(1);
+        if(tfbChap>1500000000){tfbChap = ""};
         var tfPLAY = "not yet";
 
-        this.lines.push(myDate + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + "reachedPage" + ";" + "reachedChap" + ";" + action + ";" + tfbTest + ";" + tfbPage + ";" + tfbChap + ";" + tfPLAY);
+        this.lines.push(myDate + ";" + currPageNumber + ";" + currChapterNumber + ";" + "reachedPage" + ";" + "reachedChap" + ";" + action + ";" + tfbTest + ";" + tfbPage + ";" + tfbChap + ";" + tfPLAY);
     }
 
 
