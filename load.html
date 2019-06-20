@@ -133,8 +133,10 @@
                 </ul>
                 <!-- video player -->
                 <div class="col-md-9 mx-auto">
-                    <video id='myvideo' class='video-js vjs-default-skin vjs-big-play-centered' preload="auto" oncontextmenu="return false"
-                        width="100%" height="100%" onpause="pauseVideo(true)" onplay="playVideo(true)" onended="videoEnded()" ontimeupdate="checkChap()" onseeking="console.log('ptn de merde je charge');" onseeked="console.log('Voila')"
+                    <!-- onseeking="console.log('---- SEEKING ----');" onseeked="console.log('---- OK ----')" onplaying="console.log('Playing');" -->
+                    <video id='myvideo' class='video-js vjs-default-skin vjs-big-play-centered' preload="auto"
+                        oncontextmenu="return false" width="100%" height="100%" onpause="pauseVideo(true)"
+                        onplay="playVideo(true)" onended="videoEnded()" ontimeupdate="checkChap()"
                         data-setup='{ "aspectRatio":"16:9", "fluid": true}' controls>
                         <!--ontimeupdate="checkChapter()"-->
                         <source src='videos/defaut.mp4' type='video/mp4'>
@@ -159,14 +161,16 @@
             </div>
         </main>
 
-        
+
         <a id='download-link'></a>
         <!-- FIN de la main part -->
 
         <!-- DEBUT du footer -->
         <footer class="mastfoot mt-auto navbar-fixed-bottom">
-            <button class="btn btn-success btn-sm" id="btnNextPage" type="button" style="display: none" onclick="nextPage()">Suivant</button> <!-- class = "float-right"-->
-            <button class="btn btn-success btn-sm" id="btnPrevPage" type="button" style="display: none" onclick="prevPage()">Précédent</button> <!-- class = "float-right"-->
+            <button class="btn btn-success btn-sm" id="btnNextPage" type="button" style="display: none"
+                onclick="nextPage()">Suivant</button> <!-- class = "float-right"-->
+            <button class="btn btn-success btn-sm" id="btnPrevPage" type="button" style="display: none"
+                onclick="prevPage()">Précédent</button> <!-- class = "float-right"-->
             <div>
                 <p>V0.3.2</p>
             </div>

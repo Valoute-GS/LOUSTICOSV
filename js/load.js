@@ -6,23 +6,17 @@ var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 
 var currentPageNumber = 0;
 var currentChapterNumber = 0;
-var currentChapters = new Map();;
 
+var currentChapters = new Map();
 
+//var pour observation de l'activité
 var myCsvGeneral;
 var myCsvLogs;
 
-//var pour observation de l'activité
-//var myCsvGeneral;
-//var myCsvLogs = new CsvLogs();
-
-var startTime = 0;
 var endTime = 0;
 
 var startTimeOnPage = 0;
 var startTimeOnChapter = 0;
-
-var activities = "";
 
 var testID;
 
@@ -145,8 +139,6 @@ function startConfig() {
         myPlayer.controlBar.progressControl.on('mouseup', function (event) {
             progressBarUsed();
         });
-        //init csv
-        myCsvLogs = new CsvLogs();
 
         //indexPage
         if (myConfig.options[0] === true) { //on affiche la liste des pages si l'option dans la config est cochée
@@ -156,14 +148,15 @@ function startConfig() {
             showByClass("pages-index");
         }
 
-        startTime = Date.now();
+        //init csv
+        myCsvLogs = new CsvLogs();
         loadPage();
     }
 }
 
 function loadPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
     if (currentPageNumber > 0) {
-        activities += " |__________ Duration : " + duration(Date.now(), startTimeOnPage) + "sec\n";
+
     }
     if (currentPageNumber < 1) {
         btnPrevPage.style.display = "none";
@@ -178,13 +171,10 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
     } else {
         btnNextPage.style.display = "block";
         pauseVideo(false); //pour pas que la video précédement chargée continue en fond si on est sur autre chose qu'une video
-        console.log(myCsvLogs);
-        console.log(myCsvLogs.toString());
-        
 
         var currentPage = myConfig.pages[currentPageNumber];
         startTimeOnPage = Date.now();
-        activities += "Page " + currentPage.pageNumber + " : " + currentPage.pageName + "-" + currentPage.type + " at : " + (startTimeOnPage - startTime) / 1000 + "sec\n";
+
         myCsvLogs.addLine("START_PAGE");
         switch (currentPage.type) {
             case "video":
@@ -202,18 +192,21 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 }
 
 function nextPage() {
+    console.log("NEXT PAGE");   
     myCsvLogs.addLine("NEXT_PAGE");
     currentPageNumber++;
     loadPage();
 }
 
 function prevPage() {
+    console.log("PREV PAGE");   
     myCsvLogs.addLine("PREV_PAGE");
     currentPageNumber--;
     loadPage();
 }
 
 function jumpToPage(pageNumber) {
+    console.log("SOMMAIRE : "+ currentChapterNumber + "-->" + pageNumber);    
     currentPageNumber = pageNumber;
     loadPage();
 }
@@ -223,10 +216,6 @@ function finishConfig() { //récup des infos et résulatats
     hideByClass("pages-index")
     showByClass("load-finish");
     endTime = Date.now();
-    activities += "Temps écoulé : " + (endTime - startTime) / 1000 + "\n";
-    console.log(activities);
-
-
 }
 
 function dlcsv() {
@@ -242,8 +231,11 @@ function dlcsv() {
 function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
     var currentPage = myConfig.pages[currentPageNumber];
     var currentFile = importedFiles.get(currentPage.videoName);
-    myPlayer.one('play', function() {
+    myPlayer.one('play', function () {
         firstPlay();
+    });
+    myPlayer.one('playing', function () {
+        console.log("START VIDEO");
     });
 
     //Pour plus de lisibilité du code on stock es options
@@ -280,11 +272,12 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     if (PPLLOWED) {
         document.querySelector(".vjs-tech").style.pointerEvents = "auto";
         document.querySelector(".vjs-play-control.vjs-control.vjs-button").style.display = "block";
-
+        autoPlay = false;
         pauseVideo(false);
     } else {
         document.querySelector(".vjs-tech").style.pointerEvents = "none";
         document.querySelector(".vjs-play-control.vjs-control.vjs-button").style.display = "none";
+        autoPlay = true;
         playVideo(false);
     }
     //BARRE DE NAVIGATION VISIBLE
@@ -329,27 +322,48 @@ function firstPlay() {
     myCsvLogs.addLine("VIDEO_START");
 }
 
-function playVideo(withLog) {
+function playVideo(withLog) {    
     if (withLog) {
-       myCsvLogs.addLine("PLAY");
+        myCsvLogs.addLine("PLAY");
+        //console.log("PLAY");
     }
+
     myPlayer.play();
 }
 
 function pauseVideo(withLog) {
     if (withLog) {
+        console.log("PAUSE");
         myCsvLogs.addLine("PAUSE");
+        myPlayer.one('playing', function () { // à  la prochaine lecture
+            console.log("PLAY");
+        });
     }
     myPlayer.pause();
 }
 
 function gotoTime(time) {
-    myCsvLogs.addLine("CHAP_USED");
     myPlayer.currentTime(toSeconds(time));
+    myPlayer.one('seeked', function () {
+        myCsvLogs.addLine("CHAP_USED");
+    });
+
+    if (!myPlayer.paused()) {
+        myPlayer.one('playing', function () {
+            console.log("PLAY");
+        });
+    }
+    console.log("GOTO");
+
 }
 
 function progressBarUsed() {
-    myCsvLogs.addLine("NAVBAR_USED");
+    myPlayer.one('seeked', function () {
+        myCsvLogs.addLine("NAVBAR_USED");
+    });
+
+    console.log("BAR");
+
 }
 
 function videoEnded() {
@@ -362,10 +376,14 @@ function checkChap() { //check quel est le chapitre courant durant la lecture d'
         if (myPlayer.currentTime() >= chapterDate) {
             tmp = currentChapters.get(chapterDate) + 1;
         }
-    }    
-    if(tmp != currentChapterNumber){ //si on arrive a un nouveau chap
-        myCsvLogs.addLine("CHAP_ATT");
-        startTimeOnChapter = Date.now();
+    }
+    if (tmp != currentChapterNumber) { //si on arrive a un nouveau chap
+        myPlayer.one('seeked', function () {
+            myCsvLogs.addLine("CHAP_ATT");
+            startTimeOnChapter = Date.now();
+        });
+        
+        console.log("Chapter : " + currentChapterNumber + "-->" + tmp);
     }
     currentChapterNumber = tmp;
 
@@ -415,39 +433,63 @@ class CsvLogs extends Csv {
 */
     constructor() {
         super();
-        this.lines.push("Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Time from chap begining;Time from PLAY");
+        this.lines.push("Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Video timer;Time from chap begining;Time from PLAY");
+
+        this.tfTest = Date.now();
+        this.tfPage = Date.now();
+        this.tfChap = Date.now();
+        this.tfPlay = 0;
     }
 
-    addLine(action) {
+    addLine(action) { // START_PAGE | NEXT_PAGE | PREV_PAGE | CHAP_ATT | CHAP_USED | VIDEO_START | VIDEO_END | PLAY | PAUSE | NAVBAR_USED  
         var d = new Date();
-        var myDate = d.toLocaleDateString() + "(" + d.toLocaleDateString("fr-FR", {weekday: "short"}) + ")-" + d.toLocaleTimeString();
-        var currPageNumber = 1 + currentPageNumber;
-        var currChapterNumber = currentChapterNumber;
-        var now = Date.now();
-        var tfbTest = duration(startTime, now).toFixed(1);
-        var tfbPage = duration(startTimeOnPage, now).toFixed(1);        
-        var tfbChap = duration(startTimeOnChapter, now).toFixed(1);
-        if(tfbChap>1500000000){tfbChap = ""};
-        var tfPLAY = "not yet";
+        var timer = d.toLocaleDateString() + "(" + d.toLocaleDateString("fr-FR", {
+            weekday: "short"
+        }) + ")-" + d.toLocaleTimeString();
 
-        this.lines.push(myDate + ";" + currPageNumber + ";" + currChapterNumber + ";" + "reachedPage" + ";" + "reachedChap" + ";" + action + ";" + tfbTest + ";" + tfbPage + ";" + tfbChap + ";" + tfPLAY);
+        this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" +
+            "Reached page" + ";" + "Reched chap" + ";" + "Action" + ";" + "Time from test begining" + ";" +
+            "Time from page begining" + ";" + "Video timer" + ";" + "Time from chap begining" + ";" + "Time from PLAY");
+
+        switch (action) {
+            case "START_PAGE":
+
+                break;
+            case "NEXT_PAGE":
+
+                break;
+            case "PREV_PAGE":
+
+                break;
+            case "CHAP_ATT":
+
+                break;
+            case "CHAP_USED":
+
+                break;
+            case "VIDEO_START":
+
+                break;
+            case "VIDEO_END":
+
+                break;
+            case "PLAY":
+
+                break;
+            case "PAUSE":
+
+                break;
+            case "NAVBAR_USED":
+
+                break;
+
+            default:
+                console.error("Unknown Action");
+                break;
+        }
     }
-
-
-
 }
-
-/*
-console.log(myCsvLogs.toString());
-
-var dlAnchorElem = document.getElementById('download-link');
-  dlAnchorElem.setAttribute("href", myCsvLogs.toString());
-  dlAnchorElem.setAttribute("download", "test" + ".csv");
-  //dlAnchorElem.click();
-*/
-
 /* ╚═══════FIN═══════╝ CSV ============================================================*/
-
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
 function hideByClass(className) {
@@ -502,11 +544,7 @@ function duration(from, to) { //return en sec le temps écoulé entre deux dates
     return (to - from) / 1000;
 }
 
-
-
 function sortNumber(a, b) {
     return a - b;
 }
-
-
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
