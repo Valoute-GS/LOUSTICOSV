@@ -15,8 +15,11 @@ var myCsvLogs;
 
 var endTime = 0;
 
+var startTimeOnTest = 0;
 var startTimeOnPage = 0;
 var startTimeOnChapter = 0;
+
+var lastCurrentTime = [];
 
 var testID;
 
@@ -137,7 +140,8 @@ function startConfig() {
         //initialisation des infos et de la lecture de la config
         //init player -> event quand click sur la bar de navigation
         myPlayer.controlBar.progressControl.on('mouseup', function (event) {
-            progressBarUsed();
+            console.log("souris relachée" + myPlayer.currentTime());
+            progressBarUsed(); 
         });
 
         //indexPage
@@ -150,14 +154,12 @@ function startConfig() {
 
         //init csv
         myCsvLogs = new CsvLogs();
+        startTimeOnTest = Date.now();
         loadPage();
     }
 }
 
 function loadPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
-    if (currentPageNumber > 0) {
-
-    }
     if (currentPageNumber < 1) {
         btnPrevPage.style.display = "none";
     } else {
@@ -173,8 +175,8 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
         pauseVideo(false); //pour pas que la video précédement chargée continue en fond si on est sur autre chose qu'une video
 
         var currentPage = myConfig.pages[currentPageNumber];
-        startTimeOnPage = Date.now();
 
+        startTimeOnPage = Date.now();
         myCsvLogs.addLine("START_PAGE");
         switch (currentPage.type) {
             case "video":
@@ -192,21 +194,23 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 }
 
 function nextPage() {
-    console.log("NEXT PAGE");   
     myCsvLogs.addLine("NEXT_PAGE");
+    console.log("NEXT PAGE");
     currentPageNumber++;
     loadPage();
 }
 
 function prevPage() {
-    console.log("PREV PAGE");   
     myCsvLogs.addLine("PREV_PAGE");
+    console.log("PREV PAGE");
     currentPageNumber--;
     loadPage();
 }
 
-function jumpToPage(pageNumber) {
-    console.log("SOMMAIRE : "+ currentChapterNumber + "-->" + pageNumber);    
+function jumpToPage(pageNumber) {    
+    console.log(" ---- " + myPlayer.currentTime().toFixed(1));  
+    myCsvLogs.addLine("SOMMAIRE");
+    console.log("SOMMAIRE : " + currentPageNumber + "-->" + pageNumber);
     currentPageNumber = pageNumber;
     loadPage();
 }
@@ -216,11 +220,14 @@ function finishConfig() { //récup des infos et résulatats
     hideByClass("pages-index")
     showByClass("load-finish");
     endTime = Date.now();
+    console.log(myCsvLogs.toString());
+    dlcsv();
+
 }
 
 function dlcsv() {
-    myCsv += ""; //TODO: en fonction du modele 
-    dlAnchorElem.setAttribute("href", myCsv);
+    var dlAnchorElem = document.getElementById('download-link');
+    dlAnchorElem.setAttribute("href", myCsvLogs);
     dlAnchorElem.setAttribute("download", "test" + ".csv");
     dlAnchorElem.click();
 }
@@ -228,14 +235,18 @@ function dlcsv() {
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
 /* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
+function lastCurrentTimeUp() {
+    lastCurrentTime.push(myPlayer.currentTime());    
+}
+
 function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
     var currentPage = myConfig.pages[currentPageNumber];
     var currentFile = importedFiles.get(currentPage.videoName);
-    myPlayer.one('play', function () {
-        firstPlay();
-    });
-    myPlayer.one('playing', function () {
-        console.log("START VIDEO");
+
+    myPlayer.one('playing', function () { // La lecture de la video à commencé (premièere seulement)
+        startTimeOnChapter = Date.now();
+        myCsvLogs.addLine("VIDEO_START");
+        console.log("VIDEO_START");
     });
 
     //Pour plus de lisibilité du code on stock es options
@@ -283,11 +294,8 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     //BARRE DE NAVIGATION VISIBLE
     if (FREENAV) {
         document.querySelector(".vjs-progress-control").style.pointerEvents = "auto";
-
-
     } else {
         document.querySelector(".vjs-progress-control").style.pointerEvents = "none";
-
     }
     //CHAPITRES VISIBLES
     chapcontainer.innerHTML = "";
@@ -317,12 +325,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     myPlayer.load();
 }
 
-function firstPlay() {
-    startTimeOnChapter = Date.now();
-    myCsvLogs.addLine("VIDEO_START");
-}
-
-function playVideo(withLog) {    
+function playVideo(withLog) {
     if (withLog) {
         myCsvLogs.addLine("PLAY");
         //console.log("PLAY");
@@ -333,9 +336,10 @@ function playVideo(withLog) {
 
 function pauseVideo(withLog) {
     if (withLog) {
-        console.log("PAUSE");
         myCsvLogs.addLine("PAUSE");
-        myPlayer.one('playing', function () { // à  la prochaine lecture
+        console.log("PAUSE");
+        myPlayer.one('playing', function () { // à  la prochaine lecture            
+            myCsvLogs.addLine("PLAY");
             console.log("PLAY");
         });
     }
@@ -343,50 +347,47 @@ function pauseVideo(withLog) {
 }
 
 function gotoTime(time) {
+    console.log(" ---- " + myPlayer.currentTime().toFixed(1));   
     myPlayer.currentTime(toSeconds(time));
-    myPlayer.one('seeked', function () {
-        myCsvLogs.addLine("CHAP_USED");
-    });
-
-    if (!myPlayer.paused()) {
-        myPlayer.one('playing', function () {
-            console.log("PLAY");
-        });
-    }
-    console.log("GOTO");
-
+    myCsvLogs.addLine("CHAP_USED");
+    console.log("CHAPTER USED");
 }
 
 function progressBarUsed() {
-    myPlayer.one('seeked', function () {
-        myCsvLogs.addLine("NAVBAR_USED");
-    });
-
-    console.log("BAR");
-
+    myCsvLogs.addLine("NAVBAR_USED");
+    console.log("NAVBAR_USED");
 }
 
 function videoEnded() {
     myCsvLogs.addLine("VIDEO_END");
 }
 
+var chapFrom = 0;
+var chapTo = 0;
 function checkChap() { //check quel est le chapitre courant durant la lecture d'une video
     var tmp = 0;
     for (const chapterDate of currentChapters.keys()) { //on parcourt la liste des chaps
+        
         if (myPlayer.currentTime() >= chapterDate) {
-            tmp = currentChapters.get(chapterDate) + 1;
+            tmp = currentChapters.get(chapterDate) + 1; //on prend le numéro du chapitre courant
         }
     }
     if (tmp != currentChapterNumber) { //si on arrive a un nouveau chap
-        myPlayer.one('seeked', function () {
+        chapFrom = currentChapterNumber;
+        chapTo = tmp;
+        //manip un peu moche engendré par les problème de sychro dus au seektime
+        if (myPlayer.seeking()) { //Si déplacement via chapitre ou timeline il y aura un seektime, donc on le préviens et on ne génère les CSV qu une fois ce temps de chargement terminé
+            myPlayer.one('seeked', function () {
+                myCsvLogs.addLine("CHAP_ATT");
+                console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
+            });
+        } else { //lecture naturelle de la video
             myCsvLogs.addLine("CHAP_ATT");
-            startTimeOnChapter = Date.now();
-        });
-        
-        console.log("Chapter : " + currentChapterNumber + "-->" + tmp);
+            console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
+        }
     }
-    currentChapterNumber = tmp;
 
+    currentChapterNumber = tmp; //mise jour de la var chapitre courrant
 }
 
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
@@ -428,17 +429,13 @@ class CsvLogs extends Csv {
     Action;
     Time from test begining;
     Time from page begining;
+    Video Timer
     Time from chap begining;
     Time from PLAY
 */
     constructor() {
         super();
         this.lines.push("Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Video timer;Time from chap begining;Time from PLAY");
-
-        this.tfTest = Date.now();
-        this.tfPage = Date.now();
-        this.tfChap = Date.now();
-        this.tfPlay = 0;
     }
 
     addLine(action) { // START_PAGE | NEXT_PAGE | PREV_PAGE | CHAP_ATT | CHAP_USED | VIDEO_START | VIDEO_END | PLAY | PAUSE | NAVBAR_USED  
@@ -447,13 +444,21 @@ class CsvLogs extends Csv {
             weekday: "short"
         }) + ")-" + d.toLocaleTimeString();
 
-        this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" +
-            "Reached page" + ";" + "Reched chap" + ";" + "Action" + ";" + "Time from test begining" + ";" +
-            "Time from page begining" + ";" + "Video timer" + ";" + "Time from chap begining" + ";" + "Time from PLAY");
+        var tfTest = duration(startTimeOnTest, Date.now()).toFixed(1);
+        var tfPage = duration(startTimeOnPage, Date.now()).toFixed(1);
+        var tfChap = "";
+        var tfPlay = "";
+        var videoTimer = "";
+        var reachedChap = "";
+
+        if (myConfig.pages[currentPageNumber].type === "video") {
+            tfChap = duration(startTimeOnChapter, Date.now()).toFixed(1);
+            tfPlay = 0;
+            videoTimer = myPlayer.currentTime().toFixed(1);
+        }
 
         switch (action) {
             case "START_PAGE":
-
                 break;
             case "NEXT_PAGE":
 
@@ -462,7 +467,7 @@ class CsvLogs extends Csv {
 
                 break;
             case "CHAP_ATT":
-
+                reachedChap = chapTo;
                 break;
             case "CHAP_USED":
 
@@ -482,11 +487,15 @@ class CsvLogs extends Csv {
             case "NAVBAR_USED":
 
                 break;
+            case "SOMMAIRE":
+
+                break;
 
             default:
                 console.error("Unknown Action");
                 break;
-        }
+        }        
+        this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + "" + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
     }
 }
 /* ╚═══════FIN═══════╝ CSV ============================================================*/
