@@ -1,9 +1,24 @@
 /*eslint-env browser*/
 var myPlayer = videojs('myvideo');
 
+var nextChapButton = myPlayer.controlBar.addChild("button", {}, 1);
+var nextChapButtonDom = nextChapButton.el();
+nextChapButtonDom.innerHTML = "<b>>></b>";
+nextChapButtonDom.onclick = function () {
+    nextChap();
+}
+
+var prevChapButton = myPlayer.controlBar.addChild("button", {}, 0);
+var prevChapButtonDom = prevChapButton.el();
+prevChapButtonDom.innerHTML = "<b><<</b>";
+prevChapButtonDom.onclick = function () {
+    prevChap();
+}
+
+
 var myConfig = ""; //json de la config chargé
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
-var currentChapters = new Map();
+var currentChapters = new Map(); // date -> index in the json
 
 var testID = "";
 
@@ -22,7 +37,6 @@ var startTimeOnChapter = 0;
 
 var previousTime = 0;
 var myReachedPage = 0;
-
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 var nbJson = 0; //checker si on a pas importé pls config en mm temps
@@ -222,7 +236,6 @@ function prevPage() {
 }
 
 function jumpToPage(pageNumber) {
-    console.log(" ---- " + myPlayer.currentTime().toFixed(1));
     myReachedPage = pageNumber;
     myCsvLogs.addLine("SOMMAIRE");
     console.log("SOMMAIRE : " + currentPageNumber + "-->" + pageNumber);
@@ -258,6 +271,9 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         myCsvLogs.addLine("VIDEO_START");
         console.log("VIDEO_START");
     });
+
+    console.log(myPlayer.controlBar);
+
 
     //Pour plus de lisibilité du code on stock es options
     const PAUSECHAP = currentPage.options[0]; //TODO:
@@ -364,7 +380,6 @@ function pauseVideo(withLog) {
 }
 
 function gotoTime(time) {
-    console.log(" ---- " + myPlayer.currentTime().toFixed(1));
     myPlayer.currentTime(toSeconds(time));
     myCsvLogs.addLine("CHAP_USED");
     console.log("CHAPTER USED");
@@ -402,6 +417,24 @@ function checkChap() { //check quel est le chapitre courant durant la lecture d'
     }
 
     currentChapterNumber = tmp; //mise jour de la var chapitre courrant
+}
+
+function nextChap() {
+    if(currentChapterNumber === myConfig.pages[currentPageNumber].chapters.length){
+
+    }else{
+        myPlayer.currentTime(toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber].date));
+    }
+}
+
+function prevChap() {
+    if(currentChapterNumber === 0){
+        myPlayer.currentTime(0);
+    }else if(currentChapterNumber === 1){
+        myPlayer.currentTime(0);
+    }else{
+        myPlayer.currentTime(toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber - 2].date));
+    }
 }
 
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
@@ -468,7 +501,7 @@ class CsvLogs extends Csv {
 
         if (myConfig.pages[currentPageNumber].type === "video") {
             tfChap = duration(startTimeOnChapter, Date.now()).toFixed(1);
-            if(tfChap>1500000000){
+            if (tfChap > 1500000000) {
                 tfChap = "";
             }
             tfPlay = 0;
