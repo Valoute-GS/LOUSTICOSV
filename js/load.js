@@ -3,15 +3,16 @@ var myPlayer = videojs('myvideo');
 
 var myConfig = ""; //json de la config chargé
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
+var currentChapters = new Map();
+
+var testID = "";
+
+//var pour observation de l'activité
+var myCsvGeneral = "";
+var myCsvLogs = "";
 
 var currentPageNumber = 0;
 var currentChapterNumber = 0;
-
-var currentChapters = new Map();
-
-//var pour observation de l'activité
-var myCsvGeneral;
-var myCsvLogs;
 
 var endTime = 0;
 
@@ -19,10 +20,9 @@ var startTimeOnTest = 0;
 var startTimeOnPage = 0;
 var startTimeOnChapter = 0;
 
-var previousTime;
+var previousTime = 0;
 var myReachedPage = 0;
 
-var testID;
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 var nbJson = 0; //checker si on a pas importé pls config en mm temps
@@ -121,9 +121,26 @@ function personnalInfos() { //phase d'initialisation
     hideByClass("navbar");
     showByClass("load-form-infos");
 
+    //RESET des champs et de la config 
+    //(un peu bourrin certaines auraient été redef sans soucis)
+    for (const input of document.getElementsByClassName("infos-perso")) {
+        input.className = "form-control infos-perso";
+        input.value = "";
+    }
+    pagesNameIndex.innerHTML = "";
+    myCsvGeneral = "";
+    myCsvLogs = "";
+    currentPageNumber = 0;
+    currentChapterNumber = 0;
+    endTime = 0;
+    startTimeOnTest = 0;
+    startTimeOnPage = 0;
+    startTimeOnChapter = 0;
+    previousTime = 0;
+    myReachedPage = 0;
+
     testID = generateUniqueID();
     ident.value = testID;
-
 }
 
 function startConfig() {
@@ -219,8 +236,7 @@ function finishConfig() { //récup des infos et résulatats
     showByClass("load-finish");
     endTime = Date.now();
     console.log(myCsvLogs.toString());
-    dlcsv();
-
+    //dlcsv();
 }
 
 function dlcsv() {
@@ -452,6 +468,9 @@ class CsvLogs extends Csv {
 
         if (myConfig.pages[currentPageNumber].type === "video") {
             tfChap = duration(startTimeOnChapter, Date.now()).toFixed(1);
+            if(tfChap>1500000000){
+                tfChap = "";
+            }
             tfPlay = 0;
             videoTimer = myPlayer.currentTime().toFixed(1);
         }
