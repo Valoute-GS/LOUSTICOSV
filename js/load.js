@@ -19,7 +19,8 @@ var startTimeOnTest = 0;
 var startTimeOnPage = 0;
 var startTimeOnChapter = 0;
 
-var lastCurrentTime = [];
+var previousTime;
+var myReachedPage = 0;
 
 var testID;
 
@@ -139,10 +140,6 @@ function startConfig() {
         hideByClass("load");
         //initialisation des infos et de la lecture de la config
         //init player -> event quand click sur la bar de navigation
-        myPlayer.controlBar.progressControl.on('mouseup', function (event) {
-            console.log("souris relachée" + myPlayer.currentTime());
-            progressBarUsed(); 
-        });
 
         //indexPage
         if (myConfig.options[0] === true) { //on affiche la liste des pages si l'option dans la config est cochée
@@ -207,8 +204,9 @@ function prevPage() {
     loadPage();
 }
 
-function jumpToPage(pageNumber) {    
-    console.log(" ---- " + myPlayer.currentTime().toFixed(1));  
+function jumpToPage(pageNumber) {
+    console.log(" ---- " + myPlayer.currentTime().toFixed(1));
+    myReachedPage = pageNumber;
     myCsvLogs.addLine("SOMMAIRE");
     console.log("SOMMAIRE : " + currentPageNumber + "-->" + pageNumber);
     currentPageNumber = pageNumber;
@@ -235,10 +233,6 @@ function dlcsv() {
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
 /* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
-function lastCurrentTimeUp() {
-    lastCurrentTime.push(myPlayer.currentTime());    
-}
-
 function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
     var currentPage = myConfig.pages[currentPageNumber];
     var currentFile = importedFiles.get(currentPage.videoName);
@@ -291,6 +285,16 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         autoPlay = true;
         playVideo(false);
     }
+
+    //detection clic sur la barre de navigation (obligé de doubler l'event listener car si on clique sur la seekbar cela n'est pas détecté. Bug ? )
+    myPlayer.controlBar.progressControl.on('mousedown', function (event) {
+        myCsvLogs.addLine("NAVBAR_USED");
+        console.log("NAVBAR_USED : progressControl -> previous: " + previousTime + " current:" + myPlayer.currentTime());
+    });
+    myPlayer.controlBar.progressControl.seekBar.on('mousedown', function (event) {
+        myCsvLogs.addLine("NAVBAR_USED");
+        console.log("NAVBAR_USED : seekbar -> previous: " + previousTime + " current:" + myPlayer.currentTime());
+    });
     //BARRE DE NAVIGATION VISIBLE
     if (FREENAV) {
         document.querySelector(".vjs-progress-control").style.pointerEvents = "auto";
@@ -311,7 +315,6 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     } else {
         chapcontainer.style.display = "none";
     }
-
     //CHAPITRES CLIQUABLE
     if (CLICKABLECHAP) {
         //nothing to do
@@ -320,7 +323,6 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
             btn.disabled = "true";
         }
     }
-
     //maj du player
     myPlayer.load();
 }
@@ -330,7 +332,6 @@ function playVideo(withLog) {
         myCsvLogs.addLine("PLAY");
         //console.log("PLAY");
     }
-
     myPlayer.play();
 }
 
@@ -347,27 +348,24 @@ function pauseVideo(withLog) {
 }
 
 function gotoTime(time) {
-    console.log(" ---- " + myPlayer.currentTime().toFixed(1));   
+    console.log(" ---- " + myPlayer.currentTime().toFixed(1));
     myPlayer.currentTime(toSeconds(time));
     myCsvLogs.addLine("CHAP_USED");
     console.log("CHAPTER USED");
 }
 
-function progressBarUsed() {
-    myCsvLogs.addLine("NAVBAR_USED");
-    console.log("NAVBAR_USED");
-}
-
 function videoEnded() {
     myCsvLogs.addLine("VIDEO_END");
+    console.log("VIDEO_END");
 }
 
 var chapFrom = 0;
 var chapTo = 0;
+
 function checkChap() { //check quel est le chapitre courant durant la lecture d'une video
+    previousTime = myPlayer.currentTime();
     var tmp = 0;
     for (const chapterDate of currentChapters.keys()) { //on parcourt la liste des chaps
-        
         if (myPlayer.currentTime() >= chapterDate) {
             tmp = currentChapters.get(chapterDate) + 1; //on prend le numéro du chapitre courant
         }
@@ -381,7 +379,7 @@ function checkChap() { //check quel est le chapitre courant durant la lecture d'
                 myCsvLogs.addLine("CHAP_ATT");
                 console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
             });
-        } else { //lecture naturelle de la video
+        } else { //lecture naturelle de la video (sans seeking donc)
             myCsvLogs.addLine("CHAP_ATT");
             console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
         }
@@ -450,6 +448,7 @@ class CsvLogs extends Csv {
         var tfPlay = "";
         var videoTimer = "";
         var reachedChap = "";
+        var reachedPage = "";
 
         if (myConfig.pages[currentPageNumber].type === "video") {
             tfChap = duration(startTimeOnChapter, Date.now()).toFixed(1);
@@ -459,12 +458,13 @@ class CsvLogs extends Csv {
 
         switch (action) {
             case "START_PAGE":
+
                 break;
             case "NEXT_PAGE":
-
+                reachedPage = currentPageNumber + 1;
                 break;
             case "PREV_PAGE":
-
+                reachedPage = currentPageNumber - 1;
                 break;
             case "CHAP_ATT":
                 reachedChap = chapTo;
@@ -488,14 +488,14 @@ class CsvLogs extends Csv {
 
                 break;
             case "SOMMAIRE":
-
+                reachedPage = myReachedPage;
                 break;
 
             default:
                 console.error("Unknown Action");
                 break;
-        }        
-        this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + "" + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+        }
+        this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
     }
 }
 /* ╚═══════FIN═══════╝ CSV ============================================================*/
