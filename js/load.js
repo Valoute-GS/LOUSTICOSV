@@ -15,7 +15,6 @@ prevChapButtonDom.onclick = function () {
     prevChap();
 }
 
-
 var myConfig = ""; //json de la config chargé
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 var currentChapters = new Map(); // date -> index in the json
@@ -29,14 +28,13 @@ var myCsvLogs = "";
 var currentPageNumber = 0;
 var currentChapterNumber = 0;
 
-var endTime = 0;
-
-var startTimeOnTest = 0;
+var endTime = 0; //heure de la fin du test
+var startTimeOnTest = 0; 
 var startTimeOnPage = 0;
 var startTimeOnChapter = 0;
 
-var previousTime = 0;
-var myReachedPage = 0;
+var previousTime = 0; //timer de la video mis a jour tout le temps (utile pour connaitre le timer avant et apres une action comme nav sur seekbar)
+var myReachedPage = 0; //page vers laquelle on se déplace
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 var nbJson = 0; //checker si on a pas importé pls config en mm temps
@@ -157,7 +155,7 @@ function personnalInfos() { //phase d'initialisation
     ident.value = testID;
 }
 
-function startConfig() {
+function startConfig() { //démarre le test si les infos saisies sont conformes
     var correct = true;
     for (const input of document.getElementsByClassName("infos-perso")) { //on check les infos saisies et on met en valeurs les champs en fonction de leur validité
         if (!input.checkValidity()) {
@@ -221,21 +219,21 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 
 }
 
-function nextPage() {
+function nextPage() { //page suivante
     myCsvLogs.addLine("NEXT_PAGE");
     console.log("NEXT PAGE");
     currentPageNumber++;
     loadPage();
 }
 
-function prevPage() {
+function prevPage() { //page precedente
     myCsvLogs.addLine("PREV_PAGE");
     console.log("PREV PAGE");
     currentPageNumber--;
     loadPage();
 }
 
-function jumpToPage(pageNumber) {
+function jumpToPage(pageNumber) { //utilisation du sommaire
     myReachedPage = pageNumber;
     myCsvLogs.addLine("SOMMAIRE");
     console.log("SOMMAIRE : " + currentPageNumber + "-->" + pageNumber);
@@ -252,7 +250,7 @@ function finishConfig() { //récup des infos et résulatats
     //dlcsv();
 }
 
-function dlcsv() {
+function dlcsv() { //génère le lien de téléchargement pour les CSVs
     var dlAnchorElem = document.getElementById('download-link');
     dlAnchorElem.setAttribute("href", myCsvLogs);
     dlAnchorElem.setAttribute("download", "test" + ".csv");
@@ -362,7 +360,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         prevChapButtonDom.style.display = "block";
     } else {
         nextChapButtonDom.style.display = "none";
-        prevChapButtonDom.style.display = "none";        
+        prevChapButtonDom.style.display = "none";
     }
     //maj du player
     myPlayer.load();
@@ -405,6 +403,7 @@ var chapTo = 0;
 function checkChap() { //check quel est le chapitre courant durant la lecture d'une video
     previousTime = myPlayer.currentTime();
     var tmp = 0;
+    //FIXME: usage de currentChapters plus tres utile
     for (const chapterDate of currentChapters.keys()) { //on parcourt la liste des chaps
         if (myPlayer.currentTime() >= chapterDate) {
             tmp = currentChapters.get(chapterDate) + 1; //on prend le numéro du chapitre courant
@@ -429,9 +428,9 @@ function checkChap() { //check quel est le chapitre courant durant la lecture d'
 }
 
 function nextChap() {
-    if(currentChapterNumber === myConfig.pages[currentPageNumber].chapters.length){
+    if (currentChapterNumber === myConfig.pages[currentPageNumber].chapters.length) {
 
-    }else{
+    } else {
         myPlayer.currentTime(toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber].date));
         myCsvLogs.addLine("NEXT_CHAP");
         console.log("NEXT_CHAP");
@@ -439,11 +438,11 @@ function nextChap() {
 }
 
 function prevChap() {
-    if(currentChapterNumber === 0){
+    if (currentChapterNumber === 0) {
         myPlayer.currentTime(0);
-    }else if(currentChapterNumber === 1){
+    } else if (currentChapterNumber === 1) {
         myPlayer.currentTime(0);
-    }else{
+    } else {
         myPlayer.currentTime(toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber - 2].date));
     }
     myCsvLogs.addLine("PREV_CHAP");
