@@ -340,7 +340,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         chapcontainer.style.display = "block";
         for (const chapter of myConfig.pages[currentPageNumber].chapters) {
             chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-1">' + chapter.name + ' : ' +
-                '<button class="btn btn-sm btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.innerHTML)">' + chapter.date +
+                '<button class="btn btn-sm btn-light btn-chapter" type="button" onclick="gotoTime(this.innerHTML)">' + chapter.date +
                 '</button>' +
                 '</li>';
 
@@ -433,6 +433,8 @@ function nextChap() {
 
     }else{
         myPlayer.currentTime(toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber].date));
+        myCsvLogs.addLine("NEXT_CHAP");
+        console.log("NEXT_CHAP");
     }
 }
 
@@ -444,6 +446,8 @@ function prevChap() {
     }else{
         myPlayer.currentTime(toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber - 2].date));
     }
+    myCsvLogs.addLine("PREV_CHAP");
+    console.log("PREV_CHAP");
 }
 
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
