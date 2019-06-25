@@ -281,6 +281,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     const FREENAV = currentPage.options[2];
     const VISIBLECHAP = currentPage.options[3];
     const CLICKABLECHAP = currentPage.options[4];
+    const NAVIGABLECHAP = currentPage.options[5];
 
     //on met a jour la liste des chapitres courants
     currentChapters = new Map();
@@ -299,7 +300,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         type: currentFile.type,
         src: URL.createObjectURL(currentFile)
     })
-
+    //supprimer les fonctionnalités non désirer (fullscreen et controle du son)
     myPlayer.tech_.off('dblclick');
     myPlayer.controlBar.removeChild('FullscreenToggle');
     myPlayer.controlBar.removeChild('VolumePanel');
@@ -318,7 +319,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         playVideo(false);
     }
 
-    //detection clic sur la barre de navigation (obligé de doubler l'event listener car si on clique sur la seekbar cela n'est pas détecté. Bug ? )
+    //detection clic sur la barre de navigation (obligé de doubler l'event listener car si on clique sur la seekbar cela n'est pas détecté. Bug de VideoJS ? )
     myPlayer.controlBar.progressControl.on('mousedown', function (event) {
         myCsvLogs.addLine("NAVBAR_USED");
         console.log("NAVBAR_USED : progressControl -> previous: " + previousTime + " current:" + myPlayer.currentTime());
@@ -354,6 +355,14 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         for (const btn of document.getElementsByClassName("btn-chapter")) {
             btn.disabled = "true";
         }
+    }
+    //CHAPITRES CLIQUABLE
+    if (NAVIGABLECHAP) {
+        nextChapButtonDom.style.display = "block";
+        prevChapButtonDom.style.display = "block";
+    } else {
+        nextChapButtonDom.style.display = "none";
+        prevChapButtonDom.style.display = "none";        
     }
     //maj du player
     myPlayer.load();
