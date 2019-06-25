@@ -47,11 +47,13 @@ var childNodes;
 var format;
 
 function configPage(e) {
-    currentPage = e.parentElement.parentElement; //du bouton on remonte a la page pour recup ses infos
+    currentPage = e.parentElement.parentElement; //du bouton on remonte a la page pour recup ses infos    
     currentPageNumber = currentPage.id.substring(4);
     childNodes = currentPage.childNodes;
     format = childNodes[2].options[childNodes[2].selectedIndex].value;
     currentPageName = childNodes[1].value;
+
+    currentPage.getElementsByClassName("custom-select")[0].className = "custom-select border-success";
 
     switch (format) {
         case "1": //Texte
@@ -67,6 +69,7 @@ function configPage(e) {
             break;
 
         default:
+            currentPage.getElementsByClassName("custom-select")[0].className = "custom-select border-warning";
             break;
     }
 }
