@@ -188,7 +188,6 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
         myCsvLogs = new CsvLogs();
         //init le json qui sera transfo en csv a la fin (plus facile a manipuler car en colonnes)
         myJSONGeneral = new InfosGeneralJSON();
-        startTimeOnTest = Date.now();
         for (const page of myConfig.pages) {
             infosDiapo = new InfosDiapo();
             console.log(page);
@@ -200,6 +199,8 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
             myJSONGeneral.diapos.push(infosDiapo);
             myJSONGeneral.sommaire.clicsOn.push(0);
         }
+        
+        startTimeOnTest = Date.now();
         loadPage();
     }
 }
@@ -266,6 +267,7 @@ function finishConfig() { //récup des infos et résulatats
     showByClass("load-finish");
     endTime = Date.now();
     console.log(myCsvLogs.toString());
+    console.log(myJSONGeneral);
     //dlcsv();
 }
 
@@ -289,9 +291,6 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         myCsvLogs.addLine("VIDEO_START");
         console.log("VIDEO_START");
     });
-
-    console.log(myPlayer.controlBar);
-
 
     //Pour plus de lisibilité du code on stock es options
     const PAUSECHAP = currentPage.options[0]; //TODO:
@@ -542,7 +541,6 @@ class CsvLogs extends Csv {
 
         switch (action) {
             case "START_PAGE":
-
                 break;
             case "NEXT_PAGE":
                 reachedPage = currentPageNumber + 1;

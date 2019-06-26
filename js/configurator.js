@@ -3,7 +3,7 @@
 var nbPages = 0; //nb de page pour l'affichage au "compteur"
 var pagesState = []; //0: à configurer - 1 : configuré
 var myURLs = []; //liste des URL utilisés pendant les configs
-var myPlayer;
+var myPlayer = videojs('player', {});
 
 /* ╔══════DEBUT══════╗ AJOUT SUPPRESSION PAGE =========================================*/
 function addPage() {
@@ -118,6 +118,7 @@ function configVideo() {
     hideByClass("configurator");
     //reset
     chapcontainer.innerHTML = "";
+    document.getElementById("input-file-name").innerHTML = "";
     nbOfChapters = 0;
 
     // restauration de la cofiguration si deja faite
@@ -137,6 +138,7 @@ function configVideo() {
             type: fileType,
             src: myURLs[currentPageNumber]
         });
+        myPlayer.pause();
     }
 
     showByClass("configurator-video")
@@ -178,7 +180,6 @@ function handleFiles(file) {
     fileType = file[0].type;
     fileName = file[0].name;
 
-    myPlayer = videojs('player', {});
     myPlayer.src({
         type: fileType,
         src: fileUrl
@@ -285,8 +286,8 @@ function saveVideoConfig() { //appui du bouton Terminer
     for (const videoOptionElt of videoOptionsElts) { //on recupere les options selectionnees ou non dans les checkboxes
         options.push(videoOptionElt.checked);
     }
-
-    if (!isSomething(fileName)) {
+    
+    if (!isSomething(fileName) || !isSomething(myPlayer.src())) {
         complete = false;
     }
 
@@ -294,6 +295,7 @@ function saveVideoConfig() { //appui du bouton Terminer
         let newVideoConfig = new ConfigVideoJson(fileName, fileType, options, chapters);
         myConfig.pages[currentPageNumber - 1] = newVideoConfig; //On sauvergarde les infos de la page (type video) pour le futur export
         updatePagesState(2);
+        myPlayer.reset();
         return true;
     } else {
         videoerror.innerHTML = bAlert("Configuration video incomplete ou invalide");
