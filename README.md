@@ -14,8 +14,10 @@ L'application se découpe en deux grandes parties :
  - Charger une configuration
  - Données de sortie
 
+ *(Ceci étant un projet en cours de développement, toutes ces informations sont succeptibles d'être mises à jour à chaque update.)*
+
 # Installation
-Sous Windows :
+**Sous Windows :**
 L'installation est très simple, il suffit de :
 
  1. Télécharger le dossier compressé sur la [Dropbox du LOUSTIC](https://www.dropbox.com/home/Valentin%20Utiel-%20stage%20outil%20suivi) ou sur [GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2) **Clone or Download -> Download ZIP**
@@ -25,7 +27,7 @@ L'installation est très simple, il suffit de :
  
  Navigateurs testées : Chrome/Mozilla/Opéra
 
-~~Sous Android :~~
+~~**Sous Android :**~~
 *Version en développement*
 
 # Créer une configuration
@@ -69,13 +71,13 @@ L'utilisateur entre les infos personnelles requises et démarre le test.
 ### Fin du test
 A la fin du test les fichiers de suivi d'activité son téléchargé automatiquement au format CSV, ils sont alors disponnibles dans le dossier de téléchargement par défaut. Aucun fichier déjà existant ne pourra être écrasé.
 
-Il est ensuite possible de relancer une session avec un nouvel utilisateur sans avoir à recharger les données en cliquant sur le bouton **Relancer**
+Il est ensuite possible de relancer une session avec un nouvel utilisateur sans avoir à recharger les données en cliquant sur le bouton **Relancer**.
 
 ### Exemple
-Une configuration et ses fichiers sont disponible dans le dossier [examples]()
+Une configuration et ses fichiers sont disponibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples).
 
 # Données de sortie
-A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier [output_examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples).
+A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples).
 
 ### Fichier de log
 Fichier contenant l'**intégralité de l'activité** du test.
