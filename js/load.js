@@ -1,4 +1,5 @@
 /*eslint-env browser*/
+
 var myPlayer = videojs('myvideo');
 
 var nextChapButton = myPlayer.controlBar.addChild("button", {}, 1);
@@ -29,7 +30,7 @@ var currentPageNumber = 0;
 var currentChapterNumber = 0;
 
 var endTime = 0; //heure de la fin du test
-var startTimeOnTest = 0; 
+var startTimeOnTest = 0;
 var startTimeOnPage = 0;
 var startTimeOnChapter = 0;
 
@@ -97,6 +98,11 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
 
     if (isCorrect) { //si tout est okay on passe a la suite
         if (continueToInfos) {
+            //a partir de la on demandera avant de quitter ou refrech la page TODO: a décommenter dans la version final
+            /*
+            window.onbeforeunload = function () {
+                return "";
+            };*/
             personnalInfos()
         };
     } else { //sinon on affiches les erreurs
@@ -180,7 +186,20 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
 
         //init csv
         myCsvLogs = new CsvLogs();
+        //init le json qui sera transfo en csv a la fin (plus facile a manipuler car en colonnes)
+        myJSONGeneral = new InfosGeneralJSON();
         startTimeOnTest = Date.now();
+        for (const page of myConfig.pages) {
+            infosDiapo = new InfosDiapo();
+            console.log(page);
+            if (page.type === "video") {
+                for (const chapter of page.chapters) {
+                    infosDiapo.infosChaps.push(new InfosChap());
+                }
+            }
+            myJSONGeneral.diapos.push(infosDiapo);
+            myJSONGeneral.sommaire.clicsOn.push(0);
+        }
         loadPage();
     }
 }
@@ -261,6 +280,7 @@ function dlcsv() { //génère le lien de téléchargement pour les CSVs
 
 /* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
 function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
+    hideByClass("load");
     var currentPage = myConfig.pages[currentPageNumber];
     var currentFile = importedFiles.get(currentPage.videoName);
 
@@ -289,9 +309,6 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         index++;
     }
     currentChapters = new Map([...currentChapters.entries()].sort((a, b) => a[0] - b[0])); //tri par date
-
-    hideByClass("load");
-    showByClass("load-video");
 
     //init player
     myPlayer.src({
@@ -364,6 +381,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     }
     //maj du player
     myPlayer.load();
+    showByClass("load-video");
 }
 
 function playVideo(withLog) {
@@ -510,6 +528,7 @@ class CsvLogs extends Csv {
         var videoTimer = "";
         var reachedChap = "";
         var reachedPage = "";
+        var currChapterNumber = "";
 
         if (myConfig.pages[currentPageNumber].type === "video") {
             tfChap = duration(startTimeOnChapter, Date.now()).toFixed(1);
@@ -518,6 +537,7 @@ class CsvLogs extends Csv {
             }
             tfPlay = 0;
             videoTimer = myPlayer.currentTime().toFixed(1);
+            currChapterNumber = currentChapterNumber;
         }
 
         switch (action) {
@@ -534,6 +554,12 @@ class CsvLogs extends Csv {
                 reachedChap = chapTo;
                 break;
             case "CHAP_USED":
+
+                break;
+            case "PREV_CHAP":
+
+                break;
+            case "NEXT_CHAP":
 
                 break;
             case "VIDEO_START":
@@ -559,7 +585,51 @@ class CsvLogs extends Csv {
                 console.error("Unknown Action");
                 break;
         }
-        this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+        this.lines.push(timer + ";" + currentPageNumber + ";" + currChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+    }
+}
+//classes qui seront transformé en CSV par la suite
+class InfosGeneralJSON {
+    constructor() {
+        this.config = myConfig.name;
+        this.participant = "nom_du_participant" + testID;
+        this.diapos = [];
+        this.sommaire = new InfosSommaire;
+    }
+
+}
+class InfosSommaire {
+    constructor() {
+        this.totalClics = 0;
+        this.clicsOn = []; //nb de clic sur le n eme sommaire
+    }
+}
+class InfosDiapo {
+    constructor() {
+        this.debut = 0;
+        this.fin = 0;
+        this.duree = 0;
+        this.debutPlay = 0;
+        this.finPlay = 0;
+        this.dureePlay = 0;
+        this.debutPause = 0;
+        this.finPause = 0;
+        this.dureePause = 0;
+        this.nbPP = 0;
+        this.infosChaps = []; //tab de InfosChap
+    }
+}
+class InfosChap {
+    constructor() {
+        this.debut = 0;
+        this.fin = 0;
+        this.duree = 0;
+        this.debutPlay = 0;
+        this.finPlay = 0;
+        this.dureePlay = 0;
+        this.debutPause = 0;
+        this.finPause = 0;
+        this.dureePause = 0;
     }
 }
 /* ╚═══════FIN═══════╝ CSV ============================================================*/
