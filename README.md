@@ -21,7 +21,9 @@ L'installation est très simple, il suffit de :
  1. Télécharger le dossier compressé sur la [Dropbox du LOUSTIC](https://www.dropbox.com/home/Valentin%20Utiel-%20stage%20outil%20suivi) ou sur [GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2) **Clone or Download -> Download ZIP**
  2. L'extraire dans le répertoire désiré.
  3. Entrer dans le dossier `./LOUSTIC_OS`
- 4. Exécuter le ficher `index.html` dans votre navigateur préféré
+ 4. Exécuter le ficher `index.html` dans votre navigateur préféré 
+ 
+ Navigateurs testées : Chrome/Mozilla/Opéra
 
 ~~Sous Android :~~
 *Version en développement*
@@ -68,6 +70,9 @@ L'utilisateur entre les infos personnelles requises et démarre le test.
 A la fin du test les fichiers de suivi d'activité son téléchargé automatiquement au format CSV, ils sont alors disponnibles dans le dossier de téléchargement par défaut. Aucun fichier déjà existant ne pourra être écrasé.
 
 Il est ensuite possible de relancer une session avec un nouvel utilisateur sans avoir à recharger les données en cliquant sur le bouton **Relancer**
+
+### Exemple
+Une configuration et ses fichiers sont disponible dans le dossier [examples]()
 
 # Données de sortie
 A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier [output_examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples).
