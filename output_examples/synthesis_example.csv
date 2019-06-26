@@ -1,0 +1,15 @@
+Participant;Configuration;Nom du test;Condition;D1-durée;D1-durée play;D1-durée pause;D1-nb clic play;D1-nb clic pause;… ;D1-C1-durée (en secondes);D1-C1-durée play (en secondes);D1-C1-durée pause (en secondes);D1-C1-nb clic play;D1-C1-nb clic pause;…;Nombre de clics sommaire Total;Nombre de clics sommaire1;Nombre de clics sommaire2;.. Pour tous les clics sommaire;Nombre de clics suivant (par test ? Par diapo ? Par chapitre ?);Nombre de clics précédent (par test ? Par diapo ? Par chapitre ?)
+;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;
+Diapo;N-eme visite;Debut;Fin;Debut Play;Nb Play;Nb Pause;Nb suivant;Nb prec;;;;;;;;;;;;;
+1;1;0;20;5;3;2;1;2;;;;;;;;;;;;;
+2;1;20;60;21;;;;;;;;;;;;;;;;;
+3;1;60;100;;;;;;;;;;;;;;;;;;
+4;1;100;140;;;;;;;;;;;;;;;;;;
+5;1;140;180;;;;;;;;;;;;;;;;;;
+1;2;180;220;;;;;;;;;;;;;;;;;;
+6;1;220;260;;;;;;;;;;;;;;;;;;
+1;3;260;300;;;;;;;;;;;;;;;;;;
+2;2;300;350;;;;;;;;;;;;;;;;;;

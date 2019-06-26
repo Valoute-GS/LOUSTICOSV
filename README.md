@@ -70,7 +70,10 @@ A la fin du test les fichiers de suivi d'activité son téléchargé automatique
 Il est ensuite possible de relancer une session avec un nouvel utilisateur sans avoir à recharger les données en cliquant sur le bouton **Relancer**
 
 # Données de sortie
-A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier 
+A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier [output_examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples).
 
 ### Fichier de log
-Dans le premier fichier il y a l'intégralité de l'activité du test.
+Fichier contenant l'**intégralité de l'activité** du test.
+
+### Fichier de synthèse
+Fichier contenant une **synthèse** du fichier log, avec des infos complémentaires/calculées comme les temps cumulés, des compteurs d'action etc.
