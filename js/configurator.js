@@ -20,7 +20,7 @@ function addPage() {
         '<option selected>Format ...</option>' +
         '<option value="1">Texte</option>' +
         '<option value="2">Video</option>' +
-        '<option value="3">Questions</option>' +
+       // '<option value="3">Questions</option>' +
         '</select>' +
         '<div class="ml-1">' +
         '<button class="btn btn-warning" type="button" id="button-' + nbPages + '" onclick="configPage(this)">Configurer</button>' +
