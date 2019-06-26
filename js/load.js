@@ -268,13 +268,16 @@ function finishConfig() { //récup des infos et résulatats
     endTime = Date.now();
     console.log(myCsvLogs.toString());
     console.log(myJSONGeneral);
-    //dlcsv();
+    dlcsv();
 }
 
 function dlcsv() { //génère le lien de téléchargement pour les CSVs
     var dlAnchorElem = document.getElementById('download-link');
     dlAnchorElem.setAttribute("href", myCsvLogs);
-    dlAnchorElem.setAttribute("download", "test" + ".csv");
+    dlAnchorElem.setAttribute("download", "myCsvLogs_" + testID + ".csv");
+    dlAnchorElem.click();
+    dlAnchorElem.setAttribute("href", myJSONGeneral.toCSV());
+    dlAnchorElem.setAttribute("download", "myCsvSynthesis_" + testID + ".csv");
     dlAnchorElem.click();
 }
 
@@ -593,6 +596,10 @@ class InfosGeneralJSON {
         this.participant = "nom_du_participant" + testID;
         this.diapos = [];
         this.sommaire = new InfosSommaire;
+    }
+
+    toCSV(){
+        return "data:text/csv;charset=utf-8, work in progress"
     }
 
 }

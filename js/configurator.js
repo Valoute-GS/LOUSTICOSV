@@ -174,6 +174,9 @@ var fileName;
 
 function handleFiles(file) {
     document.getElementById("input-file-name").innerHTML = file[0].name;
+    console.log(file);
+    console.log(file[0]);    
+    
     //infos sur la video courante
     fileUrl = URL.createObjectURL(file[0]);
     myURLs[currentPageNumber] = fileUrl;
@@ -186,6 +189,8 @@ function handleFiles(file) {
     });
     myPlayer.pause();
     myPlayer.load();
+    
+    document.getElementById("inputGroupVideo").value= "";    
 }
 
 function createChapterInput() {
