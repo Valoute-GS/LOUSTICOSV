@@ -95,7 +95,7 @@ function configText() {
     // restauration de la cofiguration si deja faite
     let state = pagesState[currentPageNumber - 1];
     if (state === 0) { // vierge
-
+        document.getElementById("text-input").value = "";
     } else if (state === 1) { // si c'est un text qui a deja ete config
         document.getElementById("text-input").value = myConfig.pages[currentPageNumber - 1].text;
     } else { //deja config dans un autre format
