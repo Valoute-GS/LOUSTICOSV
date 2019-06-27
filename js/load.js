@@ -98,10 +98,11 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
 
     if (isCorrect) { //si tout est okay on passe a la suite
         if (continueToInfos) {
-            //a partir de la on demandera avant de quitter ou refrech la page TODO: a décommenter dans la version final
-            window.onbeforeunload = function () {
+            // a partir de la on demandera avant de quitter ou refrech la page
+            // NOTE: a décommenter dans la version final
+            /*window.onbeforeunload = function () {
                 return "";
-            };
+            };*/
             personnalInfos()
         };
     } else { //sinon on affiches les erreurs
@@ -197,7 +198,7 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
             myJSONGeneral.diapos.push(infosDiapo);
             myJSONGeneral.sommaire.clicsOn.push(0);
         }
-        
+
         startTimeOnTest = Date.now();
         loadPage();
     }
@@ -264,25 +265,29 @@ function finishConfig() { //récup des infos et résulatats
     hideByClass("pages-index")
     showByClass("load-finish");
     endTime = Date.now();
+    myCsvLogs.addLine("END");
+    console.log("END");
     console.log(myCsvLogs.toString());
     console.log(myJSONGeneral);
     dlcsv();
 }
 
 function dlcsv() { //génère le lien de téléchargement pour les CSVs
+    // NOTE: a décommenter dans la version final
     var dlAnchorElem = document.getElementById('download-link');
-    dlAnchorElem.setAttribute("href", myCsvLogs);
+    /*dlAnchorElem.setAttribute("href", myCsvLogs);
     dlAnchorElem.setAttribute("download", "myCsvLogs_" + testID + ".csv");
     dlAnchorElem.click();
     dlAnchorElem.setAttribute("href", myJSONGeneral.toCSV());
     dlAnchorElem.setAttribute("download", "myCsvSynthesis_" + testID + ".csv");
-    dlAnchorElem.click();
+    dlAnchorElem.click();*/
 }
 
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
 /* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
 function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
+    //FIXME: Redondances sur certaine partie qui n'ont besoin d'etre executée qu'une fois et non a chaque loadVideo()
     hideByClass("load");
     var currentPage = myConfig.pages[currentPageNumber];
     var currentFile = importedFiles.get(currentPage.videoName);
@@ -294,7 +299,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     });
 
     //Pour plus de lisibilité du code on stock es options
-    const PAUSECHAP = currentPage.options[0]; //TODO:
+    const PAUSECHAP = currentPage.options[0]; //TODO: a implémenter
     const PPLLOWED = currentPage.options[1];
     const FREENAV = currentPage.options[2];
     const VISIBLECHAP = currentPage.options[3];
@@ -508,22 +513,23 @@ class CsvLogs extends Csv {
             weekday: "short"
         }) + ")-" + d.toLocaleTimeString();
 
-        var tfTest = duration(startTimeOnTest, Date.now()).toFixed(1);
-        var tfPage = duration(startTimeOnPage, Date.now()).toFixed(1);
+        var tfTest = duration(startTimeOnTest, Date.now());
+        var tfPage = duration(startTimeOnPage, Date.now());
         var tfChap = "";
         var tfPlay = "";
         var videoTimer = "";
         var reachedChap = "";
         var reachedPage = "";
         var currChapterNumber = "";
+        var currPageNumber = currentPageNumber;
 
-        if (myConfig.pages[currentPageNumber].type === "video") {
+        if (action != "END" && myConfig.pages[currentPageNumber].type === "video") {
             tfChap = duration(startTimeOnChapter, Date.now()).toFixed(1);
             if (tfChap > 1500000000) {
                 tfChap = "";
             }
             tfPlay = 0;
-            videoTimer = myPlayer.currentTime().toFixed(1);
+            videoTimer = myPlayer.currentTime();
             currChapterNumber = currentChapterNumber;
         }
 
@@ -531,9 +537,11 @@ class CsvLogs extends Csv {
             case "START_PAGE":
                 break;
             case "NEXT_PAGE":
+                myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
                 reachedPage = currentPageNumber + 1;
                 break;
             case "PREV_PAGE":
+                myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
                 reachedPage = currentPageNumber - 1;
                 break;
             case "CHAP_ATT":
@@ -549,76 +557,79 @@ class CsvLogs extends Csv {
 
                 break;
             case "VIDEO_START":
-
                 break;
             case "VIDEO_END":
 
                 break;
             case "PLAY":
-
+                myJSONGeneral.diapos[currentPageNumber].nbPlay ++;
+                if ((currentChapterNumber > 0)) {
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber-1].nbPlay ++;
+                }
                 break;
             case "PAUSE":
-
+                myJSONGeneral.diapos[currentPageNumber].nbPause ++;
+                if ((currentChapterNumber > 0)) {                    
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber-1].nbPlay ++;
+                }
                 break;
             case "NAVBAR_USED":
 
                 break;
             case "SOMMAIRE":
+                myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
+                myJSONGeneral.sommaire.totalClics++;
+                myJSONGeneral.sommaire.clicsOn[myReachedPage]++;
                 reachedPage = myReachedPage;
+                break;
+            case "END":
+                currPageNumber = "";
+                tfPage = "";
                 break;
 
             default:
                 console.error("Unknown Action : " + action);
                 break;
         }
-        this.lines.push(timer + ";" + currentPageNumber + ";" + currChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+        this.lines.push(timer + ";" + currPageNumber + ";" + currChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
     }
 }
 //classes qui seront transformé en CSV par la suite
 class InfosGeneralJSON {
     constructor() {
-        this.config = myConfig.name;
+        this.config = myConfig.name; //OK:
         this.participant = "nom_du_participant" + testID;
         this.diapos = [];
         this.sommaire = new InfosSommaire;
     }
 
-    toCSV(){
+    toCSV() {
         return "data:text/csv;charset=utf-8, work in progress"
     }
 
 }
 class InfosSommaire {
     constructor() {
-        this.totalClics = 0;
-        this.clicsOn = []; //nb de clic sur le n eme sommaire
+        this.totalClics = 0; //OK:
+        this.clicsOn = []; //OK: nb de clic sur le n eme sommaire
     }
 }
 class InfosDiapo {
     constructor() {
-        this.debut = 0;
-        this.fin = 0;
-        this.duree = 0;
-        this.debutPlay = 0;
-        this.finPlay = 0;
+        this.duree = 0; //OK:
         this.dureePlay = 0;
-        this.debutPause = 0;
-        this.finPause = 0;
         this.dureePause = 0;
-        this.nbPP = 0;
+        this.nbPlay = 0; //OK:
+        this.nbPause = 0; //OK:
         this.infosChaps = []; //tab de InfosChap
     }
 }
 class InfosChap {
     constructor() {
-        this.debut = 0;
-        this.fin = 0;
         this.duree = 0;
-        this.debutPlay = 0;
-        this.finPlay = 0;
+        this.nbPlay = 0; //OK:
+        this.nbPause = 0; //OK:
         this.dureePlay = 0;
-        this.debutPause = 0;
-        this.finPause = 0;
         this.dureePause = 0;
     }
 }
