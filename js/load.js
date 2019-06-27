@@ -440,10 +440,12 @@ function checkChap() { //check quel est le chapitre courant durant la lecture d'
             myPlayer.one('seeked', function () {
                 myCsvLogs.addLine("CHAP_ATT");
                 console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
+                startTimeOnChapter = Date.now();
             });
         } else { //lecture naturelle de la video (sans seeking donc)
             myCsvLogs.addLine("CHAP_ATT");
             console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
+            startTimeOnChapter = Date.now();
         }
     }
 
@@ -504,6 +506,8 @@ class Csv {
 class CsvLogs extends Csv {
     constructor() {
         super();
+        this.startPlay = 0;
+        this.durationPlay = 0;
         this.lines.push("Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Video timer;Time from chap begining;Time from PLAY");
     }
 
@@ -536,7 +540,7 @@ class CsvLogs extends Csv {
         switch (action) {
             case "START_PAGE":
                 break;
-            case "NEXT_PAGE":
+            case "NEXT_PAGE":                
                 myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
                 reachedPage = currentPageNumber + 1;
                 break;
@@ -557,19 +561,20 @@ class CsvLogs extends Csv {
 
                 break;
             case "VIDEO_START":
+                
                 break;
             case "VIDEO_END":
 
                 break;
             case "PLAY":
                 myJSONGeneral.diapos[currentPageNumber].nbPlay ++;
-                if ((currentChapterNumber > 0)) {
+                if ((currentChapterNumber > 0)) { //on exclut le "chapitre 0" (debut, avant le 1er chapitre)
                     myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber-1].nbPlay ++;
                 }
                 break;
             case "PAUSE":
                 myJSONGeneral.diapos[currentPageNumber].nbPause ++;
-                if ((currentChapterNumber > 0)) {                    
+                if ((currentChapterNumber > 0)) { //on exclut le "chapitre 0" (debut, avant le 1er chapitre)
                     myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber-1].nbPlay ++;
                 }
                 break;
