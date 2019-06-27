@@ -99,10 +99,9 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
     if (isCorrect) { //si tout est okay on passe a la suite
         if (continueToInfos) {
             //a partir de la on demandera avant de quitter ou refrech la page TODO: a décommenter dans la version final
-            /*
             window.onbeforeunload = function () {
                 return "";
-            };*/
+            };
             personnalInfos()
         };
     } else { //sinon on affiches les erreurs
@@ -190,7 +189,6 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
         myJSONGeneral = new InfosGeneralJSON();
         for (const page of myConfig.pages) {
             infosDiapo = new InfosDiapo();
-            console.log(page);
             if (page.type === "video") {
                 for (const chapter of page.chapters) {
                     infosDiapo.infosChaps.push(new InfosChap());
@@ -389,7 +387,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 function playVideo(withLog) {
     if (withLog) {
         myCsvLogs.addLine("PLAY");
-        //console.log("PLAY");
+        console.log("PLAY");
     }
     myPlayer.play();
 }
@@ -399,8 +397,8 @@ function pauseVideo(withLog) {
         myCsvLogs.addLine("PAUSE");
         console.log("PAUSE");
         myPlayer.one('playing', function () { // à  la prochaine lecture            
-            myCsvLogs.addLine("PLAY");
-            console.log("PLAY");
+            //myCsvLogs.addLine("PLAY");
+            //console.log("PLAY");
         });
     }
     myPlayer.pause();
@@ -499,19 +497,6 @@ class Csv {
 }
 
 class CsvLogs extends Csv {
-    /*  En-tetes colonnes CSV de log
-    Timer;  
-    Current page;
-    Current chap;
-    Reached page;
-    Reached chap;
-    Action;
-    Time from test begining;
-    Time from page begining;
-    Video Timer
-    Time from chap begining;
-    Time from PLAY
-*/
     constructor() {
         super();
         this.lines.push("Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Video timer;Time from chap begining;Time from PLAY");
@@ -583,7 +568,7 @@ class CsvLogs extends Csv {
                 break;
 
             default:
-                console.error("Unknown Action");
+                console.error("Unknown Action : " + action);
                 break;
         }
         this.lines.push(timer + ";" + currentPageNumber + ";" + currChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
