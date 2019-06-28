@@ -203,12 +203,12 @@ function createChapterInput() {
         '<div class="input-group-prepend">' +
         '<span class="input-group-text">Chapitre ' + nbOfChapters + '</span>' +
         '</div>' +
-        '<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[a-zA-Z0-9_.,!:]*$">' +
-        '<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="HH:MM:SS" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)?([0-5]?[0-9])">';
+        '<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[a-zA-Z0-9_-.,!:]*$">' +
+        '<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="(HH:)MM:SS" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)([0-5][0-9])">';
     chapcontainer.appendChild(div1);
     //mise a jour de l'indice du nouveau chapitre
 
-}
+}s
 
 function removeChapterInput() {
     if (nbOfChapters > 0) { //si il y a des inputs dans la liste
