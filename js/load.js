@@ -111,7 +111,6 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
         }
     }
 }
-
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
 
@@ -130,7 +129,6 @@ function preview() { //Need work, affiches les infos de la config chargée
     }
 
 }
-
 /* ╚═══════FIN═══════╝ PREVIEW  =======================================================*/
 
 /* ╔══════DEBUT══════╗ DEROULEMENT DU TEST ============================================*/
@@ -282,7 +280,6 @@ function dlcsv() { //génère le lien de téléchargement pour les CSVs
     dlAnchorElem.setAttribute("download", "myCsvSynthesis_" + testID + ".csv");
     dlAnchorElem.click();*/
 }
-
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
 /* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
@@ -473,7 +470,6 @@ function prevChap() {
     myCsvLogs.addLine("PREV_CHAP");
     //console.log("PREV_CHAP");
 }
-
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
 
 /* ╔══════DEBUT══════╗ TEXT  ==========================================================*/
@@ -559,8 +555,8 @@ class CsvLogs extends Csv {
         }
 
         function stateUpdate_s() {
-            console.log("STATE : "+state);
-            
+            console.log("STATE : " + state);
+
             //si on finit en lecture
             if (state === 2) {
                 if (startPlay != 0) {
@@ -570,16 +566,16 @@ class CsvLogs extends Csv {
             //si on finit en pause
             if (state === 4) {
                 console.log("durPause : " + durationPause);
-                
+
                 if (startPause != 0) {
                     durationPause += duration(startPause, now);
                 }
-                
-                
+
+
             }
             startPlay = 0;
             startPause = 0;
-            state = 0;            
+            state = 0;
             console.log("durPause : " + durationPause);
         }
 
