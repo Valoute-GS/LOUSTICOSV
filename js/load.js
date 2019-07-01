@@ -102,9 +102,9 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
         if (continueToInfos) {
             // a partir de la on demandera avant de quitter ou refrech la page
             // NOTE: a décommenter dans la version final
-            /*window.onbeforeunload = function () {
+            window.onbeforeunload = function () {
                 return "";
-            };*/
+            };
             personnalInfos()
         };
     } else { //sinon on affiches les erreurs
@@ -276,12 +276,12 @@ function finishConfig() { //récup des infos et résulatats
 function dlcsv() { //génère le lien de téléchargement pour les CSVs
     // NOTE: a décommenter dans la version final
     var dlAnchorElem = document.getElementById('download-link');
-    /*dlAnchorElem.setAttribute("href", myCsvLogs);
+    dlAnchorElem.setAttribute("href", myCsvLogs);
     dlAnchorElem.setAttribute("download", "myCsvLogs_" + testID + ".csv");
     dlAnchorElem.click();
     dlAnchorElem.setAttribute("href", myJSONGeneral.toCSV());
     dlAnchorElem.setAttribute("download", "myCsvSynthesis_" + testID + ".csv");
-    dlAnchorElem.click();*/
+    dlAnchorElem.click();
 }
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
@@ -663,7 +663,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 //╚═════════════════════════════════════════╝ 
                 myJSONGeneral.diapos[currentPageNumber].nbPause++;
                 if ((currentChapterNumber > 0)) { //on exclut le "chapitre 0" (debut, avant le 1er chapitre)
-                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].nbPlay++;
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].nbPause++;
                 }
                 break;
             case "NAVBAR_USED":
@@ -706,7 +706,31 @@ class InfosGeneralJSON {
     }
 
     toCSV() {
-        return "data:text/csv;charset=utf-8, work in progress"
+        var res ="";
+        var titles = ""; //ligne 1 du csv
+        var values = ""; //ligne 2 du csv
+        titles += "Participant;Config"
+        values += this.participant + ";" + this.config;
+
+        var iDiapo = 1; //numero de diapo
+        for (const diapo of this.diapos) { //chaque diapo
+            var d = "D"+iDiapo+"-"; //D1-duree D1-dureePlay etc.
+            titles += ";"+d+"duree" + ";"+d+"dureePlay" + ";"+d+"dureePause" + ";"+d+"nbPlay" + ";"+d+"nbPause";
+            values += ";"+ diapo.duree + ";"+diapo.dureePlay + ";"+diapo.dureePause + ";"+diapo.nbPlay + ";"+diapo.nbPause;
+
+            var iChap = 1; //numero de chap
+            for (const chap of diapo.infosChaps) { //chaque chap de chaque diapo
+                d = "D"+iDiapo+"-C" + iChap + "-"; //D1-C1-duree D1-C1-dureePlay (...) D1-C2-duree D1-C2-dureePlay etc.
+                titles += ";"+d+"duree" + ";"+d+"dureePlay" + ";"+d+"dureePause" + ";"+d+"nbPlay" + ";"+d+"nbPause";
+                values += ";"+ chap.duree + ";"+chap.dureePlay + ";"+chap.dureePause + ";"+chap.nbPlay + ";"+chap.nbPause;
+                iChap++;
+            }
+            iDiapo++;
+        }
+        //console.log((titles.match(/;/g) || []).length + 1); //logs 3
+
+        res += titles + "\n" + values;
+        return "data:text/csv;charset=utf-8," + res;
     }
 
 }
@@ -729,10 +753,10 @@ class InfosDiapo {
 class InfosChap {
     constructor() {
         this.duree = 0;
-        this.nbPlay = 0; //OK:
-        this.nbPause = 0; //OK:
         this.dureePlay = 0;
         this.dureePause = 0;
+        this.nbPlay = 0; //OK:
+        this.nbPause = 0; //OK:
     }
 }
 /* ╚═══════FIN═══════╝ CSV ============================================================*/
