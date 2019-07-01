@@ -20,7 +20,7 @@ function addPage() {
         '<option selected>Format ...</option>' +
         '<option value="1">Texte</option>' +
         '<option value="2">Video</option>' +
-       // '<option value="3">Questions</option>' +
+        // '<option value="3">Questions</option>' +
         '</select>' +
         '<div class="ml-1">' +
         '<button class="btn btn-warning" type="button" id="button-' + nbPages + '" onclick="configPage(this)">Configurer</button>' +
@@ -118,7 +118,8 @@ function configVideo() {
     hideByClass("configurator");
     //reset
     chapcontainer.innerHTML = "";
-    document.getElementById("input-file-name").innerHTML = "";
+    document.getElementById("input-file-name").innerHTML = "Choisir un fichier video";
+    document.getElementById("input-file-name").className = "custom-file-label border-warning";
     nbOfChapters = 0;
 
     // restauration de la cofiguration si deja faite
@@ -134,6 +135,8 @@ function configVideo() {
         fileType = myConfig.pages[currentPageNumber - 1].videoType;
         fileName = myConfig.pages[currentPageNumber - 1].videoName;
         document.getElementById("input-file-name").innerHTML = fileName;
+        document.getElementById("input-file-name").className = "custom-file-label border-success";
+
         myPlayer.src({
             type: fileType,
             src: myURLs[currentPageNumber]
@@ -151,19 +154,6 @@ function saveVideo() {
         showByClass("configurator-main");
     }
 }
-
-/* ======= SURVEY =======*/
-function configSurvey() {
-    hideByClass("configurator");
-    showByClass("configurator-survey")
-}
-
-function saveSurvey() {
-    hideByClass("configurator");
-    maintitle.innerHTML = "LOUSTIC OS - Créer"
-    showByClass("configurator-main")
-}
-
 /* ╚═══════FIN═══════╝ CONFIG PAGE ====================================================*/
 
 /* ╔══════DEBUT══════╗ VIDEO CREATOR ==================================================*/
@@ -174,9 +164,9 @@ var fileName;
 
 function handleFiles(file) {
     document.getElementById("input-file-name").innerHTML = file[0].name;
-    console.log(file);
-    console.log(file[0]);    
-    
+    document.getElementById("input-file-name").className = "custom-file-label border-success";
+    console.log(file[0]);
+
     //infos sur la video courante
     fileUrl = URL.createObjectURL(file[0]);
     myURLs[currentPageNumber] = fileUrl;
@@ -189,8 +179,6 @@ function handleFiles(file) {
     });
     myPlayer.pause();
     myPlayer.load();
-    
-    document.getElementById("inputGroupVideo").value= "";    
 }
 
 function createChapterInput() {
@@ -203,12 +191,12 @@ function createChapterInput() {
         '<div class="input-group-prepend">' +
         '<span class="input-group-text">Chapitre ' + nbOfChapters + '</span>' +
         '</div>' +
-        '<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[a-zA-Z0-9_-.,!:]*$">' +
+        '<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[a-zA-Z0-9_.,!:]*$">' +
         '<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="(HH:)MM:SS" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)([0-5][0-9])">';
     chapcontainer.appendChild(div1);
     //mise a jour de l'indice du nouveau chapitre
 
-}s
+}
 
 function removeChapterInput() {
     if (nbOfChapters > 0) { //si il y a des inputs dans la liste
@@ -273,7 +261,7 @@ function saveVideoConfig() { //appui du bouton Terminer
         if (!eltTitle.checkValidity()) {
             complete = false;
             eltTitle.className = "form-control chapter-title border-danger";
-        }else{
+        } else {
             eltTitle.className = "form-control chapter-title border-success";
         }
         chapters.push(newChap);
@@ -283,7 +271,7 @@ function saveVideoConfig() { //appui du bouton Terminer
         if (!eltDate.checkValidity()) {
             complete = false;
             eltDate.className = "form-control chapter-date border-danger";
-        }else{
+        } else {
             eltDate.className = "form-control chapter-date border-success";
         }
         index++;
@@ -291,7 +279,7 @@ function saveVideoConfig() { //appui du bouton Terminer
     for (const videoOptionElt of videoOptionsElts) { //on recupere les options selectionnees ou non dans les checkboxes
         options.push(videoOptionElt.checked);
     }
-    
+
     if (!isSomething(fileName) || !isSomething(myPlayer.src())) {
         complete = false;
     }
@@ -301,6 +289,7 @@ function saveVideoConfig() { //appui du bouton Terminer
         myConfig.pages[currentPageNumber - 1] = newVideoConfig; //On sauvergarde les infos de la page (type video) pour le futur export
         updatePagesState(2);
         myPlayer.reset();
+        videoerror.innerHTML = "";
         return true;
     } else {
         videoerror.innerHTML = bAlert("Configuration video incomplete ou invalide");
@@ -343,10 +332,8 @@ function finishConfig() {
         alertmain.innerHTML = bAlert("Configuration incomplete ou erronée");
     }
 
-    function configChecker() {
-        return pagesState.every(isSet) &&
-            pagesState.length > 0 &&
-            isSomething(myConfig.name);
+    function configChecker() {        
+        return pagesState.every(isSet) && pagesState.length > 0 && isSomething(document.getElementById("config-name").value)
     }
 
 }
@@ -380,10 +367,10 @@ function isSomething(params) {
 
 function bAlert(message) {
     return '<div class="alert alert-warning alert-dismissible" role="alert">' +
-    '<strong>Erreur</strong> '+ message +
-    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-    '<span aria-hidden="true">&times;' +
-    '</span></button></div>';
-    
+        '<strong>Erreur</strong> ' + message +
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+        '<span aria-hidden="true">&times;' +
+        '</span></button></div>';
+
 }
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/

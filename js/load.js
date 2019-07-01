@@ -91,12 +91,13 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
             }
         }
 
-    } else { //si aucun titre saisi
+    } else { //si aucun fichier json selectionné
         errorMessages.add("Veuillez sélectionner un fichier de configuration .json");
         isCorrect = false;
     }
 
     if (isCorrect) { //si tout est okay on passe a la suite
+        document.getElementById("input-file-name").className = "custom-file-label border-success";
         if (continueToInfos) {
             // a partir de la on demandera avant de quitter ou refrech la page
             // NOTE: a décommenter dans la version final
@@ -503,12 +504,12 @@ var startPlay = 0;
 var durationPlay = 0;
 var startPause = 0;
 var durationPause = 0;
-class CsvLogs extends Csv {
+class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la methode addline
     constructor() {
         super();
         this.lines.push("Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Video timer;Time from chap begining;Time from PLAY");
     }
-    //FIXME: degueulasse !
+    //FIXME: degueulasse ! mélange csv de log et json général
     addLine(action) { // START_PAGE | NEXT_PAGE | PREV_PAGE | CHAP_ATT | CHAP_USED | VIDEO_START | VIDEO_END | PLAY | PAUSE | NAVBAR_USED  
         var now = Date.now();
         var d = new Date();
@@ -540,6 +541,7 @@ class CsvLogs extends Csv {
             tfPlay = "";
         }
 
+        //cf l'automate pour comprendre cette partie
         function stateUpdate_3() {
             if (state === 2) {
                 if (startPlay != 0) {
@@ -553,10 +555,8 @@ class CsvLogs extends Csv {
                 });
             }
         }
-
         function stateUpdate_s() {
-            console.log("STATE : " + state);
-
+            //si on finit en lecture
             //si on finit en lecture
             if (state === 2) {
                 if (startPlay != 0) {
@@ -565,20 +565,16 @@ class CsvLogs extends Csv {
             }
             //si on finit en pause
             if (state === 4) {
-                console.log("durPause : " + durationPause);
-
                 if (startPause != 0) {
                     durationPause += duration(startPause, now);
                 }
-
-
             }
             startPlay = 0;
             startPause = 0;
             state = 0;
-            console.log("durPause : " + durationPause);
         }
 
+        //En fonction du type d'action on ne fera pas la meme chose les partie "STATE" concernent l'automate TODO: a isoler dans des fonction pour facilitéer la lecture du code
         switch (action) {
             case "START_PAGE":
                 //╔══════════════════STATE══════════════════╗
@@ -694,6 +690,7 @@ class CsvLogs extends Csv {
                 break;
         }
 
+        //on ajoute une ligne au csv de log
         this.lines.push(timer + ";" + currPageNumber + ";" + currChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
     }
 }
