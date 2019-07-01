@@ -727,6 +727,14 @@ class InfosGeneralJSON {
             }
             iDiapo++;
         }
+        titles += ";Clics sommaire";
+        values += ";" + this.sommaire.totalClics;
+        var iSom = 1; //numero de sommaire
+        for (const clic of this.sommaire.clicsOn){
+            titles += ";Sommaire " + iSom;
+            values += ";" + clic;
+            iSom++;
+        }
         //console.log((titles.match(/;/g) || []).length + 1); //logs 3
 
         res += titles + "\n" + values;
