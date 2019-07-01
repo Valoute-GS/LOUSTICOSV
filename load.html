@@ -67,11 +67,11 @@
                 <div class="custom-file">
                     <input type="file" multiple class="custom-file-input" id="input" onchange="loadFiles(this.files)"
                         id="inputLoadConfig" accept="application/json, video/mp4, video/webm, video/quicktime">
-                    <label class="custom-file-label border-warning" id="input-file-name" for="inputGroupVideo">Charger une
+                    <label class="custom-file-label border-dark" id="input-file-name" for="inputGroupVideo">Charger une
                         configuration et ses fichiers annexes</label>
                 </div>
             </div>
-            <button class="btn btn-primary" type="button" onclick="controlConfig(true)" disabled>Démarrer</button>
+            <button class="btn btn-success" id="btnSelectConfig" type="button" onclick="controlConfig(true)" style="display: none;">Démarrer</button>
         </main>
 
         <!-- Config preview -->

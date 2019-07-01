@@ -98,6 +98,7 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
 
     if (isCorrect) { //si tout est okay on passe a la suite
         document.getElementById("input-file-name").className = "custom-file-label border-success";
+        btnSelectConfig.style.display = "inline";
         if (continueToInfos) {
             // a partir de la on demandera avant de quitter ou refrech la page
             // NOTE: a décommenter dans la version final
@@ -107,6 +108,7 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
             personnalInfos()
         };
     } else { //sinon on affiches les erreurs
+        document.getElementById("input-file-name").className = "custom-file-label border-warning";
         for (const message of errorMessages) {
             mainerror.innerHTML += bAlert(message);
         }
