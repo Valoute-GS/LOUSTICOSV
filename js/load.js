@@ -116,24 +116,6 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
 }
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
-
-/* ╔══════DEBUT══════╗  PREVIEW =======================================================*/
-function preview() { //Need work, affiches les infos de la config chargée
-    hideByClass("load");
-    showByClass("load-preview");
-
-    for (const page of myConfig.pages) {
-        previewcol.innerHTML +=
-            '<div class="card">' +
-            '<div class="card-body">' +
-            '<h5 class="card-title">' + page.pageName + '</h5>' +
-            '<p class="card-text">' + page.type + '</p>' +
-            '</div></div>';
-    }
-
-}
-/* ╚═══════FIN═══════╝ PREVIEW  =======================================================*/
-
 /* ╔══════DEBUT══════╗ DEROULEMENT DU TEST ============================================*/
 function personnalInfos() { //phase d'initialisation
     hideByClass("load");
@@ -822,7 +804,4 @@ function duration(from, to) { //return en sec le temps écoulé entre deux dates
     return (to - from) / 1000;
 }
 
-function sortNumber(a, b) {
-    return a - b;
-}
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
