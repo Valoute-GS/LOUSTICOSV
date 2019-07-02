@@ -607,7 +607,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                     durationPauseChap = duration(startPauseChap, now);
                     startPauseChap = now;
                 }
-                if(chapFrom > 0){
+                if(chapFrom > 0){ //FIXME:
                 myJSONGeneral.diapos[currPageNumber].infosChaps[chapFrom-1].dureePlay += durationPlayChap;
                 myJSONGeneral.diapos[currPageNumber].infosChaps[chapFrom-1].dureePause += durationPauseChap;
                 console.log("dureePlayChap : " + myJSONGeneral.diapos[currPageNumber].infosChaps[chapFrom-1].dureePlay);
