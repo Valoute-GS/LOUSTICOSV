@@ -224,14 +224,12 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 
 function nextPage() { //page suivante
     myCsvLogs.addLine("NEXT_PAGE");
-    //console.log("NEXT PAGE");
     currentPageNumber++;
     loadPage();
 }
 
 function prevPage() { //page precedente
     myCsvLogs.addLine("PREV_PAGE");
-    //console.log("PREV PAGE");
     currentPageNumber--;
     loadPage();
 }
@@ -250,7 +248,6 @@ function finishConfig() { //récup des infos et résulatats
     showByClass("load-finish");
     endTime = Date.now();
     myCsvLogs.addLine("END");
-    console.log("END");
     console.log(myCsvLogs.toString());
     console.log(myJSONGeneral);
     dlcsv();
@@ -276,9 +273,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     var currentFile = importedFiles.get(currentPage.videoName);
 
     myPlayer.one('playing', function () { // La lecture de la video à commencé (premièere seulement)
-        startTimeOnChapter = Date.now();
         myCsvLogs.addLine("VIDEO_START");
-        //console.log("VIDEO_START");
     });
 
     //Pour plus de lisibilité du code on stock es options
@@ -373,7 +368,6 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 function playVideo(withLog) {
     if (withLog) {
         myCsvLogs.addLine("PLAY");
-        //console.log("PLAY");
     }
     myPlayer.play();
 }
@@ -381,11 +375,6 @@ function playVideo(withLog) {
 function pauseVideo(withLog) {
     if (withLog) {
         myCsvLogs.addLine("PAUSE");
-        //console.log("PAUSE");
-        myPlayer.one('playing', function () { // à  la prochaine lecture            
-            //myCsvLogs.addLine("PLAY");
-            //console.log("PLAY");
-        });
     }
     myPlayer.pause();
 }
@@ -393,41 +382,30 @@ function pauseVideo(withLog) {
 function gotoTime(time) {
     myPlayer.currentTime(toSeconds(time));
     myCsvLogs.addLine("CHAP_USED");
-    //console.log("CHAPTER USED");
 }
 
 function videoEnded() {
     myCsvLogs.addLine("VIDEO_END");
-    //console.log("VIDEO_END");
 }
 
 var chapFrom = 0;
 var chapTo = 0;
-
 function checkChap() { //check quel est le chapitre courant durant la lecture d'une video
     var tmp = 0;
     for (const chapterDate of currentChapters.keys()) { //on parcourt la liste des chaps
         if (myPlayer.currentTime() >= chapterDate) {
             tmp = currentChapters.get(chapterDate) + 1; //on prend le numéro du chapitre courant
         }
-    }    
+    }
     if (tmp != currentChapterNumber) { //si on arrive a un nouveau chap
         chapFrom = currentChapterNumber;
-        chapTo = tmp;
-        //manip un peu moche engendré par les problème de sychro dus au seektime
-        if (myPlayer.seeking()) { //Si déplacement via chapitre ou timeline il y aura un seektime, donc on le préviens et on ne génère les CSV qu une fois ce temps de chargement terminé
-            myPlayer.one('playing', function () {
-                startTimeOnChapter = Date.now();
-                currentChapterNumber = tmp; //mise jour de la var chapitre courrant
-                myCsvLogs.addLine("CHAP_ATT");
-                console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
-            });
-        } else { //lecture naturelle de la video (sans seeking donc)
-            startTimeOnChapter = Date.now();
+        chapTo = tmp;        
+        if (!myPlayer.seeking()) { //supprime le seektime
             currentChapterNumber = tmp; //mise jour de la var chapitre courrant
             myCsvLogs.addLine("CHAP_ATT");
             console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
         }
+        
     }
 
 }
@@ -438,7 +416,6 @@ function nextChap() {
     } else {
         myPlayer.currentTime(toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber].date));
         myCsvLogs.addLine("NEXT_CHAP");
-        //console.log("NEXT_CHAP");
     }
 }
 
@@ -451,7 +428,6 @@ function prevChap() {
         myPlayer.currentTime(toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber - 2].date));
     }
     myCsvLogs.addLine("PREV_CHAP");
-    //console.log("PREV_CHAP");
 }
 /* ╚═══════FIN═══════╝ PLAYER VIDEO  ==================================================*/
 
@@ -482,6 +458,9 @@ class Csv {
     }
 }
 
+var tPlay = 0;
+var tPause = 0;
+
 class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la methode addline
     constructor() {
         super();
@@ -498,8 +477,11 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
         //var pour l'aout de ligne CSV
         var tfTest = duration(startTimeOnTest, now);
         var tfPage = duration(startTimeOnPage, now);
+        var reachedPage = "";
 
-        console.log(action + " ||| page : " + currentPageNumber + " ||| chapter : " + currentChapterNumber);
+        /*console.log(action + 
+            "\n    ├ page : " + currentPageNumber + 
+            "\n    └ chapter : " + currentChapterNumber);*/
         switch (action) {
             case "START_PAGE":
                 break;
@@ -508,6 +490,24 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
             case "PREV_PAGE":
                 break;
             case "CHAP_ATT":
+                if(chapFrom > 0){
+                    if(tPlay != 0){
+                        myJSONGeneral.diapos[currentPageNumber].infosChaps[chapFrom - 1].dureePlay += duration(tPlay, now);
+                        console.log(chapFrom + "_play : " + myJSONGeneral.diapos[currentPageNumber].infosChaps[chapFrom - 1].dureePlay);
+                        tPlay = now;
+                    }
+                    if(tPause != 0){
+                        myJSONGeneral.diapos[currentPageNumber].infosChaps[chapFrom - 1].dureePause += duration(tPause, now);
+                        console.log(chapFrom + "_pause : " + myJSONGeneral.diapos[currentPageNumber].infosChaps[chapFrom - 1].dureePause);
+                        tPause = now;
+                    }
+                }
+                if(!myPlayer.paused()){
+                    tPlay = now;
+                }else{
+                    tPause = now;
+                }
+                startTimeOnChapter = now;
                 break;
             case "CHAP_USED":
                 break;
@@ -518,14 +518,41 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
             case "VIDEO_START":
                 break;
             case "VIDEO_END":
+                tPlay = 0;
+                tPause = 0;
                 break;
             case "PLAY":
+                if(tPause != 0){
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].dureePause += duration(tPause, now);
+                    console.log(currentChapterNumber + "_pause : " + myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].dureePause);
+                }
+                if (currentChapterNumber > 0) {
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].nbPlay++;
+                    tPlay = now;
+                }
+                tPause = 0;
+                myJSONGeneral.diapos[currentPageNumber].nbPlay++;
+
                 break;
             case "PAUSE":
+                if(tPlay != 0){
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].dureePlay += duration(tPlay, now);
+                    console.log(currentChapterNumber + "_play : " + myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].dureePlay);
+                }
+                if (currentChapterNumber > 0) {
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].nbPause++;
+                    tPause = now;
+                }
+                tPlay = 0;
+                myJSONGeneral.diapos[currentPageNumber].nbPause++;
+
                 break;
             case "NAVBAR_USED":
                 break;
             case "SOMMAIRE":
+                myJSONGeneral.sommaire.totalClics++;
+                myJSONGeneral.sommaire.clicsOn[myReachedPage]++;
+                reachedPage = myReachedPage;
                 break;
             case "END":
                 break;
@@ -534,15 +561,15 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 break;
         }
         //on ajoute une ligne au csv de log
-        this.lines.push(timer + ";" + "currPageNumber" + ";" + "currChapterNumber" + ";" + "reachedPage" + ";" + "reachedChap" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + "videoTimer" + ";" + "tfChap" + ";" + "tfPlay");
+        this.lines.push(timer + ";" + "currPageNumber" + ";" + "currChapterNumber" + ";" + reachedPage + ";" + "reachedChap" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + "videoTimer" + ";" + "tfChap" + ";" + "tfPlay");
     }
 }
 //classes qui seront transformé en CSV par la suite
 class InfosGeneralJSON {
     constructor() {
         this.config = myConfig.name; //OK:
-        this.participant = "nom_du_participant" + testID;
-        this.diapos = [];
+        this.participant = "nom_du_participant" + testID; //OK:
+        this.diapos = []; //NO:
         this.sommaire = new InfosSommaire; //OK:
     }
 
@@ -584,27 +611,27 @@ class InfosGeneralJSON {
 }
 class InfosSommaire {
     constructor() {
-        this.totalClics = 0; //
-        this.clicsOn = []; // nb de clic sur le n eme sommaire
+        this.totalClics = 0; //OK:
+        this.clicsOn = []; //OK: nb de clic sur le n eme sommaire
     }
 }
 class InfosDiapo {
     constructor() {
-        this.duree = 0; //
-        this.dureePlay = 0; //
-        this.dureePause = 0; //
-        this.nbPlay = 0; //
-        this.nbPause = 0; //
-        this.infosChaps = []; //tab de InfosChap
+        this.duree = 0; //NO:
+        this.dureePlay = 0; //NO:
+        this.dureePause = 0; //NO:
+        this.nbPlay = 0; //OK:
+        this.nbPause = 0; //OK:
+        this.infosChaps = []; //NO:tab de InfosChap
     }
 }
 class InfosChap {
     constructor() {
-        this.duree = 0;
-        this.dureePlay = 0;
-        this.dureePause = 0;
-        this.nbPlay = 0; //
-        this.nbPause = 0; //
+        this.duree = 0; //NO:
+        this.dureePlay = 0; //BUG:
+        this.dureePause = 0; //BUG:
+        this.nbPlay = 0; //OK:
+        this.nbPause = 0; //OK:
     }
 }
 /* ╚═══════FIN═══════╝ CSV ============================================================*/
