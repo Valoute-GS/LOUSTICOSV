@@ -488,6 +488,10 @@ var startPlay = 0;
 var durationPlay = 0;
 var startPause = 0;
 var durationPause = 0;
+var durationPlayChap = 0;
+var durationPauseChap = 0;
+var startPlayChap = 0;
+var startPauseChap = 0;
 class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la methode addline
     constructor() {
         super();
@@ -545,16 +549,23 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
             if (state === 2) {
                 if (startPlay != 0) {
                     durationPlay += duration(startPlay, now);
+                    durationPlayChap += duration(startPlayChap, now);
                 }
             }
             //si on finit en pause
             if (state === 4) {
                 if (startPause != 0) {
                     durationPause += duration(startPause, now);
+                    durationPauseChap += duration(startPauseChap, now);
                 }
             }
+            myJSONGeneral.diapos[currPageNumber].dureePlay += durationPlay;
+            myJSONGeneral.diapos[currPageNumber].dureePause += durationPause;
+            myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
             startPlay = 0;
+            startPlayChap = 0;
             startPause = 0;
+            startPauseChap = 0;
             state = 0;
         }
 
@@ -563,8 +574,13 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
             case "START_PAGE":
                 //╔══════════════════STATE══════════════════╗
                 startPlay = 0;
+                startPause = 0;
                 durationPlay = 0;
                 durationPause = 0;
+                startPlayChap = 0;
+                startPauseChap = 0;
+                durationPlayChap = 0;
+                durationPauseChap = 0;
                 state = 1;
                 //╚═════════════════════════════════════════╝ 
                 break;
@@ -572,24 +588,35 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 //╔══════════════════STATE══════════════════╗
                 stateUpdate_s();
                 //╚═════════════════════════════════════════╝ 
-                myJSONGeneral.diapos[currPageNumber].dureePlay += durationPlay;
-                myJSONGeneral.diapos[currPageNumber].dureePause += durationPause;
-                myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
                 reachedPage = currentPageNumber + 1;
                 break;
             case "PREV_PAGE":
                 //╔══════════════════STATE══════════════════╗
                 stateUpdate_s();
                 //╚═════════════════════════════════════════╝ 
-                myJSONGeneral.diapos[currPageNumber].dureePlay += durationPlay;
-                myJSONGeneral.diapos[currPageNumber].dureePause += durationPause;
-                myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
                 reachedPage = currentPageNumber - 1;
                 break;
             case "CHAP_ATT":
+                console.log(action + " : " + chapFrom + " -> " + chapTo);
+
+                if(startPlayChap != 0){
+                    durationPlayChap = duration(startPlayChap, now);
+                    startPlayChap = now;
+                }
+                if(startPauseChap != 0){
+                    durationPauseChap = duration(startPauseChap, now);
+                    startPauseChap = now;
+                }
+                if(chapFrom > 0){
+                myJSONGeneral.diapos[currPageNumber].infosChaps[chapFrom-1].dureePlay += durationPlayChap;
+                myJSONGeneral.diapos[currPageNumber].infosChaps[chapFrom-1].dureePause += durationPauseChap;
+                console.log("dureePlayChap : " + myJSONGeneral.diapos[currPageNumber].infosChaps[chapFrom-1].dureePlay);
+                console.log("dureePauseChap : " + myJSONGeneral.diapos[currPageNumber].infosChaps[chapFrom-1].dureePause);     
+            }
                 reachedChap = chapTo;
                 break;
             case "CHAP_USED":
+                console.log(action);
                 //╔══════════════════STATE══════════════════╗
                 stateUpdate_3();
                 //╚═════════════════════════════════════════╝ 
@@ -617,13 +644,18 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 if (state === 1 || state === 4) {
                     //dureePlay
                     startPlay = now;
+                    startPlayChap = now;
                     state = 2;
                     //dureePause
                     if (startPause != 0) {
                         durationPause += duration(startPause, now);
+                        durationPlayChap += duration(startPauseChap, now);
                     }
+
+                    startPause = 0;                    
+                    startPauseChap = 0;
                 }
-                //=============================================
+                //╚═════════════════════════════════════════╝ 
 
                 myJSONGeneral.diapos[currentPageNumber].nbPlay++;
                 if ((currentChapterNumber > 0)) { //on exclut le "chapitre 0" (debut, avant le 1er chapitre)
@@ -636,11 +668,14 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                     //dureePlay
                     if (startPlay != 0) {
                         durationPlay += duration(startPlay, now);
+                        durationPlayChap += duration(startPlayChap, now);
                     }
                     startPlay = 0;
+                    startPlayChap = 0;
                     state = 4;
                     //dureePause
                     startPause = now;
+                    startPauseChap = now;
                 }
                 //╚═════════════════════════════════════════╝ 
                 myJSONGeneral.diapos[currentPageNumber].nbPause++;
@@ -657,9 +692,6 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 //╔══════════════════STATE══════════════════╗
                 stateUpdate_s();
                 //╚═════════════════════════════════════════╝ 
-                myJSONGeneral.diapos[currPageNumber].dureePlay += durationPlay;
-                myJSONGeneral.diapos[currPageNumber].dureePause += durationPause;
-                myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
                 myJSONGeneral.sommaire.totalClics++;
                 myJSONGeneral.sommaire.clicsOn[myReachedPage]++;
                 reachedPage = myReachedPage;
@@ -722,7 +754,6 @@ class InfosGeneralJSON {
         res += titles + "\n" + values;
         return "data:text/csv;charset=utf-8," + res;
     }
-
 }
 class InfosSommaire {
     constructor() {
