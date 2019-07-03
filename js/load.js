@@ -274,7 +274,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     myPlayer.one('playing', function () { // La lecture de la video à commencé (premièere seulement)
         myCsvLogs.addLine("VIDEO_START");
     });
-    myPlayer.on('timeupdate', function(){
+    myPlayer.on('timeupdate', function () {
         checkChap();
     });
 
@@ -496,10 +496,13 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
             "\n    ├ page : " + currentPageNumber +
             "\n    └ chapter : " + currentChapterNumber);
         switch (action) {
+            // ═══════════════════════════════════════════════════════════════════════════════════════════════════════ START_PAGE ══════╗ */
             case "START_PAGE":
                 myJSONGeneral.nth[currentPageNumber]++;
                 myJSONGeneral.visites.push(new InfosVisite(tfTest));
                 break;
+                // ═══════════════════════════════════════════════════════════════════════════════════════════════════ START_PAGE ══════╝ */
+            // ═════════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_ATT ══════╗ */
             case "CHAP_ATT":
                 reachedChap = chapTo;
                 if (chapFrom > 0) {
@@ -526,18 +529,30 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 }
                 tChap = now;
                 break;
+                // ═════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_ATT ══════╝ */
+            // ════════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_USED ══════╗ */
             case "CHAP_USED":
                 break;
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_USED ══════╝ */
+            // ════════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_CHAP ══════╗ */
             case "PREV_CHAP":
                 break;
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_CHAP ══════╝ */
+            // ════════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_CHAP ══════╗ */
             case "NEXT_CHAP":
                 break;
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_CHAP ══════╝ */
+            // ══════════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_START ══════╗ */
             case "VIDEO_START":
                 break;
+                // ══════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_START ══════╝ */
+            // ════════════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_END ══════╗ */
             case "VIDEO_END":
                 tPlay = 0;
                 tPause = 0;
                 break;
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_END ══════╝ */
+            // ═════════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╗ */
             case "PLAY":
                 if (currentChapterNumber > 0) {
                     if (tPause != 0) {
@@ -551,6 +566,8 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 myJSONGeneral.diapos[currentPageNumber].nbPlay++;
 
                 break;
+                // ═════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╝ */
+            // ════════════════════════════════════════════════════════════════════════════════════════════════════════════ PAUSE ══════╗ */
             case "PAUSE":
                 console.log(action + " page : " + currentPageNumber + " chap : " + currentChapterNumber)
                 if (currentChapterNumber > 0) {
@@ -565,14 +582,22 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 myJSONGeneral.diapos[currentPageNumber].nbPause++;
 
                 break;
+                // ═════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╝ */
+            // ══════════════════════════════════════════════════════════════════════════════════════════════════════ NAVBAR_USED ══════╗ */
             case "NAVBAR_USED":
                 break;
+                // ══════════════════════════════════════════════════════════════════════════════════════════════════ NAVBAR_USED ══════╝ */
+            // ════════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_PAGE ══════╗ */
             case "NEXT_PAGE":
                 update_durees();
                 break;
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_PAGE ══════╝ */
+            // ════════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_PAGE ══════╗ */
             case "PREV_PAGE":
                 update_durees();
                 break;
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_PAGE ══════╝ */
+            // ═════════════════════════════════════════════════════════════════════════════════════════════════════════ SOMMAIRE ══════╗ */
             case "SOMMAIRE": //BUG: crash si la page source etait une video en cours de lecture
                 update_durees();
 
@@ -580,11 +605,16 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 myJSONGeneral.sommaire.clicsOn[myReachedPage]++;
                 reachedPage = myReachedPage;
                 break;
+                // ═════════════════════════════════════════════════════════════════════════════════════════════════════ SOMMAIRE ══════╝ */
+            // ══════════════════════════════════════════════════════════════════════════════════════════════════════════════ END ══════╗ */
             case "END":
                 break;
+                // ══════════════════════════════════════════════════════════════════════════════════════════════════════════ END ══════╝ */
+            // ══════════════════════════════════════════════════════════════════════════════════════════════════════════ default ══════╗ */
             default:
                 console.error("Unknown Action : " + action);
                 break;
+                // ══════════════════════════════════════════════════════════════════════════════════════════════════════ default ══════╝ */
         }
         //on ajoute une ligne au csv de log
         this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + "tChap" + ";" + "tfPlay");
@@ -623,7 +653,7 @@ class InfosGeneralJSON {
         this.diapos = []; //BUG: cf InfosDiapos
         this.sommaire = new InfosSommaire; //OK:
         this.visites = [];
-        this.nth = []; 
+        this.nth = [];
     }
 
     toCSV() {
@@ -688,14 +718,14 @@ class InfosChap {
     }
 }
 class InfosVisite {
-    constructor(){
+    constructor() {
         this.diapoNum = currentPageNumber;
         this.nth = myJSONGeneral.nth[currentPageNumber];
         this.debut = 0;
         this.fin = 0;
         this.duree = 0;
         this.nbPlay = 0;
-        this.nbPause= 0;
+        this.nbPause = 0;
         this.nbChapSuiv = 0;
         this.nbChapPrec = 0;
         this.nbChapList = 0;
