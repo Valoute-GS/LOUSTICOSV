@@ -718,10 +718,10 @@ class InfosChap {
     }
 }
 class InfosVisite {
-    constructor() {
-        this.diapoNum = currentPageNumber;
-        this.nth = myJSONGeneral.nth[currentPageNumber];
-        this.debut = 0;
+    constructor(debut){
+        this.diapoNum = currentPageNumber; //OK:
+        this.nth = myJSONGeneral.nth[currentPageNumber]; //OK:
+        this.debut = debut; //OK:
         this.fin = 0;
         this.duree = 0;
         this.nbPlay = 0;
