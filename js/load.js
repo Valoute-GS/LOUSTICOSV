@@ -178,6 +178,7 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
             }
             myJSONGeneral.diapos.push(infosDiapo);
             myJSONGeneral.sommaire.clicsOn.push(0);
+            myJSONGeneral.nth.push(0); //pour compter les visites sur chaque page
         }
 
         startTimeOnTest = Date.now();
@@ -272,6 +273,9 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 
     myPlayer.one('playing', function () { // La lecture de la video à commencé (premièere seulement)
         myCsvLogs.addLine("VIDEO_START");
+    });
+    myPlayer.on('timeupdate', function(){
+        checkChap();
     });
 
     //Pour plus de lisibilité du code on stock es options
@@ -390,21 +394,23 @@ var chapFrom = 0;
 var chapTo = 0;
 
 function checkChap() { //check quel est le chapitre courant durant la lecture d'une video
-    var tmp = 0;
-    for (const chapterDate of currentChapters.keys()) { //on parcourt la liste des chaps
-        if (myPlayer.currentTime() >= chapterDate) {
-            tmp = currentChapters.get(chapterDate) + 1; //on prend le numéro du chapitre courant
+    if (myConfig.pages[currentPageNumber].type === "video") { // on n'execute les verifs que pdt une page video
+        var tmp = 0;
+        for (const chapterDate of currentChapters.keys()) { //on parcourt la liste des chaps
+            if (myPlayer.currentTime() >= chapterDate) {
+                tmp = currentChapters.get(chapterDate) + 1; //on prend le numéro du chapitre courant
+            }
         }
-    }
-    if (tmp != currentChapterNumber) { //si on arrive a un nouveau chap
-        chapFrom = currentChapterNumber;
-        chapTo = tmp;
-        if (!myPlayer.seeking()) { //supprime le seektime
-            currentChapterNumber = tmp; //mise jour de la var chapitre courrant
-            myCsvLogs.addLine("CHAP_ATT");
-            console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
-        }
+        if (tmp != currentChapterNumber) { //si on arrive a un nouveau chap
+            chapFrom = currentChapterNumber;
+            chapTo = tmp;
+            if (!myPlayer.seeking()) { //supprime le seektime
+                currentChapterNumber = tmp; //mise jour de la var chapitre courrant
+                myCsvLogs.addLine("CHAP_ATT");
+                console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
+            }
 
+        }
     }
 
 }
@@ -457,9 +463,10 @@ class Csv {
     }
 }
 
-var tPlay = 0;
-var tPause = 0;
-var tChap = 0;
+//Variables pour le controle du temps ecoulé en fonction de l'état du player
+var tPlay = 0; //pour calculer le temps passé en lecture
+var tPause = 0; //pour calculer le temps passé en pause
+var tChap = 0; //pour calculer le temps passé sur un chap
 class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la methode addline
     constructor() {
         super();
@@ -481,29 +488,34 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
         var videoTimer = 0;
 
         // on assigne videotimer si necessaire (aka si sur une page de type video)
-        if (myConfig.pages[currentPageNumber].type === "video") {
+        if (currentPageNumber < myConfig.pages.length && myConfig.pages[currentPageNumber].type === "video") {
             videoTimer = myPlayer.currentTime();
         }
 
-        /*console.log(action + 
-            "\n    ├ page : " + currentPageNumber + 
-            "\n    └ chapter : " + currentChapterNumber);*/
+        console.log(action +
+            "\n    ├ page : " + currentPageNumber +
+            "\n    └ chapter : " + currentChapterNumber);
         switch (action) {
             case "START_PAGE":
+                myJSONGeneral.nth[currentPageNumber]++;
+                myJSONGeneral.visites.push(new InfosVisite(tfTest));
                 break;
             case "CHAP_ATT":
                 reachedChap = chapTo;
                 if (chapFrom > 0) {
                     if (tPlay != 0) {
                         myJSONGeneral.diapos[currentPageNumber].infosChaps[chapFrom - 1].dureePlay += duration(tPlay, now);
+                        myJSONGeneral.diapos[currentPageNumber].dureePlay += duration(tPlay, now);
                         tPlay = now;
                     }
                     if (tPause != 0) {
                         myJSONGeneral.diapos[currentPageNumber].infosChaps[chapFrom - 1].dureePause += duration(tPause, now);
+                        myJSONGeneral.diapos[currentPageNumber].dureePause += duration(tPause, now);
                         tPause = now;
                     }
                     if (tChap != 0) {
                         myJSONGeneral.diapos[currentPageNumber].infosChaps[chapFrom - 1].duree += duration(tChap, now);
+                        myJSONGeneral.diapos[currentPageNumber].duree += duration(tChap, now);
                         tChap = now;
                     }
                 }
@@ -530,6 +542,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 if (currentChapterNumber > 0) {
                     if (tPause != 0) {
                         myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].dureePause += duration(tPause, now);
+                        myJSONGeneral.diapos[currentPageNumber].dureePause += duration(tPause, now);
                     }
                     myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].nbPlay++;
                     tPlay = now;
@@ -539,9 +552,11 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
                 break;
             case "PAUSE":
+                console.log(action + " page : " + currentPageNumber + " chap : " + currentChapterNumber)
                 if (currentChapterNumber > 0) {
                     if (tPlay != 0) {
                         myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].dureePlay += duration(tPlay, now);
+                        myJSONGeneral.diapos[currentPageNumber].dureePlay += duration(tPlay, now);
                     }
                     myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].nbPause++;
                     tPause = now;
@@ -553,10 +568,14 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
             case "NAVBAR_USED":
                 break;
             case "NEXT_PAGE":
+                update_durees();
                 break;
             case "PREV_PAGE":
+                update_durees();
                 break;
-            case "SOMMAIRE":
+            case "SOMMAIRE": //BUG: crash si la page source etait une video en cours de lecture
+                update_durees();
+
                 myJSONGeneral.sommaire.totalClics++;
                 myJSONGeneral.sommaire.clicsOn[myReachedPage]++;
                 reachedPage = myReachedPage;
@@ -569,15 +588,42 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
         }
         //on ajoute une ligne au csv de log
         this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + "tChap" + ";" + "tfPlay");
+
+        function update_durees() {
+            if (currentChapterNumber > 0) {
+                if (tPlay != 0) {
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].dureePlay += duration(tPlay, now);
+                    myJSONGeneral.diapos[currentPageNumber].dureePlay += duration(tPlay, now);
+                    tPlay = now;
+                }
+                if (tPause != 0) {
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].dureePause += duration(tPause, now);
+                    myJSONGeneral.diapos[currentPageNumber].dureePause += duration(tPause, now);
+                    tPause = now;
+                }
+                if (tChap != 0) {
+                    myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].duree += duration(tChap, now);
+                    myJSONGeneral.diapos[currentPageNumber].duree += duration(tChap, now);
+                    tChap = now;
+                }
+            }
+        }
     }
+
+
+
+
+
 }
 //classes qui seront transformé en CSV par la suite
 class InfosGeneralJSON {
     constructor() {
         this.config = myConfig.name; //OK:
         this.participant = "nom_du_participant" + testID; //OK:
-        this.diapos = []; //NO:
+        this.diapos = []; //BUG: cf InfosDiapos
         this.sommaire = new InfosSommaire; //OK:
+        this.visites = [];
+        this.nth = []; 
     }
 
     toCSV() {
@@ -624,9 +670,9 @@ class InfosSommaire {
 }
 class InfosDiapo {
     constructor() {
-        this.duree = 0; //NO: 
-        this.dureePlay = 0; //NO:  TODO: faire la somme des infosChap[i].duree (manque chapitre 0)
-        this.dureePause = 0; //NO:  TODO: faire la somme des infosChap[i].duree (manque chapitre 0)
+        this.duree = 0; //BUG: ne prend pas en compte le chap 0
+        this.dureePlay = 0; //BUG: ne prend pas en compte le chap 0
+        this.dureePause = 0; //BUG: ne prend pas en compte le chap 0
         this.nbPlay = 0; //OK:
         this.nbPause = 0; //OK:
         this.infosChaps = []; //OK:tab de InfosChap
@@ -636,11 +682,27 @@ class InfosChap {
     constructor() {
         this.duree = 0; //OK:
         this.dureePlay = 0; //OK:
-        this.dureePause = 0; //OK: bug quand retour a zero
+        this.dureePause = 0; //OK: 
         this.nbPlay = 0; //OK:
         this.nbPause = 0; //OK:
     }
 }
+class InfosVisite {
+    constructor(){
+        this.diapoNum = currentPageNumber;
+        this.nth = myJSONGeneral.nth[currentPageNumber];
+        this.debut = 0;
+        this.fin = 0;
+        this.duree = 0;
+        this.nbPlay = 0;
+        this.nbPause= 0;
+        this.nbChapSuiv = 0;
+        this.nbChapPrec = 0;
+        this.nbChapList = 0;
+        this.nbNavBar = 0;
+    }
+}
+
 /* ╚═══════FIN═══════╝ CSV ============================================================*/
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
