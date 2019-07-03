@@ -467,7 +467,7 @@ class Csv {
 var tPlay = 0; //pour calculer le temps passé en lecture
 var tPause = 0; //pour calculer le temps passé en pause
 var tChap = 0; //pour calculer le temps passé sur un chap
-class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la methode addline
+class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la methode addline : THE MONSTROUS PART
     constructor() {
         super();
         this.lines.push("Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Video timer;Time from chap begining;Time from PLAY");
@@ -672,8 +672,13 @@ class InfosGeneralJSON {
 
     toCSV() {
         var res = "";
+        //infos générales
         var titles = ""; //ligne 1 du csv
         var values = ""; //ligne 2 du csv
+        //infos visite sur chaque page
+        var titlesV = ""; //ligne 1 du deuxieme tableau
+        var valuesV = ""; //ligne 2 du deuxieme tableau
+
         titles += "Participant;Config"
         values += this.participant + ";" + this.config;
 
@@ -702,7 +707,27 @@ class InfosGeneralJSON {
         }
         //console.log((titles.match(/;/g) || []).length + 1); //logs 3
 
-        res += titles + "\n" + values;
+        titlesV += "\n\nDiapo; Nieme visite; Debut; Fin; Duree; Nb play; Nb pause; Nb chap suiv; Nb chap prec; Nb chap list; Nb navbar\n";
+        for(const visite of this.visites){
+            valuesV +=  (1+visite.diapoNum) + ";" + 
+                        visite.nth + ";" + 
+                        visite.debut + ";" + 
+                        visite.fin + ";" + 
+                        visite.duree + ";" + 
+                        visite.nbPlay + ";" + 
+                        visite.nbPause + ";" + 
+                        visite.nbChapSuiv + ";" + 
+                        visite.nbChapPrec + ";" + 
+                        visite.nbChapList + ";" + 
+                        visite.nbNavBar + "\n"; 
+        }
+        var nbVoidCol = titles.split(";").length - titlesV.split(";").length; //combien de ";" vide il faut ajouter pour creer le csv
+        /*for (let i = 0; i < nbVoidCol; i++) {
+            titlesV += ";";
+            valuesV += ";";
+        }*/
+
+        res += titles + "\n" + values + titlesV + valuesV;
         return "data:text/csv;charset=utf-8," + res;
     }
 }
