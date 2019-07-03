@@ -630,7 +630,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 break;
                 // ══════════════════════════════════════════════════════════════════════════════════════════════════════ default ══════╝ */
         }
-        //on ajoute une ligne au csv de log
+        //on ajoute une ligne au csv de log 
         this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + "tChap" + ";" + "tfPlay");
 
         function update_durees() {
