@@ -51,6 +51,9 @@
                 <input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
                 <div class="ml-1">
                     <div class="btn-group" role="group">
+                        <!-- exemple popover
+                        <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover"data-trigger="hover" data-placement="top"data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">?</button>
+                        -->
                         <button class="btn btn-outline-success" type="button" onclick="addPage()">Ajouter une
                             page</button>
                         <button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
@@ -115,13 +118,13 @@
                 <div class="custom-control custom-checkbox custom-control-inline">
                     <input type="checkbox" class="custom-control-input video-option" id="customCheck5">
                     <label class="custom-control-label" for="customCheck5">Chapitres cliquables</label>
-                </div>                
+                </div>
                 <div class="custom-control custom-checkbox custom-control-inline">
                     <input type="checkbox" class="custom-control-input video-option" id="customCheck6">
                     <label class="custom-control-label" for="customCheck6">Chapitres navigables</label>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div id="chapcontainer" class="card col-md py-3 ml-3">
                     <!-- Insertion JS d'inputs -->
@@ -140,10 +143,11 @@
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" onchange="handleFiles(this.files)" id="inputGroupVideo"
                         accept="video/mp4, video/webm, video/quicktime">
-                    <label class="custom-file-label border-warning" id="input-file-name" for="inputGroupVideo">Choisir un fichier video</label>
+                    <label class="custom-file-label border-warning" id="input-file-name" for="inputGroupVideo">Choisir
+                        un fichier video</label>
                 </div>
             </div>
-            
+
         </main>
         <a id='download-config'></a>
         <!-- FIN de la main part -->

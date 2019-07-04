@@ -12,6 +12,15 @@ body {
     box-shadow: inset 0 0 10rem rgba(0, 0, 0, .5);
 }
 
+/*for fading
+div {
+    transition: opacity 1s;
+    opacity: 1; 
+}
+.fadein {
+    opacity: 0;
+}*/
+
 /*
  * Footer
  */

@@ -5,12 +5,23 @@ var pagesState = []; //0: à configurer - 1 : configuré
 var myURLs = []; //liste des URL utilisés pendant les configs
 var myPlayer = videojs('player', {});
 
+/*$(function () {
+    $('[data-toggle="popover"]').popover()
+})
+
+$(document).on('DOMSubtreeModified', function() {
+    console.log("dfhjhdfjhqdffjkd");
+    $(function(){
+        $('.fadein').removeClass('fadein');
+    })
+});*/
+
 /* ╔══════DEBUT══════╗ AJOUT SUPPRESSION PAGE =========================================*/
 function addPage() {
     //structure globale de l'input
     nbPages++;
     var newPage = document.createElement("div");
-    newPage.className = "input-group my-1";
+    newPage.className = "input-group my-1 fadein";
     newPage.id = "page" + nbPages;
     newPage.innerHTML = '<div class="input-group-prepend">' +
         '<span class="input-group-text">#' + nbPages + '</span>' +
@@ -23,11 +34,12 @@ function addPage() {
         // '<option value="3">Questions</option>' +
         '</select>' +
         '<div class="ml-1">' +
-        '<button class="btn btn-warning" type="button" id="button-' + nbPages + '" onclick="configPage(this)">Configurer</button>' +
+        '<button class="btn btn-warning" type="button" id="button-' + nbPages + '" onclick="configPage(this)" >Configurer</button>' +
         '</div>';
 
     pcontainer.appendChild(newPage); //ajout de la nouvelle div newPages (cf HTML)
     pagesState.push(0);
+    
 
 }
 
@@ -266,13 +278,20 @@ function saveVideoConfig() { //appui du bouton Terminer
         }
         chapters.push(newChap);
     }
+    var prevDate = -1;
     for (var eltDate of chapterDateElts) { //on recupere les dates dans les inputs pour les chapitres
         chapters[index].date = eltDate.value;
-        if (!eltDate.checkValidity()) {
+        if (!eltDate.checkValidity()) { //format valide selon la regex
             complete = false;
             eltDate.className = "form-control chapter-date border-danger";
         } else {
-            eltDate.className = "form-control chapter-date border-success";
+            if(prevDate < toSeconds(eltDate.value)){
+                eltDate.className = "form-control chapter-date border-success";
+            }else{
+                complete = false;
+                eltDate.className = "form-control chapter-date border-danger";
+            }
+            prevDate = toSeconds(eltDate.value);
         }
         index++;
     }
@@ -372,5 +391,25 @@ function bAlert(message) {
         '<span aria-hidden="true">&times;' +
         '</span></button></div>';
 
+}
+
+function toSeconds(time) {
+    var a = time.split(':'); // split au séparateur ":"
+    var seconds = 0;
+    switch (a.length) {
+        case 1:
+            seconds = time
+            break;
+        case 2:
+            seconds = (+a[0]) * 60 + (+a[1]);
+            break;
+        case 3:
+            seconds = (+a[0]) * 3600 + (+a[1]) * 60 + (+a[2]);
+            break;
+        default:
+            alert("Heure du chapitre dans un format incorrect")
+            break;
+    }
+    return seconds;
 }
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
