@@ -29,7 +29,6 @@ var myCsvLogs = "";
 var currentPageNumber = 0;
 var currentChapterNumber = 0;
 
-var endTime = 0; //heure de la fin du test
 var startTimeOnTest = 0;
 var startTimeOnPage = 0;
 
@@ -132,11 +131,17 @@ function personnalInfos() { //phase d'initialisation
     myCsvLogs = "";
     currentPageNumber = 0;
     currentChapterNumber = 0;
-    endTime = 0;
     startTimeOnTest = 0;
     startTimeOnPage = 0;
     previousTime = 0;
     myReachedPage = 0;
+    tPlay = 0;
+    tPlayCSV = 0;
+    tChapCSV = 0;
+    tPause = 0;
+    tChap = 0;
+    chapFrom = 0;
+    chapTo = 0;
 
     testID = generateUniqueID();
     ident.value = testID;
@@ -245,7 +250,6 @@ function finishConfig() { //récup des infos et résulatats
     hideByClass("load");
     hideByClass("pages-index")
     showByClass("load-finish");
-    endTime = Date.now();
     myCsvLogs.addLine("END");
     console.log(myCsvLogs.toString());
     console.log(myJSONGeneral);
@@ -538,7 +542,6 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                     }
                     if (tChap != 0) {
                         myJSONGeneral.diapos[currentPageNumber].infosChaps[chapFrom - 1].duree += duration(tChap, now);
-                        myJSONGeneral.diapos[currentPageNumber].duree += duration(tChap, now);
                         tChap = now;
                     }
                 }
@@ -714,10 +717,10 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 }
                 if (tChap != 0) {
                     myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].duree += duration(tChap, now);
-                    myJSONGeneral.diapos[currentPageNumber].duree += duration(tChap, now);
                     tChap = now;
                 }
-            }
+            }            
+            myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
         }
     }
 
