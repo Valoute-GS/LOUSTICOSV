@@ -394,6 +394,7 @@ var chapFrom = 0;
 var chapTo = 0;
 
 function checkChap() { //check quel est le chapitre courant durant la lecture d'une video
+    previousTime = myPlayer.currentTime(); 
     if (myConfig.pages[currentPageNumber].type === "video") { // on n'execute les verifs que pdt une page video
         var tmp = 0;
         for (const chapterDate of currentChapters.keys()) { //on parcourt la liste des chaps
@@ -465,6 +466,8 @@ class Csv {
 
 //Variables pour le controle du temps ecoulé en fonction de l'état du player
 var tPlay = 0; //pour calculer le temps passé en lecture
+var tPlayCSV = 0;
+var tChapCSV = 0;
 var tPause = 0; //pour calculer le temps passé en pause
 var tChap = 0; //pour calculer le temps passé sur un chap
 class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la methode addline : THE MONSTROUS PART
@@ -473,37 +476,54 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
         this.lines.push("Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Video timer;Time from chap begining;Time from PLAY");
     }
 
-    addLine(action) { // START_PAGE | NEXT_PAGE | PREV_PAGE | CHAP_ATT | CHAP_USED | VIDEO_START | VIDEO_END | PLAY | PAUSE | NAVBAR_USED  
+    addLine(action) {
         var now = Date.now();
         //var pour l'aout de ligne CSV
         var d = new Date();
+
+        // timer  cPageNumber  cChapterNumber  reachedPage  reachedChap  action  tfTest  tfPage  videoTimer  tfChap  tfPlay
         var timer = d.toLocaleDateString() + "(" + d.toLocaleDateString("fr-FR", {
             weekday: "short"
         }) + ")-" + d.toLocaleTimeString();
-
+        var cPageNumber = currentPageNumber;
+        var cChapterNumber = "";
+        var reachedPage = ""; //TODO:
+        var reachedChap = "";
+        //action
         var tfTest = duration(startTimeOnTest, now);
         var tfPage = duration(startTimeOnPage, now);
-        var reachedPage = "";
-        var reachedChap = "";
-        var videoTimer = 0;
+        var videoTimer = "";
+        var tfChap = "";
+        var tfPlay= "";
 
         // on assigne videotimer si necessaire (aka si sur une page de type video)
         if (currentPageNumber < myConfig.pages.length && myConfig.pages[currentPageNumber].type === "video") {
+            cChapterNumber = currentChapterNumber;
+            // reachedChap cf CHAP_ATT
             videoTimer = myPlayer.currentTime();
+            tfChap = duration(tChapCSV, now);
+            if(tfChap>1500000000){tfChap="";}
+            tfPlay = duration(tPlayCSV, now);
+            if(tfPlay>1500000000){tfPlay="";}
         }
 
-        console.log(action +
+        /*console.log(action +
             "\n    ├ page : " + currentPageNumber +
-            "\n    └ chapter : " + currentChapterNumber);
+            "\n    └ chapter : " + currentChapterNumber);*/
         switch (action) {
             // ═══════════════════════════════════════════════════════════════════════════════════════════════════════ START_PAGE ══════╗ */
             case "START_PAGE":
                 myJSONGeneral.nth[currentPageNumber]++;
                 myJSONGeneral.visites.push(new InfosVisite(tfTest));
+
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + "0" + ";" + "" + ";" + "" + ";" + "");
                 break;
                 // ═══════════════════════════════════════════════════════════════════════════════════════════════════ START_PAGE ══════╝ */
-                // ═════════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_ATT ══════╗ */
+                // ═════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_ATT ══════╗ */
             case "CHAP_ATT":
+                tChapCSV = now;
                 reachedChap = chapTo;
                 if (chapFrom > 0) {
                     if (tPlay != 0) {
@@ -528,35 +548,60 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                     tPause = now;
                 }
                 tChap = now;
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" + 
+                reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ═════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_ATT ══════╝ */
-                // ════════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_USED ══════╗ */
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_USED ══════╗ */
             case "CHAP_USED":
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbChapList++;
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + previousTime + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_USED ══════╝ */
-                // ════════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_CHAP ══════╗ */
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_CHAP ══════╗ */
             case "PREV_CHAP":
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbChapPrec++;
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + previousTime + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_CHAP ══════╝ */
-                // ════════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_CHAP ══════╗ */
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_CHAP ══════╗ */
             case "NEXT_CHAP":
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbChapSuiv++;
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + previousTime + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_CHAP ══════╝ */
-                // ══════════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_START ══════╗ */
+                // ══════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_START ══════╗ */
             case "VIDEO_START":
+                
+                    //on ajoute une ligne au csv de log 
+                    this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" + 
+                    "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + "" + ";" + "");
                 break;
                 // ══════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_START ══════╝ */
-                // ════════════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_END ══════╗ */
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_END ══════╗ */
             case "VIDEO_END":
                 tPlay = 0;
                 tPause = 0;
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ════════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_END ══════╝ */
-                // ═════════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╗ */
+                // ═════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╗ */
             case "PLAY":
+                tPlayCSV = now;
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbPlay++;
                 if (currentChapterNumber > 0) {
                     if (tPause != 0) {
@@ -568,10 +613,13 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 }
                 tPause = 0;
                 myJSONGeneral.diapos[currentPageNumber].nbPlay++;
-
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ═════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╝ */
-                // ════════════════════════════════════════════════════════════════════════════════════════════════════════════ PAUSE ══════╗ */
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════════ PAUSE ══════╗ */
             case "PAUSE":
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbPause++;
                 console.log(action + " page : " + currentPageNumber + " chap : " + currentChapterNumber)
@@ -585,31 +633,46 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 }
                 tPlay = 0;
                 myJSONGeneral.diapos[currentPageNumber].nbPause++;
-
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ═════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╝ */
-                // ══════════════════════════════════════════════════════════════════════════════════════════════════════ NAVBAR_USED ══════╗ */
+                // ══════════════════════════════════════════════════════════════════════════════════════════════════ NAVBAR_USED ══════╗ */
             case "NAVBAR_USED":
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbNavBar++;
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + previousTime + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ══════════════════════════════════════════════════════════════════════════════════════════════════ NAVBAR_USED ══════╝ */
-                // ════════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_PAGE ══════╗ */
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_PAGE ══════╗ */
             case "NEXT_PAGE":
                 update_durees();
 
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin = tfTest;
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].duree = myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin - myJSONGeneral.visites[myJSONGeneral.visites.length - 1].debut;
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + reachedPage + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_PAGE ══════╝ */
-                // ════════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_PAGE ══════╗ */
+                // ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_PAGE ══════╗ */
             case "PREV_PAGE":
                 update_durees();
 
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin = tfTest;
                 myJSONGeneral.visites[myJSONGeneral.visites.length - 1].duree = myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin - myJSONGeneral.visites[myJSONGeneral.visites.length - 1].debut;
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + reachedPage + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
                 break;
                 // ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_PAGE ══════╝ */
-                // ═════════════════════════════════════════════════════════════════════════════════════════════════════════ SOMMAIRE ══════╗ */
+                // ═════════════════════════════════════════════════════════════════════════════════════════════════════ SOMMAIRE ══════╗ */
             case "SOMMAIRE":
                 update_durees();
 
@@ -618,21 +681,25 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
                 myJSONGeneral.sommaire.totalClics++;
                 myJSONGeneral.sommaire.clicsOn[myReachedPage]++;
                 reachedPage = myReachedPage;
+                
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + reachedPage + ";" + 
+                "" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);                
                 break;
                 // ═════════════════════════════════════════════════════════════════════════════════════════════════════ SOMMAIRE ══════╝ */
-                // ══════════════════════════════════════════════════════════════════════════════════════════════════════════════ END ══════╗ */
+                // ══════════════════════════════════════════════════════════════════════════════════════════════════════════ END ══════╗ */
             case "END":
+                //on ajoute une ligne au csv de log 
+                this.lines.push(timer + ";" + "" + ";" + "" + ";" + "" + ";" + "" + ";" + action + ";" + tfTest + ";" + "" + ";" + "" + ";" + "" + ";" + "");
                 break;
                 // ══════════════════════════════════════════════════════════════════════════════════════════════════════════ END ══════╝ */
-                // ══════════════════════════════════════════════════════════════════════════════════════════════════════════ default ══════╗ */
+                // ══════════════════════════════════════════════════════════════════════════════════════════════════════ default ══════╗ */
             default:
                 console.error("Unknown Action : " + action);
                 break;
                 // ══════════════════════════════════════════════════════════════════════════════════════════════════════ default ══════╝ */
         }
-        //on ajoute une ligne au csv de log 
-        this.lines.push(timer + ";" + currentPageNumber + ";" + currentChapterNumber + ";" + reachedPage + ";" + reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + "tChap" + ";" + "tfPlay");
-
+        
         function update_durees() {
             if (currentChapterNumber > 0) {
                 if (tPlay != 0) {
@@ -705,21 +772,21 @@ class InfosGeneralJSON {
             values += ";" + clic;
             iSom++;
         }
-        //console.log((titles.match(/;/g) || []).length + 1); //logs 3
+        //console.log((titles.match(/;/g) || []).length + 1); //logs 3 
 
         titlesV += "\n\nDiapo; Nieme visite; Debut; Fin; Duree; Nb play; Nb pause; Nb chap suiv; Nb chap prec; Nb chap list; Nb navbar\n";
-        for(const visite of this.visites){
-            valuesV +=  (1+visite.diapoNum) + ";" + 
-                        visite.nth + ";" + 
-                        visite.debut + ";" + 
-                        visite.fin + ";" + 
-                        visite.duree + ";" + 
-                        visite.nbPlay + ";" + 
-                        visite.nbPause + ";" + 
-                        visite.nbChapSuiv + ";" + 
-                        visite.nbChapPrec + ";" + 
-                        visite.nbChapList + ";" + 
-                        visite.nbNavBar + "\n"; 
+        for (const visite of this.visites) {
+            valuesV += (1 + visite.diapoNum) + ";" +
+                visite.nth + ";" +
+                visite.debut + ";" +
+                visite.fin + ";" +
+                visite.duree + ";" +
+                visite.nbPlay + ";" +
+                visite.nbPause + ";" +
+                visite.nbChapSuiv + ";" +
+                visite.nbChapPrec + ";" +
+                visite.nbChapList + ";" +
+                visite.nbNavBar + "\n";
         }
         var nbVoidCol = titles.split(";").length - titlesV.split(";").length; //combien de ";" vide il faut ajouter pour creer le csv
         /*for (let i = 0; i < nbVoidCol; i++) {
@@ -764,7 +831,7 @@ class InfosVisite {
         this.fin = 0; //OK:
         this.duree = 0; //OK:
         this.nbPlay = 0; //OK:
-        this.nbPause= 0; //OK:
+        this.nbPause = 0; //OK:
         this.nbChapSuiv = 0; //OK:
         this.nbChapPrec = 0; //OK:
         this.nbChapList = 0; //OK:
