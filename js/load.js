@@ -332,7 +332,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     } else {
         document.querySelector(".vjs-progress-control").style.pointerEvents = "none";
     }
-    //CHAPITRES VISIBLES
+    //CHAPITRES VISIBLES 
     chapcontainer.innerHTML = "";
     if (VISIBLECHAP) {
         chapcontainer.style.display = "block";
@@ -348,7 +348,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     }
     //CHAPITRES CLIQUABLE
     if (CLICKABLECHAP) {
-        //nothing to do
+        //nothing to do.
     } else {
         for (const btn of document.getElementsByClassName("btn-chapter")) {
             btn.disabled = "true";
