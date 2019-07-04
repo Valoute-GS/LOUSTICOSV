@@ -4,13 +4,12 @@ var nbPages = 0; //nb de page pour l'affichage au "compteur"
 var pagesState = []; //0: à configurer - 1 : configuré
 var myURLs = []; //liste des URL utilisés pendant les configs
 var myPlayer = videojs('player', {});
-
-/*$(function () {
+/*
+$(function () {
     $('[data-toggle="popover"]').popover()
 })
 
 $(document).on('DOMSubtreeModified', function() {
-    console.log("dfhjhdfjhqdffjkd");
     $(function(){
         $('.fadein').removeClass('fadein');
     })
