@@ -301,6 +301,10 @@ function saveVideoConfig() { //appui du bouton Terminer
 
     if (!isSomething(fileName) || !isSomething(myPlayer.src())) {
         complete = false;
+    }else{
+        if(myPlayer.duration() < prevDate){ //si la video est plus longue que la date du dernier chap
+            complete = false;
+        }
     }
 
     if (complete) {
