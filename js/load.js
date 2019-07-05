@@ -297,7 +297,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         currentChapters.set(toSeconds(chapter.date), index);
         index++;
     }
-    currentChapters = new Map([...currentChapters.entries()].sort((a, b) => a[0] - b[0])); //tri par date
+    //currentChapters = new Map([...currentChapters.entries()].sort((a, b) => a[0] - b[0])); //tri par date obselete -> date dans l'ordre 
 
     //init player
     myPlayer.src({
@@ -396,7 +396,6 @@ function videoEnded() {
 
 var chapFrom = 0;
 var chapTo = 0;
-
 function checkChap() { //check quel est le chapitre courant durant la lecture d'une video
     previousTime = myPlayer.currentTime(); 
     if (myConfig.pages[currentPageNumber].type === "video") { // on n'execute les verifs que pdt une page video

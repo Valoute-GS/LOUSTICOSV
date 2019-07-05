@@ -1,9 +1,14 @@
 /*eslint-env browser*/
-
 var nbPages = 0; //nb de page pour l'affichage au "compteur"
 var pagesState = []; //0: à configurer - 1 : configuré
 var myURLs = []; //liste des URL utilisés pendant les configs
 var myPlayer = videojs('player', {});
+window.onbeforeunload = function () {
+    return "";
+};
+/*const editor = new EditorJS({
+    autofocus: true
+});*/
 /*
 $(function () {
     $('[data-toggle="popover"]').popover()
@@ -26,7 +31,7 @@ function addPage() {
         '<span class="input-group-text">#' + nbPages + '</span>' +
         '</div>' +
         '<input type="text" class="form-control" style="width: 40%" id="page-' + nbPages + '" placeholder="Nom de la page" onchange="namePageUpdate(this)">' +
-        '<select class="custom-select">' +
+        '<select class="custom-select" id="format-select-'+ nbPages +'">' +
         '<option selected>Format ...</option>' +
         '<option value="1">Texte</option>' +
         '<option value="2">Video</option>' +
@@ -75,8 +80,8 @@ function configPage(e) {
             maintitle.innerHTML = "VIDEO - Page " + currentPageNumber;
             configVideo();
             break;
-        case "3": // Question
-            configSurvey();
+        case "3": // 
+            //configTextEditor();
             break;
 
         default:
@@ -142,6 +147,14 @@ function configVideo() {
             document.getElementById("input-title-" + nbOfChapters).value = chaps[nbOfChapters - 1].name;
             document.getElementById("input-date-" + nbOfChapters).value = chaps[nbOfChapters - 1].date;
         }
+        var index = 1;
+        for (const option of myConfig.pages[currentPageNumber - 1].options) {
+            console.log(myConfig.pages[currentPageNumber - 1].options);
+            
+            document.getElementById("customCheck"+index).checked = option
+
+            index++;
+        }
         //recharge la source et variables fileType/Name
         fileType = myConfig.pages[currentPageNumber - 1].videoType;
         fileName = myConfig.pages[currentPageNumber - 1].videoName;
@@ -165,7 +178,110 @@ function saveVideo() {
         showByClass("configurator-main");
     }
 }
+
+/* ==== TEXT EDITOR ====*/
+function configTextEditor() {
+    hideByClass("configurator");
+    showByClass("configurator-text-editor")
+}
 /* ╚═══════FIN═══════╝ CONFIG PAGE ====================================================*/
+
+/* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
+var nbJson = 0; //checker si on a pas importé pls config en mm temps
+var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
+var loadedConfig = "";
+function loadFiles(files) { //import des fichiers + affichage
+    //iteration sur les fichiers selectionnés
+    for (const file of files) {
+        if (file.type === "application/json") {
+            nbJson++;
+            if (nbJson > 1) { //On ne garde que le premier fichier json et on avertis si pls ont été choisis
+                alert("Le fichier : " + file.name + " n'a pas été importé, veuillez ne sélectionner qu'un fichier de configuration (.json)")
+            } else {
+                imported.innerHTML += '<li class="list-group-item list-group-item-primary my-1">' + file.name + '</li>';
+                var selectedFile = file;
+                var reader = new FileReader();
+                reader.onload = function () {
+                    loadedConfig = JSON.parse(reader.result);
+                };
+                reader.readAsText(selectedFile);
+                //Quand la lecture est terminée on controle l'état de la config chargéeé
+                reader.onloadend = function () {
+                    controlConfig(false);
+                };
+            }
+        } else { //fichier non-json
+            imported.innerHTML += '<li class="list-group-item my-1">' + file.name + '</li>';
+            importedFiles.set(file.name, file);
+
+            controlConfig(false);
+        }
+    }
+}
+
+function controlConfig(canBeLoaded) { //check si tous les fichiers nécessaires sont disponibles (ceux en trop seront ignorés pour l'instant)
+    var isCorrect = true;
+    var errorMessages = new Set([]);
+    mainerror.innerHTML = "";
+
+    if (loadedConfig !== "") { //Si un config a été chargée
+        //check les fichiers importés/necessaires
+        var imp = [];
+        for (const impFile of importedFiles.values()) {
+            imp.push(impFile.name)
+        }
+        for (const page of loadedConfig.pages) { //check si les fichiers nécessaires ont bien été importés
+            if (page.type === "video") {
+                if (!imp.includes(page.videoName)) {
+                    errorMessages.add("Le fichier " + page.videoName + " est manquant");
+                    isCorrect = false;
+                }
+            }
+        }
+    } else { //si aucun fichier json selectionné
+        errorMessages.add("Veuillez sélectionner un fichier de configuration .json");
+        isCorrect = false;
+    }
+    if (isCorrect) { //si tout est okay on passe a la suite
+        document.getElementById("input-loadfile-name").className = "custom-file-label border-success";
+        btnSelectConfig.style.display = "inline";
+        if (canBeLoaded) {
+            loadConfig()
+        };
+    } else { //sinon on affiches les erreurs
+        document.getElementById("input-loadfile-name").className = "custom-file-label border-warning";
+        for (const message of errorMessages) {
+            mainerror.innerHTML += bAlert(message);
+        }
+    }
+}
+
+function loadConfig() {
+    //reset des champs et infos
+    pcontainer.innerHTML = "";
+    myConfig = loadedConfig;
+    nbPages = 0;
+    //maj avec les infos de la config chargee
+    let index = 0 ;
+    for (const page of myConfig.pages){
+        currentPageNumber = index+1;
+        addPage();
+        document.getElementById("page-"+currentPageNumber).value = page.pageName;
+        document.getElementById("config-name").value = myConfig.name;
+        if (page.type === "video") {
+            updatePagesState(2);
+            document.getElementById("format-select-"+currentPageNumber).selectedIndex = 2;
+            fileUrl = URL.createObjectURL(importedFiles.get(page.videoName));
+            myURLs[currentPageNumber] = fileUrl;
+        }else if(page.type === "text") {
+            updatePagesState(1);
+            document.getElementById("format-select-"+currentPageNumber).selectedIndex = 1;
+        }
+        index++;
+    }
+    loadConfigInput.style.display = "none";
+}
+/* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
 /* ╔══════DEBUT══════╗ VIDEO CREATOR ==================================================*/
 var nbOfChapters = 0;
@@ -354,7 +470,9 @@ function finishConfig() {
         alertmain.innerHTML = bAlert("Configuration incomplete ou erronée");
     }
 
-    function configChecker() {        
+    function configChecker() {
+        console.log(pagesState.every(isSet));
+        
         return pagesState.every(isSet) && pagesState.length > 0 && isSomething(document.getElementById("config-name").value)
     }
 

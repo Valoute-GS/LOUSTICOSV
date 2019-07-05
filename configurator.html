@@ -46,36 +46,56 @@
         <!-- DEBUT de la main part -->
         <!-- Page principale de configuration -->
         <main role="main" class="configurator configurator-main">
-            <div id="alertmain"></div>
-            <div class="input-group mt-5 mb-3">
-                <input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
-                <div class="ml-1">
-                    <div class="btn-group" role="group">
-                        <!-- exemple popover
+            <!-- charger une config precdmt créée -->
+            <div id="loadConfigInput" style="display: block">
+                <div id="mainerror"></div>
+                <ul class="list-group" id="imported">
+                </ul>
+                <div class="input-group my-3">
+                    <div class="custom-file">
+                        <input type="file" multiple class="custom-file-input" id="input"
+                            onchange="loadFiles(this.files)" id="inputLoadConfig"
+                            accept="application/json, video/mp4, video/webm, video/quicktime">
+                        <label class="custom-file-label border-dark" id="input-loadfile-name" for="inputGroupVideo">Charger
+                            et modfifier une
+                            configuration et ses fichiers annexes</label>
+                    </div>
+                </div>
+                <button class="btn btn-success" id="btnSelectConfig" type="button" onclick="controlConfig(true)"
+                    style="display: none;">Charger</button>
+            </div>
+            <!-- page principale de l'editeur -->
+            <div id="configMainPart">
+                <div id="alertmain"></div>
+                <div class="input-group mt-5 mb-3">
+                    <input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
+                    <div class="ml-1">
+                        <div class="btn-group" role="group">
+                            <!-- exemple popover
                         <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover"data-trigger="hover" data-placement="top"data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">?</button>
                         -->
-                        <button class="btn btn-outline-success" type="button" onclick="addPage()">Ajouter une
-                            page</button>
-                        <button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
-                            page</button>
+                            <button class="btn btn-outline-success" type="button" onclick="addPage()">Ajouter une
+                                page</button>
+                            <button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
+                                page</button>
+                        </div>
+                        <button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Terminer</button>
                     </div>
-                    <button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Terminer</button>
+                </div>
+                <form>
+                    <div class="custom-control custom-checkbox custom-control-inline">
+                        <input type="checkbox" class="custom-control-input config-option" id="switch1">
+                        <label class="custom-control-label" for="switch1">Sommaire</label>
+                    </div>
+                    <div class="custom-control custom-checkbox custom-control-inline" style="display: none">
+                        <input type="checkbox" class="custom-control-input config-option" id="switch2" disabled>
+                        <label class="custom-control-label" for="switch2">Indispo</label>
+                    </div>
+                </form>
+                <div id="pcontainer" class="mt-3">
+                    <!-- Insertion JS d'inputs pages -->
                 </div>
             </div>
-            <form>
-                <div class="custom-control custom-checkbox custom-control-inline">
-                    <input type="checkbox" class="custom-control-input config-option" id="switch1">
-                    <label class="custom-control-label" for="switch1">Sommaire</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline" style="display: none">
-                    <input type="checkbox" class="custom-control-input config-option" id="switch2" disabled>
-                    <label class="custom-control-label" for="switch2">Indispo</label>
-                </div>
-            </form>
-            <div id="pcontainer" class="mt-3">
-                <!-- Insertion JS d'inputs pages -->
-            </div>
-
         </main>
         <!-- Configuration text -->
         <main role="main" class="configurator configurator-text" style="display: none">
@@ -85,6 +105,11 @@
                 <textarea class="form-control rounded-0" id="text-input" rows="10"></textarea>
             </div>
         </main>
+        <!-- Configuration text editor 
+        <main role="main" class="configurator configurator-text-editor" style="display: none">
+                <div id="editorjs"></div>
+            </main> 
+            -->
         <!-- Configuration video -->
         <main role="main" class="configurator configurator-video" style="display: none">
             <div id="videoerror"></div>
@@ -167,6 +192,7 @@
     <script src="js/jquery-3.3.1.slim.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/editorjs.js"></script>
     <script src="js/configurator.js"></script>
 
 </body>
