@@ -202,6 +202,7 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
         btnNextPage.style.display = "none";
         btnPrevPage.style.display = "none";
         finishConfig();
+        pauseVideo(false);
     } else {
         btnNextPage.style.display = "block";
         pauseVideo(false); //pour pas que la video précédement chargée continue en fond si on est sur autre chose qu'une video
@@ -287,8 +288,9 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     const FREENAV = currentPage.options[1];
     const VISIBLECHAPZONE = currentPage.options[2];
     const VISIBLECHAP = currentPage.options[3];
-    const CLICKABLECHAP = currentPage.options[4];
-    const NAVIGABLECHAP = currentPage.options[5];
+    const VISIBLEDATECHAP = currentPage.options[4];
+    const CLICKABLECHAP = currentPage.options[5];
+    const NAVIGABLECHAP = currentPage.options[6];
 
     //on met a jour la liste des chapitres courants
     currentChapters = new Map();
@@ -346,17 +348,30 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
     }
     //CHAPITRES VISIBLES
     if (VISIBLECHAP) {
-        for (const chapter of myConfig.pages[currentPageNumber].chapters) {
-            chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-1">' + chapter.name + ' : ' +
-                '<button class="btn btn-sm btn-light btn-chapter" type="button" onclick="gotoTime(this.innerHTML)">' + chapter.date +
-                '</button>' +
-                '</li>';
+        chapcontainer.innerHTML += '<li class="list-group-item border-0 bg-transparent my-1 p-0">Chapitres</li>';
+        if (VISIBLEDATECHAP) {
+            for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
+                chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
+                    '<button class="btn btn-block btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.children[0].innerHTML)">' + chapter.name + ' : ' + chapter.date + 
+                    '<div style="display : none;">' + chapter.date + '</div>'+
+                    '</button>' +
+                    '</li>';
+            }
+        }else{
+            for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
+                chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
+                    '<button class="btn btn-block btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.children[0].innerHTML)">' + chapter.name +
+                    '<div style="display : none;">' + chapter.date + '</div>'+
+                    '</button>' +
+                    '</li>';
+            }
         }
     }
     //CHAPITRES CLIQUABLE
     if (!CLICKABLECHAP) {
         for (const btn of document.getElementsByClassName("btn-chapter")) {
             btn.disabled = "true";
+            btn.className = "btn btn-block text-primary btn-outline-secondary btn-chapter"
         }
     }
     //CHAPITRES CLIQUABLE
@@ -852,7 +867,7 @@ class InfosVisite {
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
 function reloadPage() {
     window.onbeforeunload = function () {
-        
+
     };
     document.location.reload(true);
 }

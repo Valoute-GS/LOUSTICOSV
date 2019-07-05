@@ -364,6 +364,12 @@ function checkVideoOption() {
         customCheck5.checked = false;
         customCheck5.disabled = true;
     }
+    if(customCheck4.checked){
+        customCheck6.disabled = false;
+    }else{
+        customCheck6.checked = false;
+        customCheck6.disabled = true;
+    }
 }
 
 /* ╚═══════FIN═══════╝ VIDEO CREATOR ==================================================*/
