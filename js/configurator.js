@@ -69,8 +69,6 @@ function configPage(e) {
     format = childNodes[2].options[childNodes[2].selectedIndex].value;
     currentPageName = childNodes[1].value;
 
-    currentPage.getElementsByClassName("custom-select")[0].className = "custom-select border-success";
-
     switch (format) {
         case "1": //Texte
             configText();
@@ -93,6 +91,7 @@ function configPage(e) {
 function updatePagesState(newState) {
     pagesState[currentPageNumber - 1] = newState;
     var concernedButton = document.getElementById("button-" + currentPageNumber);
+    document.getElementById("format-select-"+currentPageNumber).className = "custom-select border-success";
     concernedButton.className = "btn btn-success";
     concernedButton.innerHTML = "Configuré"
 }
@@ -262,6 +261,9 @@ function loadConfig() {
     myConfig = loadedConfig;
     nbPages = 0;
     //maj avec les infos de la config chargee
+    for (let i = 1; i <= myConfig.options.length ; i++) {
+        document.getElementById("switch"+i).checked = myConfig.options[i-1]
+    }
     let index = 0 ;
     for (const page of myConfig.pages){
         currentPageNumber = index+1;
@@ -279,7 +281,15 @@ function loadConfig() {
         }
         index++;
     }
-    loadConfigInput.style.display = "none";
+    //reset des infos apres import
+    mainerror.innerHTML = "";
+    imported.innerHTML = "";
+    nbJson = 0; //checker si on a pas importé pls config en mm temps
+    importedFiles = new Map(); //tab des fichiers (autre que le json) importés
+    loadedConfig = "";
+    document.getElementById("input-loadfile-name").className = "custom-file-label border-dark";
+    btnSelectConfig.style.display = "none";
+    loadConfigInput.style.display = "block";
 }
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
