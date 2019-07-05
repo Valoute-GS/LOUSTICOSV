@@ -91,11 +91,11 @@
                 <div class="form-row">
                     <div class="col">
                         <input type="text" class="form-control infos-perso" placeholder="Nom" required
-                            pattern="^[àäâéèêëïîöôùüûç-a-zA-Z ]*$">
+                            pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]*$">
                     </div>
                     <div class="col">
                         <input type="text" class="form-control infos-perso" placeholder="Prenom" required
-                            pattern="^[àäâéèêëïîöôùüûç-a-zA-Z ]*$">
+                            pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]*$">
                     </div>
                     <div class="w-100"></div>
                 </div>
@@ -148,7 +148,8 @@
         <main role="main" class="load load-finish my-auto" style="display: none">
             <div class="text-center mx-auto">
                 <h1>Merci de votre attention</h1>
-                <button class="btn btn-primary" type="button" onclick="personnalInfos();">Relancer</button>
+                <button class="btn btn-primary" type="button" onclick="personnalInfos();">Relancer le même test</button>
+                <button class="btn btn-primary" type="button" onclick="reloadPage()">Charger un nouveau test</button>
             </div>
         </main>
 

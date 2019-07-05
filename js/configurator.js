@@ -1,6 +1,6 @@
 /*eslint-env browser*/
 var nbPages = 0; //nb de page pour l'affichage au "compteur"
-var pagesState = []; //0: à configurer - 1 : configuré
+var pagesState = []; //0: à configurer | 1 : configuré
 var myURLs = []; //liste des URL utilisés pendant les configs
 var myPlayer = videojs('player', {});
 window.onbeforeunload = function () {
@@ -53,6 +53,8 @@ function rmPage() {
         var select = document.getElementById('pcontainer');
         select.removeChild(select.lastChild);
         pagesState.pop();
+        myConfig.pages.pop();
+        pagesState.pop();
     }
 }
 /* ╚═══════FIN═══════╝ AJOUT SUPPRESSION PAGE =========================================*/
@@ -77,6 +79,7 @@ function configPage(e) {
         case "2": //Video
             maintitle.innerHTML = "VIDEO - Page " + currentPageNumber;
             configVideo();
+            checkVideoOption();
             break;
         case "3": // 
             //configTextEditor();
@@ -136,7 +139,6 @@ function configVideo() {
     document.getElementById("input-file-name").innerHTML = "Choisir un fichier video";
     document.getElementById("input-file-name").className = "custom-file-label border-warning";
     nbOfChapters = 0;
-
     // restauration de la cofiguration si deja faite
     if (pagesState[currentPageNumber - 1] === 2) { //Si un format config a deja ete fait on le charge
         //on remplit les chapitres
@@ -148,10 +150,8 @@ function configVideo() {
         }
         var index = 1;
         for (const option of myConfig.pages[currentPageNumber - 1].options) {
-            console.log(myConfig.pages[currentPageNumber - 1].options);
-            
-            document.getElementById("customCheck"+index).checked = option
-
+            console.log(myConfig.pages[currentPageNumber - 1].options);            
+            document.getElementById("customCheck"+index).checked = option;
             index++;
         }
         //recharge la source et variables fileType/Name
@@ -165,6 +165,12 @@ function configVideo() {
             src: myURLs[currentPageNumber]
         });
         myPlayer.pause();
+    }else{
+        var index = 0;
+        for (const option of document.getElementsByClassName("custom-control-input video-option")) {        
+            option.checked = false;
+            index++;
+        }
     }
 
     showByClass("configurator-video")
@@ -290,6 +296,7 @@ function loadConfig() {
     document.getElementById("input-loadfile-name").className = "custom-file-label border-dark";
     btnSelectConfig.style.display = "none";
     loadConfigInput.style.display = "block";
+    input.value="";
 }
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
@@ -300,6 +307,8 @@ var fileType;
 var fileName;
 
 function handleFiles(file) {
+    console.log(file);
+    
     document.getElementById("input-file-name").innerHTML = file[0].name;
     document.getElementById("input-file-name").className = "custom-file-label border-success";
     console.log(file[0]);
@@ -339,6 +348,21 @@ function removeChapterInput() {
     if (nbOfChapters > 0) { //si il y a des inputs dans la liste
         document.getElementById("chapcontainer").removeChild(document.getElementById("chapter" + nbOfChapters));
         nbOfChapters--;
+    }
+}
+
+function checkVideoOption() {
+    if(customCheck3.checked){
+        customCheck4.disabled = false;
+    }else{
+        customCheck4.checked = false;
+        customCheck4.disabled = true;
+    }
+    if(customCheck4.checked){
+        customCheck5.disabled = false;
+    }else{
+        customCheck5.checked = false;
+        customCheck5.disabled = true;
     }
 }
 
@@ -438,6 +462,7 @@ function saveVideoConfig() { //appui du bouton Terminer
         updatePagesState(2);
         myPlayer.reset();
         videoerror.innerHTML = "";
+        inputGroupVideo.value="";
         return true;
     } else {
         videoerror.innerHTML = bAlert("Configuration video incomplete ou invalide");
