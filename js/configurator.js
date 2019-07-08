@@ -6,6 +6,7 @@ var myPlayer = videojs('player', {});
 window.onbeforeunload = function () {
 	return "";
 };
+
 /*const editor = new EditorJS({
 		autofocus: true
 });*/
