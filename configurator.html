@@ -3,201 +3,208 @@
 <html lang="fr">
 
 <head>
-    <!-- meta -->
-    <meta charset="utf-8">
-    <title>LOUSTIC OS</title>
-    <meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
-    <meta name="author" content="valentin_utiel">
-    <link rel="icon" type="image/png" href="img/favicon.png" />
+	<!-- meta -->
+	<meta charset="utf-8">
+	<title>LOUSTIC OS</title>
+	<meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
+	<meta name="author" content="valentin_utiel">
+	<link rel="icon" type="image/png" href="img/favicon.png" />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/styles.css">
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/styles.css">
 
-    <!-- Bootstarp -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+	<!-- Bootstarp -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
 
-    <!-- videoJS -->
-    <link href="css/video-js.css" rel="stylesheet">
-    <script src="js/videojs-ie8.min.js"></script>
+	<!-- videoJS -->
+	<link href="css/video-js.css" rel="stylesheet">
+	<script src="js/videojs-ie8.min.js"></script>
+
+	<script src="js/html5sortable.js"></script>
 
 </head>
 
 <body class="text-center">
-    <div class="cover-container d-flex w-100 h-100 p-1 mx-auto flex-column">
-        <!-- Debut du header -->
-        <header class="mb-1">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <a class="navbar-brand" id="maintitle" href="index.html">LOUSTIC OS - Créer</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav ml-auto">
-                        <a class="nav-item nav-link" href="index.html">Accueil</a>
-                        <a class="nav-item nav-link active" href="#">Créer<span class="sr-only">(current)</span></a>
-                        <a class="nav-item nav-link" href="load.html">Charger</a>
-                    </div>
-                </div>
-            </nav>
-        </header>
-        <!-- FIN du header -->
+	<div class="cover-container d-flex w-100 h-100 p-1 mx-auto flex-column">
+		<!-- Debut du header -->
+		<header class="mb-1">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+				<a class="navbar-brand" id="maintitle" href="index.html">LOUSTIC OS - Créer</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+					aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+					<div class="navbar-nav ml-auto">
+						<a class="nav-item nav-link" href="index.html">Accueil</a>
+						<a class="nav-item nav-link active" href="#">Créer<span class="sr-only">(current)</span></a>
+						<a class="nav-item nav-link" href="load.html">Charger</a>
+					</div>
+				</div>
+			</nav>
+		</header>
+		<!-- FIN du header -->
 
-        <!-- DEBUT de la main part -->
-        <!-- Page principale de configuration -->
-        <main role="main" class="configurator configurator-main">
-            <!-- charger une config precdmt créée -->
-            <div id="loadConfigInput" style="display: block">
-                <div id="mainerror"></div>
-                <ul class="list-group" id="imported">
-                </ul>
-                <div class="input-group my-3">
-                    <div class="custom-file">
-                        <input type="file" multiple class="custom-file-input" id="input"
-                            onchange="loadFiles(this.files)" id="inputLoadConfig"
-                            accept="application/json, video/mp4, video/webm, video/quicktime">
-                        <label class="custom-file-label border-dark" id="input-loadfile-name" for="inputGroupVideo">Charger
-                            et modfifier une
-                            configuration et ses fichiers annexes</label>
-                    </div>
-                </div>
-                <button class="btn btn-success" id="btnSelectConfig" type="button" onclick="controlConfig(true)"
-                    style="display: none;">Charger</button>
-            </div>
-            <!-- page principale de l'editeur -->
-            <div id="configMainPart">
-                <div id="alertmain"></div>
-                <div class="input-group mt-5 mb-3">
-                    <input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
-                    <div class="ml-1">
-                        <div class="btn-group" role="group">
-                            <!-- exemple popover
+		<!-- DEBUT de la main part -->
+		<!-- Page principale de configuration -->
+		<main role="main" class="configurator configurator-main">
+			<!-- charger une config precdmt créée -->
+			<div id="loadConfigInput" style="display: block">
+				<div id="mainerror"></div>
+				<ul class="list-group" id="imported">
+				</ul>
+				<div class="input-group my-3">
+					<div class="custom-file">
+						<input type="file" multiple class="custom-file-input" id="input" onchange="loadFiles(this.files)"
+							id="inputLoadConfig" accept="application/json, video/mp4, video/webm, video/quicktime">
+						<label class="custom-file-label border-dark" id="input-loadfile-name" for="inputGroupVideo">Charger
+							et modfifier une
+							configuration et ses fichiers annexes</label>
+					</div>
+				</div>
+				<button class="btn btn-success" id="btnSelectConfig" type="button" onclick="controlConfig(true)"
+					style="display: none;">Charger</button>
+			</div>
+			<!-- page principale de l'editeur -->
+			<div id="configMainPart">
+				<div id="alertmain"></div>
+				<div class="input-group mt-5 mb-3">
+					<input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
+					<div class="ml-1">
+						<div class="btn-group" role="group">
+							<!-- exemple popover
                         <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover"data-trigger="hover" data-placement="top"data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">?</button>
                         -->
-                            <button class="btn btn-outline-success" type="button" onclick="addPage()">Ajouter une
-                                page</button>
-                            <button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
-                                page</button>
-                        </div>
-                        <button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Terminer</button>
-                    </div>
-                </div>
-                <form>
-                    <div class="custom-control custom-checkbox custom-control-inline">
-                        <input type="checkbox" class="custom-control-input config-option" id="switch1">
-                        <label class="custom-control-label" for="switch1">Sommaire visible</label>
-                    </div>
-                    <div class="custom-control custom-checkbox custom-control-inline" style="display: none">
-                        <input type="checkbox" class="custom-control-input config-option" id="switch2" disabled>
-                        <label class="custom-control-label" for="switch2">Indispo</label>
-                    </div>
-                </form>
-                <div id="pcontainer" class="mt-3">
-                    <!-- Insertion JS d'inputs pages -->
-                </div>
-            </div>
-        </main>
-        <!-- Configuration text -->
-        <main role="main" class="configurator configurator-text" style="display: none">
-            <button class="btn btn-primary" type="button" onclick="saveText()">Sauvegarder</button>
-            <div class="form-group">
-                <label for="text-input">Entrez du texte ici : </label>
-                <textarea class="form-control rounded-0" id="text-input" rows="10"></textarea>
-            </div>
-        </main>
-        <!-- Configuration text editor 
+							<button class="btn btn-outline-success" type="button" onclick="addPage()">Ajouter une
+								page</button>
+							<button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
+								page</button>
+						</div>
+						<button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Terminer</button>
+					</div>
+				</div>
+				<form>
+					<div class="custom-control custom-checkbox custom-control-inline">
+						<input type="checkbox" class="custom-control-input config-option" id="switch1">
+						<label class="custom-control-label" for="switch1">Sommaire visible</label>
+					</div>
+					<div class="custom-control custom-checkbox custom-control-inline" style="display: none">
+						<input type="checkbox" class="custom-control-input config-option" id="switch2" disabled>
+						<label class="custom-control-label" for="switch2">Indispo</label>
+					</div>
+				</form>
+				<ul id="pcontainer" class="mt-3 js-sortable sortable list flex flex-column">
+					<!-- Insertion JS d'inputs pages -->
+				</ul>
+			</div>
+		</main>
+		<!-- Configuration text -->
+		<main role="main" class="configurator configurator-text" style="display: none">
+			<button class="btn btn-primary" type="button" onclick="saveText()">Sauvegarder</button>
+			<div class="form-group">
+				<label for="text-input">Entrez du texte ici : </label>
+				<textarea class="form-control rounded-0" id="text-input" rows="10"></textarea>
+			</div>
+		</main>
+		<!-- Configuration text editor 
         <main role="main" class="configurator configurator-text-editor" style="display: none">
                 <div id="editorjs"></div>
             </main> 
             -->
-        <!-- Configuration video -->
-        <main role="main" class="configurator configurator-video" style="display: none">
-            <div id="videoerror"></div>
-            <div class="mt-3 mb-1">
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-outline-success" id="btn-add-chapter"
-                        onclick="createChapterInput()">Ajouter un chapitre</button>
-                    <button type="button" class="btn btn-outline-danger" id="btn-rm-chapter"
-                        onclick="removeChapterInput()">Retirer un chapitre</button>
-                </div>
-                <button type="button" class="btn btn-primary ml-3" id="btn-chapter-done"
-                    onclick="saveVideo()">Sauvegarder</button>
-            </div>
-            <div class="mb-3" onchange="checkVideoOption()">
-                <div class="custom-control custom-checkbox custom-control-inline"> <!--PPLLOWED-->
-                    <input type="checkbox" class="custom-control-input video-option" id="customCheck1">
-                    <label class="custom-control-label" for="customCheck1">Play/Pause autorisé</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline"> <!--FREENAV-->
-                    <input type="checkbox" class="custom-control-input video-option" id="customCheck2">
-                    <label class="custom-control-label" for="customCheck2">Barre de navigation utilisable</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline"> <!--VISIBLECHAPZONE-->
-                    <input type="checkbox" class="custom-control-input video-option" id="customCheck3" >
-                    <label class="custom-control-label" for="customCheck3">Zone chapitres</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline"> <!--VISIBLECHAP-->
-                    <input type="checkbox" class="custom-control-input video-option" id="customCheck4">
-                    <label class="custom-control-label" for="customCheck4">Chapitres visibles</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline"> <!--VISIBLEDATECHAP-->
-                    <input type="checkbox" class="custom-control-input video-option" id="customCheck5">
-                    <label class="custom-control-label" for="customCheck5">Date chapitre visibles</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline"> <!--CLICKABLECHAP-->
-                    <input type="checkbox" class="custom-control-input video-option" id="customCheck6" >
-                    <label class="custom-control-label" for="customCheck6">Chapitres cliquables</label>
-                </div>
-                <div class="custom-control custom-checkbox custom-control-inline"> <!--NAVIGABLECHAP-->
-                    <input type="checkbox" class="custom-control-input video-option" id="customCheck7">
-                    <label class="custom-control-label" for="customCheck7">Chapitre suiv/prec</label>
-                </div>
-            </div>
+		<!-- Configuration video -->
+		<main role="main" class="configurator configurator-video" style="display: none">
+			<div id="videoerror"></div>
+			<div class="mt-3 mb-1">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-outline-success" id="btn-add-chapter"
+						onclick="createChapterInput()">Ajouter un chapitre</button>
+					<button type="button" class="btn btn-outline-danger" id="btn-rm-chapter"
+						onclick="removeChapterInput()">Retirer un chapitre</button>
+				</div>
+				<button type="button" class="btn btn-primary ml-3" id="btn-chapter-done"
+					onclick="saveVideo()">Sauvegarder</button>
+			</div>
+			<div class="mb-3" onchange="checkVideoOption()">
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--PPLLOWED-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck1">
+					<label class="custom-control-label" for="customCheck1">Play/Pause autorisé</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--FREENAV-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck2">
+					<label class="custom-control-label" for="customCheck2">Barre de navigation utilisable</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--VISIBLECHAPZONE-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck3">
+					<label class="custom-control-label" for="customCheck3">Zone chapitres</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--VISIBLECHAP-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck4">
+					<label class="custom-control-label" for="customCheck4">Chapitres visibles</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--VISIBLEDATECHAP-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck5">
+					<label class="custom-control-label" for="customCheck5">Date chapitre visibles</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--CLICKABLECHAP-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck6">
+					<label class="custom-control-label" for="customCheck6">Chapitres cliquables</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--NAVIGABLECHAP-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck7">
+					<label class="custom-control-label" for="customCheck7">Chapitre suiv/prec</label>
+				</div>
+			</div>
 
-            <div class="row">
-                <div id="chapcontainer" class="card col-md py-3 ml-3">
-                    <!-- Insertion JS d'inputs -->
-                </div>
-                <div class="col-md">
-                    <!-- video player -->
-                    <div class="full-vid">
-                        <video oncontextmenu="return false;" id="player"
-                            class="video-js vjs-default-skin vjs-big-play-centered"
-                            onerror="alert('Veuillez selectionner une video valide');" controls width="100%"
-                            height="100%" data-setup='{ "aspectRatio":"16:9", "fluid": true }'></video>
-                    </div>
-                </div>
-            </div>
-            <div class="input-group my-1">
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" onchange="handleFiles(this.files)" id="inputGroupVideo"
-                        accept="video/mp4, video/webm, video/quicktime">
-                    <label class="custom-file-label border-warning" id="input-file-name" for="inputGroupVideo">Choisir
-                        un fichier video</label>
-                </div>
-            </div>
+			<div class="row">
+				<div id="chapcontainer" class="card col-md py-3 ml-3">
+					<!-- Insertion JS d'inputs -->
+				</div>
+				<div class="col-md">
+					<!-- video player -->
+					<div class="full-vid">
+						<video oncontextmenu="return false;" id="player" class="video-js vjs-default-skin vjs-big-play-centered"
+							onerror="alert('Veuillez selectionner une video valide');" controls width="100%" height="100%"
+							data-setup='{ "aspectRatio":"16:9", "fluid": true }'></video>
+					</div>
+				</div>
+			</div>
+			<div class="input-group my-1">
+				<div class="custom-file">
+					<input type="file" class="custom-file-input" onchange="handleFiles(this.files)" id="inputGroupVideo"
+						accept="video/mp4, video/webm, video/quicktime">
+					<label class="custom-file-label border-warning" id="input-file-name" for="inputGroupVideo">Choisir
+						un fichier video</label>
+				</div>
+			</div>
 
-        </main>
-        <a id='download-config'></a>
-        <!-- FIN de la main part -->
+		</main>
+		<a id='download-config'></a>
+		<!-- FIN de la main part -->
 
-        <!-- memo regex + check validity : onchange="alert(this.checkValidity())"  pattern="((0[0-9]|1[0-9]|2[0-3]):)?([0-5]?6[0-9]:)([0-5][0-9])" -->
+		<!-- memo regex + check validity : onchange="alert(this.checkValidity())"  pattern="((0[0-9]|1[0-9]|2[0-3]):)?([0-5]?6[0-9]:)([0-5][0-9])" -->
 
-        <!-- DEBUT du footer -->
-        <footer class="mastfoot mt-auto navbar-fixed-bottom">
-            <div class="inner">
-                <p>indev - V0.5.2</p>
-            </div>
-        </footer>
-        <!-- FIN du footer -->
-    </div>
-    <!-- Javascript -->
-    <script src='js/video.js'></script>
-    <script src="js/jquery-3.3.1.slim.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/editorjs.js"></script>
-    <script src="js/configurator.js"></script>
+		<!-- DEBUT du footer -->
+		<footer class="mastfoot mt-auto navbar-fixed-bottom">
+			<div class="inner">
+				<p>indev - V0.5.2</p>
+			</div>
+		</footer>
+		<!-- FIN du footer -->
+	</div>
+	<!-- Javascript -->
+	<script src='js/video.js'></script>
+	<script src="js/jquery-3.3.1.slim.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/editorjs.js"></script>
+	<script src="js/configurator.js"></script>
 
 </body>
 
