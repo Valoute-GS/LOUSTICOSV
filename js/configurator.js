@@ -406,6 +406,7 @@ function emptyLoad() {
 	document.getElementById("importload-btn").className = "load btn btn-primary";
 	document.getElementById("importload-btn").disabled = false;
 	btnSelectConfig.style.display = "none";
+	input.value="";
 }
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 

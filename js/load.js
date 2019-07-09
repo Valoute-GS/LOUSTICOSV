@@ -203,28 +203,32 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
 }
 
 function loadPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
-	if (currentPageNumber < 1) {
-		btnPrevPage.className = "page-item disabled";
-	} else {
-		btnPrevPage.className = "page-item";
+	if (myConfig.options[0]) {
+		if (currentPageNumber < 1) {
+			btnPrevPage.className = "page-item disabled";
+		} else {
+			btnPrevPage.className = "page-item";
+		}
 	}
 
+	pauseVideo(false);
 	if (myConfig.pages.length === currentPageNumber) { //si fini
 		finishConfig();
-		pauseVideo(false);
 	} else {
-		pauseVideo(false); //pour pas que la video précédement chargée continue en fond si on est sur autre chose qu'une video
-		var i = 0;
-		for(pageNameIndex of pagesNameIndex.getElementsByTagName("li")){
-			if(currentPageNumber+1 === i){
-				pageNameIndex.classList.add("active");
-			}else{
-				pageNameIndex.classList.remove("active");
+		if (myConfig.options[0]) {
+			//page active ou non
+			var i = 0;
+			for (pageNameIndex of pagesNameIndex.getElementsByTagName("li")) {
+				if (currentPageNumber + 1 === i) {
+					pageNameIndex.classList.add("active");
+				} else {
+					pageNameIndex.classList.remove("active");
+				}
+				i++;
 			}
-			i++;
 		}
-		var currentPage = myConfig.pages[currentPageNumber];
 
+		var currentPage = myConfig.pages[currentPageNumber];
 		startTimeOnPage = Date.now();
 		currentChapterNumber = 0;
 		myCsvLogs.addLine("START_PAGE");
