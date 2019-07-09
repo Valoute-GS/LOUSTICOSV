@@ -444,9 +444,10 @@ function createChapterInput() {
 		'<div class="input-group-prepend">' +
 		'<span class="input-group-text">Chapitre ' + nbOfChapters + '</span>' +
 		'</div>' +
-		'<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[a-zA-Z0-9_.,!: ]*$">' +
+		'<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[A-Za-zÀ-ÖØ-öø-ÿ0-9_.,!:-? ]*$">' +
 		'<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="(HH:)MM:SS" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)([0-5][0-9])">';
 	chapcontainer.appendChild(div1);
+	checkVideoOption();
 
 }
 
@@ -455,10 +456,11 @@ function removeChapterInput() {
 		document.getElementById("chapcontainer").removeChild(document.getElementById("chapter" + nbOfChapters));
 		nbOfChapters--;
 	}
+	checkVideoOption();
 }
 
 function checkVideoOption() {
-	if (customCheck3.checked) {
+	if (customCheck3.checked && nbOfChapters!=0) {
 		customCheck4.disabled = false;
 	} else {
 		customCheck4.checked = false;
