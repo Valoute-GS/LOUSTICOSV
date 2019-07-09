@@ -44,10 +44,10 @@ function addPage() {
 		'</div>' +
 		'<div class="ml-1">' +
 		'<button class="btn btn-outline-success disabled handle">↕</button>' +
-		'</div>' +/*
+		'</div>' +
 		'<div class="ml-1">' +
-		'<button class="btn btn-outline-danger btn-delete">X</button>' +
-		'</div>' +*/
+		'<button class="btn btn-outline-danger btn-delete" onclick="rmThisPage(this)">X</button>' +
+		'</div>' +
 		'</li>';
 
 	pcontainer.appendChild(newPage); //ajout de la nouvelle div newPages (cf HTML)
@@ -58,10 +58,28 @@ function addPage() {
 function rmPage() {
 	if (nbPages > 0) { //si il y a des inputs dans la liste
 		nbPages--;
-		var select = document.getElementById('pcontainer');
-		select.removeChild(select.lastChild);
+		var pcontainer = document.getElementById('pcontainer');
+		pcontainer.removeChild(pcontainer.lastChild);
 		pagesState.pop();
 		myConfig.pages.pop();
+	}
+}
+
+function rmThisPage(e) {
+	var elt = e.parentElement.parentElement;
+	var pageNum = e.parentElement.parentElement.id.substring(4);
+	console.log(myConfig);
+	elt.parentNode.removeChild(elt);
+	pagesState.splice(pageNum-1, 1);
+	myConfig.pages.splice(pageNum-1, 1);
+	nbPages--;
+	console.log(myConfig);
+
+	for (var i = pageNum; i <= pcontainer.children.length; i++) {
+		console.log(pcontainer.children[i-1].id + " -> " + i);
+		pcontainer.children[i-1].id = "page"+i;
+		pcontainer.children[i-1].getElementsByClassName("input-group-text")[0].innerHTML = "#" + (i);
+		
 	}
 }
 /* ╚═══════FIN═══════╝ AJOUT SUPPRESSION PAGE =========================================*/
@@ -71,48 +89,37 @@ var items = "";
 /* ╔══════DEBUT══════╗ SORTABLE PAGE ==================================================*/
 function sortablePageUpdate() {
 	//gestion de la fonctionnalité sortable (reorganisation)
-
+	//def des elements sortable
 	sortable('.js-sortable', {
 		forcePlaceholderSize: true,
-		placeholderClass: 'mb1 bg-navy border border-yellow',
-		hoverClass: 'bg-maroon yellow',
 		handle: '.handle',
-	})
-	sortable('.sortable')[0].addEventListener('sortupdate', function (e) {
-
-		if (!(itemsBeforeUpdate === e.detail.origin.itemsBeforeUpdate && items === e.detail.origin.items)) {
+	});
+	sortable('.sortable')[0].addEventListener('sortupdate', function (e) { //TODO: elagage
+		if (!(itemsBeforeUpdate === e.detail.origin.itemsBeforeUpdate && items === e.detail.origin.items)) { //si il y a eu un changmt dans la liste, evite les doublons sur l'event
 			itemsBeforeUpdate = e.detail.origin.itemsBeforeUpdate;
 			items = e.detail.origin.items
-			var i = 0;
 
-			var mem_myConfig = JSON.parse(JSON.stringify(myConfig));
-			var mem_pagesState = pagesState.slice(0)
-			
+			var i = 0; //index de la forof
+			var mem_myConfig = JSON.parse(JSON.stringify(myConfig)); //copie de la config
+			var mem_pagesState = pagesState.slice(0) //copie de l'etat (trick : slice(0) permet une copie en profondeur)
+			//on parcourt toutes les "pages"
 			for (const pageElt of pcontainer.children) {
-				var newPageNum = (i);
-				var oldPageNum = (pageElt.id.substring(4) -1);
-				console.log(pageElt.id.substring(4) -1);
-				
-				if (pageElt.id.substring(4) == (i + 1)) { //pas de modif car la page n'a pas changé d'index
-				} else { //modification nécessaire
-					
+				var newPageNum = i;
+				var oldPageNum = (pageElt.id.substring(4) -1);				
+				if (!(pageElt.id.substring(4) == (i + 1))) { //modif car la page a changé d'index
 					//maj de l'HTML
 					pageElt.id = "page" + (i+1);
 					pageElt.getElementsByClassName("input-group-text")[0].innerHTML = "#" + (i+1);
 					//maj de myConfig
 					myConfig.pages[newPageNum] = mem_myConfig.pages[oldPageNum];
+					//maj de l'etat des pages
 					pagesState[newPageNum] = mem_pagesState[oldPageNum];
-
 				}
 
 				i++;
 			}
-			console.log(myConfig)
-			console.log(pagesState)
-
 		}
-
-		/*
+		/* MEMO pour Sortable : sortupdate event
 		This event is triggered when the user stopped sorting and the DOM position has changed.
 
 		e.detail.item - {HTMLElement} dragged element
@@ -418,7 +425,6 @@ function createChapterInput() {
 		'<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[a-zA-Z0-9_.,!: ]*$">' +
 		'<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="(HH:)MM:SS" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)([0-5][0-9])">';
 	chapcontainer.appendChild(div1);
-	//mise a jour de l'indice du nouveau chapitre
 
 }
 
