@@ -63,15 +63,26 @@
             <div id="mainerror"></div>
             <ul class="list-group" id="imported">
             </ul>
-            <div class="input-group my-3">
-                <div class="custom-file">
-                    <input type="file" multiple class="custom-file-input" id="input" onchange="loadFiles(this.files)"
-                        id="inputLoadConfig" accept="application/json, video/mp4, video/webm, video/quicktime">
-                    <label class="custom-file-label border-dark" id="input-file-name" for="inputGroupVideo">Charger une
-                        configuration et ses fichiers annexes</label>
+            <div class="mx-3">
+                <div class="btn-toolbar" role="toolbar">
+                    <input type="file" name="img[]" multiple class="custom-file-input file" id="input"
+                        onchange="loadFiles(this.files)" id="inputLoadConfig"
+                        accept="application/json, video/mp4, video/webm, video/quicktime">
+                    <div class="btn-group mx-auto">
+                        <div class="btn-group mr-1" role="group">
+                            <button class="browse btn btn-outline-primary" type="button" id="input-file-name">
+                                Importer un fichier de configuration et ses fichiers associés</button>
+                            <button class="browse btn btn-primary" type="button" id="import-btn">🔍 Importer</button>
+                            <button class="btn btn-success" id="btnSelectConfig" type="button"
+                                onclick="controlConfig(true)" style="display: none;">Démarrer</button>
+                        </div>
+                        <div class="btn-group mr-2" role="group">
+                            <button class="btn btn-danger" type="button" onclick="reloadPage()">Annuler</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <button class="btn btn-success" id="btnSelectConfig" type="button" onclick="controlConfig(true)" style="display: none;">Démarrer</button>
+
         </main>
 
         <!-- input infos candidat -->
@@ -114,7 +125,7 @@
                     <!-- onseeking="console.log('---- SEEKING ----');" onseeked="console.log('---- OK ----')" onplaying="console.log('Playing');" -->
                     <video id='myvideo' class='video-js vjs-default-skin vjs-big-play-centered' preload="auto"
                         oncontextmenu="return false" width="100%" height="100%" onpause="pauseVideo(true)"
-                        onplay="playVideo(true)" onended="videoEnded()" 
+                        onplay="playVideo(true)" onended="videoEnded()"
                         data-setup='{ "aspectRatio":"16:9", "fluid": true}' controls>
                         <!--ontimeupdate="checkChapter()"-->
                         <source src='videos/defaut.mp4' type='video/mp4'>

@@ -190,6 +190,64 @@ function namePageUpdate(inputElt) { //petit patch un peu sale pour changer dynam
 		
 	}
 }
+/* ======= VIDEO =======*/
+function configVideo() {
+	hideByClass("configurator");
+	//reset
+	chapcontainer.innerHTML = "";
+	nbOfChapters = 0;
+	// restauration de la cofiguration si deja faite
+	if (pagesState[currentPageNumber - 1] === 2) { //Si un format config a deja ete fait on le charge
+		//on remplit les chapitres
+		var chaps = myConfig.pages[currentPageNumber - 1].chapters;
+		for (var i = 0; i < chaps.length; i++) {
+			createChapterInput();
+			document.getElementById("input-title-" + nbOfChapters).value = chaps[nbOfChapters - 1].name;
+			document.getElementById("input-date-" + nbOfChapters).value = chaps[nbOfChapters - 1].date;
+		}
+		var index = 1;
+		for (const option of myConfig.pages[currentPageNumber - 1].options) {
+			document.getElementById("customCheck" + index).checked = option;
+			index++;
+		}
+		//recharge la source et variables fileType/Name
+		fileType = myConfig.pages[currentPageNumber - 1].videoType;
+		fileName = myConfig.pages[currentPageNumber - 1].videoName;
+		document.getElementById("input-file-name").innerHTML = fileName;
+
+		myPlayer.src({
+			type: fileType,
+			src: myURLs.get(fileName)
+		});
+		myPlayer.pause();
+	} else {
+		var index = 0;
+		for (const option of document.getElementsByClassName("custom-control-input video-option")) {
+			option.checked = false;
+			index++;
+		}
+	}
+
+	showByClass("configurator-video")
+}
+
+function saveVideo() {
+	if (saveVideoConfig() == true) { //bug sans == true ???
+		hideByClass("configurator");
+		maintitle.innerHTML = "LOUSTIC OS - Créer";
+		showByClass("configurator-main");
+	}
+}
+
+function exitVideo() {
+	hideByClass("configurator");
+		maintitle.innerHTML = "LOUSTIC OS - Créer";
+		showByClass("configurator-main");
+		myPlayer.reset();
+		videoerror.innerHTML = "";
+		inputGroupVideo.value = "";
+		document.getElementById("input-file-name").innerHTML = "Choisir un fichier video";
+}
 
 /* ======= TEXT =======*/
 function configText() {
@@ -216,56 +274,10 @@ function saveText() {
 	}
 }
 
-/* ======= VIDEO =======*/
-function configVideo() {
+function exitText() {
 	hideByClass("configurator");
-	//reset
-	chapcontainer.innerHTML = "";
-	document.getElementById("input-file-name").innerHTML = "Choisir un fichier video";
-	document.getElementById("input-file-name").className = "custom-file-label border-warning";
-	nbOfChapters = 0;
-	// restauration de la cofiguration si deja faite
-	if (pagesState[currentPageNumber - 1] === 2) { //Si un format config a deja ete fait on le charge
-		//on remplit les chapitres
-		var chaps = myConfig.pages[currentPageNumber - 1].chapters;
-		for (var i = 0; i < chaps.length; i++) {
-			createChapterInput();
-			document.getElementById("input-title-" + nbOfChapters).value = chaps[nbOfChapters - 1].name;
-			document.getElementById("input-date-" + nbOfChapters).value = chaps[nbOfChapters - 1].date;
-		}
-		var index = 1;
-		for (const option of myConfig.pages[currentPageNumber - 1].options) {
-			document.getElementById("customCheck" + index).checked = option;
-			index++;
-		}
-		//recharge la source et variables fileType/Name
-		fileType = myConfig.pages[currentPageNumber - 1].videoType;
-		fileName = myConfig.pages[currentPageNumber - 1].videoName;
-		document.getElementById("input-file-name").innerHTML = fileName;
-		document.getElementById("input-file-name").className = "custom-file-label border-success";
-
-		myPlayer.src({
-			type: fileType,
-			src: myURLs.get(fileName)
-		});
-		myPlayer.pause();
-	} else {
-		var index = 0;
-		for (const option of document.getElementsByClassName("custom-control-input video-option")) {
-			option.checked = false;
-			index++;
-		}
-	}
-
-	showByClass("configurator-video")
-}
-
-function saveVideo() {
-	if (saveVideoConfig() == true) { //bug sans == true ???
-		hideByClass("configurator");
-		maintitle.innerHTML = "LOUSTIC OS - Créer";
-		showByClass("configurator-main");
-	}
+	maintitle.innerHTML = "LOUSTIC OS - Créer";
+	showByClass("configurator-main");
 }
 
 /* ==== TEXT EDITOR ====*/
@@ -279,7 +291,10 @@ function configTextEditor() {
 var nbJson = 0; //checker si on a pas importé pls config en mm temps
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 var loadedConfig = "";
-
+$(document).on('click', '.load', function () { //gestion du faux input file
+    var file = $(this).parent().parent().parent().find('.loadfile');
+    file.trigger('click');
+});
 function loadFiles(files) { //import des fichiers + affichage
 	//iteration sur les fichiers selectionnés
 	for (const file of files) {
@@ -318,7 +333,7 @@ function controlConfig(canBeLoaded) { //check si tous les fichiers nécessaires 
 		//check les fichiers importés/necessaires
 		var imp = [];
 		for (const impFile of importedFiles.values()) {
-			imp.push(impFile.name)
+			imp.push(impFile.name);
 		}
 		for (const page of loadedConfig.pages) { //check si les fichiers nécessaires ont bien été importés
 			if (page.type === "video") {
@@ -333,13 +348,15 @@ function controlConfig(canBeLoaded) { //check si tous les fichiers nécessaires 
 		isCorrect = false;
 	}
 	if (isCorrect) { //si tout est okay on passe a la suite
-		document.getElementById("input-loadfile-name").className = "custom-file-label border-success";
 		btnSelectConfig.style.display = "inline";
+        document.getElementById("load-file-name").className = "load btn btn-outline-success";
+        document.getElementById("load-file-name").disabled = true;
+        document.getElementById("importload-btn").className = "load btn btn-outline-success";
+        document.getElementById("importload-btn").disabled = true;
 		if (canBeLoaded) {
 			loadConfig()
 		};
 	} else { //sinon on affiches les erreurs
-		document.getElementById("input-loadfile-name").className = "custom-file-label border-warning";
 		for (const message of errorMessages) {
 			mainerror.innerHTML += bAlert(message);
 		}
@@ -374,16 +391,21 @@ function loadConfig() {
 		}
 		index++;
 	}
+	emptyLoad();
+}
+
+function emptyLoad() {
 	//reset des infos apres import
 	mainerror.innerHTML = "";
 	imported.innerHTML = "";
 	nbJson = 0; //checker si on a pas importé pls config en mm temps
 	importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 	loadedConfig = "";
-	document.getElementById("input-loadfile-name").className = "custom-file-label border-dark";
+	document.getElementById("load-file-name").className = "load btn btn-outline-primary";
+	document.getElementById("load-file-name").disabled = false;
+	document.getElementById("importload-btn").className = "load btn btn-primary";
+	document.getElementById("importload-btn").disabled = false;
 	btnSelectConfig.style.display = "none";
-	loadConfigInput.style.display = "block";
-	input.value = "";
 }
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
@@ -392,12 +414,12 @@ var nbOfChapters = 0;
 var fileUrl;
 var fileType;
 var fileName;
-
+$(document).on('click', '.browse', function () { //gestion du faux input file
+    var file = $(this).parent().parent().parent().find('.file');
+    file.trigger('click');
+});
 function handleFiles(file) {
-
 	document.getElementById("input-file-name").innerHTML = file[0].name;
-	document.getElementById("input-file-name").className = "custom-file-label border-success";
-
 	//infos sur la video courante
 	fileUrl = URL.createObjectURL(file[0]);
 	myURLs.set(file[0].name, fileUrl);

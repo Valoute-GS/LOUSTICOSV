@@ -35,9 +35,14 @@ var startTimeOnPage = 0;
 var previousTime = 0; //timer de la video mis a jour tout le temps (utile pour connaitre le timer avant et apres une action comme nav sur seekbar)
 var myReachedPage = 0; //page vers laquelle on se déplace
 
-/* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
-var nbJson = 0; //checker si on a pas importé pls config en mm temps
 
+
+/* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
+$(document).on('click', '.browse', function () { //gestion du faux input file
+    var file = $(this).parent().parent().parent().find('.file');
+    file.trigger('click');
+});
+var nbJson = 0; //checker si on a pas importé pls config en mm temps
 function loadFiles(files) { //import des fichiers + affichage
     //iteration sur les fichiers selectionnés
     for (const file of files) {
@@ -95,7 +100,10 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
     }
 
     if (isCorrect) { //si tout est okay on passe a la suite
-        document.getElementById("input-file-name").className = "custom-file-label border-success";
+        document.getElementById("input-file-name").className = "browse btn btn-outline-success";
+        document.getElementById("input-file-name").disabled = "true"
+        document.getElementById("import-btn").className = "browse btn btn-outline-success";
+        document.getElementById("import-btn").disabled = "true"
         btnSelectConfig.style.display = "inline";
         if (continueToInfos) {
             // a partir de la on demandera avant de quitter ou refrech la page
@@ -106,7 +114,7 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
             personnalInfos()
         };
     } else { //sinon on affiches les erreurs
-        document.getElementById("input-file-name").className = "custom-file-label border-warning";
+        document.getElementById("input-file-name").className = "browse btn btn-outline-primary";
         for (const message of errorMessages) {
             mainerror.innerHTML += bAlert(message);
         }
@@ -352,16 +360,16 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
         if (VISIBLEDATECHAP) {
             for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
                 chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
-                    '<button class="btn btn-block btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.children[0].innerHTML)">' + chapter.name + ' : ' + chapter.date + 
-                    '<div style="display : none;">' + chapter.date + '</div>'+
+                    '<button class="btn btn-block btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.children[0].innerHTML)">' + chapter.name + ' : ' + chapter.date +
+                    '<div style="display : none;">' + chapter.date + '</div>' +
                     '</button>' +
                     '</li>';
             }
-        }else{
+        } else {
             for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
                 chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
                     '<button class="btn btn-block btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.children[0].innerHTML)">' + chapter.name +
-                    '<div style="display : none;">' + chapter.date + '</div>'+
+                    '<div style="display : none;">' + chapter.date + '</div>' +
                     '</button>' +
                     '</li>';
             }
