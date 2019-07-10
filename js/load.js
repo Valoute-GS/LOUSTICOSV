@@ -170,14 +170,23 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
 		//initialisation des infos et de la lecture de la config
 		//init player -> event quand click sur la bar de navigation
 
-		//indexPage
-		if (myConfig.options[0] === true) { //on affiche la liste des pages si l'option dans la config est cochée
-			pagesNameIndex.innerHTML += '<li class="page-item" id="btnPrevPage"><a class="page-link" onclick="prevPage()">&laquo;</a></li>'
-			for (const page of myConfig.pages) {
-				//pagesNameIndex.innerHTML += '<li class="page-item"><a class="dropdown-item" onclick="jumpToPage(' + (page.pageNumber - 1) + ')"> ' + page.pageName + '</a></li>';
-				pagesNameIndex.innerHTML += '<li class="page-item"><a class="page-link" onclick="jumpToPage(' + (page.pageNumber - 1) + ')">' + page.pageName + '&#8203</a></li>'
+		//SOMMAIRE
+		if (myConfig.options[0]) { //on affiche la liste des pages si l'option dans la config est cochée
+			if(myConfig.options[1]){
+				pagesNameIndex.innerHTML += '<li class="page-item" id="btnPrevPage"><a class="page-link" onclick="prevPage()">Précédent</a></li>'
+			}else{
+				pagesNameIndex.innerHTML += '<li class="page-item" id="btnPrevPage" style="display : none"><a class="page-link" onclick="prevPage()">&laquo;</a></li>'
 			}
-			pagesNameIndex.innerHTML += '<li class="page-item" id="btnNextPage"><a class="page-link" onclick="nextPage()">&raquo;</a></li>'
+			for (const page of myConfig.pages) {
+				//Si la page n'a pas de nom on lui met un nom par defaut (son index)
+				var name = (page.pageNumber-1)
+				if(page.pageName != ""){
+					name = page.pageName;
+				}
+				//pagesNameIndex.innerHTML += '<li class="page-item"><a class="dropdown-item" onclick="jumpToPage(' + (page.pageNumber - 1) + ')"> ' + page.pageName + '</a></li>';
+				pagesNameIndex.innerHTML += '<li class="page-item"><a class="page-link" onclick="jumpToPage(' + (page.pageNumber - 1) + ')">' + name + '&#8203</a></li>'
+			}
+			pagesNameIndex.innerHTML += '<li class="page-item active" id="btnNextPage"><a class="page-link" onclick="nextPage()">Suivant</a></li>'
 			showByClass("pages-index");
 		}
 
@@ -207,7 +216,7 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 		if (currentPageNumber < 1) {
 			btnPrevPage.className = "page-item disabled";
 		} else {
-			btnPrevPage.className = "page-item";
+			btnPrevPage.className = "page-item active";
 		}
 	}
 
@@ -221,7 +230,7 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 			for (pageNameIndex of pagesNameIndex.getElementsByTagName("li")) {
 				if (currentPageNumber + 1 === i) {
 					pageNameIndex.classList.add("active");
-				} else {
+				} else if (i != 0 && i != myConfig.pages.length+1) {
 					pageNameIndex.classList.remove("active");
 				}
 				i++;
@@ -296,13 +305,6 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 	var currentPage = myConfig.pages[currentPageNumber];
 	var currentFile = importedFiles.get(currentPage.videoName);
 
-	myPlayer.one('playing', function () { // La lecture de la video à commencé (premièere seulement)
-		myCsvLogs.addLine("VIDEO_START");
-	});
-	myPlayer.on('timeupdate', function () {
-		checkChap();
-	});
-
 	//Pour plus de lisibilité du code on stock es options
 	const PPLLOWED = currentPage.options[0];
 	const FREENAV = currentPage.options[1];
@@ -311,6 +313,16 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 	const VISIBLEDATECHAP = currentPage.options[4];
 	const CLICKABLECHAP = currentPage.options[5];
 	const NAVIGABLECHAP = currentPage.options[6];
+
+	myPlayer.one('playing', function () { // La lecture de la video à commencé (premièere seulement)
+		myCsvLogs.addLine("VIDEO_START");
+	});
+	myPlayer.on('timeupdate', function () {
+		checkChap();
+		if(VISIBLECHAP){
+			chapTimerUpdate();
+		}
+	});
 
 	//on met a jour la liste des chapitres courants
 	currentChapters = new Map();
@@ -372,7 +384,8 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 		if (VISIBLEDATECHAP) {
 			for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
 				chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
-					'<button class="btn btn-block btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.children[0].innerHTML)">' + chapter.name + ' : ' + chapter.date +
+					'<button class="btn btn-block btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.children[2].innerHTML)">' +
+					'<div class="background-text">' + chapter.name + ' : ' + chapter.date + '</div><div class="background">&#8203</div>' +
 					'<div style="display : none;">' + chapter.date + '</div>' +
 					'</button>' +
 					'</li>';
@@ -380,7 +393,8 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 		} else {
 			for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
 				chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
-					'<button class="btn btn-block btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.children[0].innerHTML)">' + chapter.name +
+					'<button class="btn btn-block btn-outline-primary btn-chapter px-0 py-0" type="button" onclick="gotoTime(this.children[2].innerHTML)">' +
+					'<div class="background-text">' + chapter.name + '</div><div class="background">&#8203</div>' +
 					'<div style="display : none;">' + chapter.date + '</div>' +
 					'</button>' +
 					'</li>';
@@ -391,7 +405,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 	if (!CLICKABLECHAP) {
 		for (const btn of document.getElementsByClassName("btn-chapter")) {
 			btn.disabled = "true";
-			btn.className = "btn btn-block text-primary btn-outline-secondary btn-chapter"
+			btn.className = "btn btn-block text-primary btn-outline-secondary btn-chapter px-0 py-0"
 		}
 	}
 	//CHAPITRES CLIQUABLE
@@ -454,6 +468,31 @@ function checkChap() { //check quel est le chapitre courant durant la lecture d'
 		}
 	}
 
+}
+
+function chapTimerUpdate() { //permet de mettre a jour la barre de progression du chapitre en cours
+	if(myConfig.pages[currentPageNumber].options[3]){ //si les chapitres sont visibles
+		var i = 1;
+		for (const chap of document.getElementsByClassName("background")) {
+			if(i === currentChapterNumber){
+				//On calcule le pourcentage de progression
+				var chapCurrentTime = myPlayer.currentTime() - toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber-1].date);
+				var chapDuration = 1;
+				if(currentChapterNumber == myConfig.pages[currentPageNumber].chapters.length){ //si c'est le dernier chap
+					chapDuration = myPlayer.duration() - toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber-1].date);
+				}else{
+					chapDuration = toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber].date) - toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber-1].date);
+				}
+				//on applique ce pourcentage via le CSS
+				chap.style.width = (100 * chapCurrentTime/chapDuration) + '%';
+				
+			}else{
+				//chapitre non en cours -> vide
+				chap.style.width = "0%";
+			}
+			i++;
+		}
+	}
 }
 
 function nextChap() {

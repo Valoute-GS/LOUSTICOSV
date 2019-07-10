@@ -60,3 +60,20 @@ div {
 .vjs-default-skin.vjs-has-started .vjs-remaining-time {
     display: none;
 }
+
+.background {
+    top: 0px;
+    left: 0px;
+    width: 50%;
+    height: 100%;
+    background-color: rgba(2,58,65,0.25);
+    z-index: 98;
+}
+.background-text{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+}

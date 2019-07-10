@@ -10,11 +10,11 @@ window.onbeforeunload = function () {
 /*const editor = new EditorJS({
 		autofocus: true
 });*/
-/*
+
 $(function () {
 		$('[data-toggle="popover"]').popover()
 })
-
+/*
 $(document).on('DOMSubtreeModified', function() {
 		$(function(){
 				$('.fadein').removeClass('fadein');

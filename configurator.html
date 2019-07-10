@@ -37,7 +37,8 @@
 				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 					<div class="navbar-nav ml-auto">
 						<a class="nav-item nav-link" href="index.html">Accueil</a>
-						<a class="nav-item nav-link active" href="#">Configurateur<span class="sr-only">(current)</span></a>
+						<a class="nav-item nav-link active" href="#">Configurateur<span
+								class="sr-only">(current)</span></a>
 						<a class="nav-item nav-link" href="load.html">Lancer un test</a>
 					</div>
 				</div>
@@ -91,11 +92,17 @@
 				<form>
 					<div class="custom-control custom-checkbox custom-control-inline">
 						<input type="checkbox" class="custom-control-input config-option" id="switch1">
-						<label class="custom-control-label" for="switch1">Sommaire visible</label>
+						<label class="custom-control-label" for="switch1" 
+							data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
+							data-content="Affiche la liste des pages et permet de se déplacer d'une page à l'autre.">
+							Sommaire visible</label>
 					</div>
-					<div class="custom-control custom-checkbox custom-control-inline" style="display: none">
-						<input type="checkbox" class="custom-control-input config-option" id="switch2" disabled>
-						<label class="custom-control-label" for="switch2">Indispo</label>
+					<div class="custom-control custom-checkbox custom-control-inline">
+						<input type="checkbox" class="custom-control-input config-option" id="switch2">
+						<label class="custom-control-label" for="switch2" 
+						data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
+						data-content="Permet de naviguer vers la page précédente (ie la page d'index-1)">
+						Bouton page précédente</label>
 					</div>
 				</form>
 				<ul id="pcontainer" class="mt-3 js-sortable sortable list flex flex-column">
