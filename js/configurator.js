@@ -479,6 +479,12 @@ function checkVideoOption() {
 		customCheck6.checked = false;
 		customCheck6.disabled = true;
 	}
+	if(nbOfChapters!=0){
+		customCheck7.disabled = false;
+	} else{
+		customCheck7.checked = false;
+		customCheck7.disabled = true;
+	}
 }
 
 /* ╚═══════FIN═══════╝ VIDEO CREATOR ==================================================*/
