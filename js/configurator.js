@@ -14,19 +14,19 @@ window.onbeforeunload = function () {
 $(function () {
 		$('[data-toggle="popover"]').popover()
 })
-/*
+
 $(document).on('DOMSubtreeModified', function() {
 		$(function(){
 				$('.fadein').removeClass('fadein');
 		})
-});*/
+});
 
 /* ╔══════DEBUT══════╗ AJOUT SUPPRESSION PAGE =========================================*/
 function addPage() {
 	//structure globale de l'input
 	nbPages++;
 	var newPage = document.createElement("li");
-	newPage.className = "input-group my-1 fadein";
+	newPage.className = "input-group my-1";
 	newPage.style += "position: relative; z-index: 10"
 	newPage.id = "page" + nbPages;
 	newPage.innerHTML = '<div class="input-group-prepend">' +
@@ -439,7 +439,7 @@ function createChapterInput() {
 	//structure globale de l'input
 	nbOfChapters++;
 	var div1 = document.createElement("div");
-	div1.className = "input-group my-1";
+	div1.className = "input-group my-1 fadein";
 	div1.id = "chapter" + nbOfChapters;
 	div1.innerHTML =
 		'<div class="input-group-prepend">' +
@@ -637,16 +637,15 @@ function finishConfig() {
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
 function hideByClass(className) {
-	var eltsToHide = document.getElementsByClassName(className);
-	for (var i = 0; i < eltsToHide.length; i++) {
-		eltsToHide[i].style.display = 'none';
+	for (eltsToHide of document.getElementsByClassName(className)) {
+		eltsToHide.style.display = 'none';
 	}
 }
 
 function showByClass(className) {
-	var eltsToHide = document.getElementsByClassName(className);
-	for (var i = 0; i < eltsToHide.length; i++) {
-		eltsToHide[i].style.display = 'block';
+	for (eltsToHide of document.getElementsByClassName(className)) {
+		eltsToHide.style.display = 'block';
+		eltsToHide.classList.add("fadein")
 	}
 }
 

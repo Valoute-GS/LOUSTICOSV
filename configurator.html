@@ -48,7 +48,7 @@
 
 		<!-- DEBUT de la main part -->
 		<!-- Page principale de configuration -->
-		<main role="main" class="configurator configurator-main">
+		<main role="main" class="configurator configurator-main fadein">
 			<!-- charger une config precdmt créée -->
 			<div id="loadConfigInput">
 				<div id="mainerror"></div>
@@ -86,7 +86,7 @@
 							<button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
 								page</button>
 						</div>
-						<button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Terminer</button>
+						<button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Sauvegarder</button>
 					</div>
 				</div>
 				<form>
@@ -94,14 +94,14 @@
 						<input type="checkbox" class="custom-control-input config-option" id="switch1">
 						<label class="custom-control-label" for="switch1" 
 							data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
-							data-content="Affiche la liste des pages et permet de se déplacer d'une page à l'autre.">
+							data-content="Affiche la liste des pages et permet de au participant de se déplacer d'une page à l'autre.">
 							Sommaire visible</label>
 					</div>
 					<div class="custom-control custom-checkbox custom-control-inline">
 						<input type="checkbox" class="custom-control-input config-option" id="switch2">
 						<label class="custom-control-label" for="switch2" 
 						data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
-						data-content="Permet de naviguer vers la page précédente (ie la page d'index-1)">
+						data-content="Permet au participant de naviguer vers la page précédente (ie la page d'index-1)">
 						Bouton page précédente</label>
 					</div>
 				</form>

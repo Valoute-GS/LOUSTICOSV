@@ -35,7 +35,11 @@ var startTimeOnPage = 0;
 var previousTime = 0; //timer de la video mis a jour tout le temps (utile pour connaitre le timer avant et apres une action comme nav sur seekbar)
 var myReachedPage = 0; //page vers laquelle on se déplace
 
-
+$(document).on('DOMSubtreeModified', function() {
+	$(function(){
+			$('.fadein').removeClass('fadein');
+	})
+});
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 $(document).on('click', '.browse', function () { //gestion du faux input file
@@ -186,9 +190,9 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
 				//pagesNameIndex.innerHTML += '<li class="page-item"><a class="dropdown-item" onclick="jumpToPage(' + (page.pageNumber - 1) + ')"> ' + page.pageName + '</a></li>';
 				pagesNameIndex.innerHTML += '<li class="page-item"><a class="page-link" onclick="jumpToPage(' + (page.pageNumber - 1) + ')">' + name + '&#8203</a></li>'
 			}
-			pagesNameIndex.innerHTML += '<li class="page-item active" id="btnNextPage"><a class="page-link" onclick="nextPage()">Suivant</a></li>'
-			showByClass("pages-index");
 		}
+		pagesNameIndex.innerHTML += '<li class="page-item active" id="btnNextPage"><a class="page-link" onclick="nextPage()">Suivant</a></li>'
+		showByClass("pages-index");
 
 		//init csv
 		myCsvLogs = new CsvLogs();
@@ -214,7 +218,7 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
 function loadPage() { //charge la page suivante en fonction de son type et inc de l'indice de la page actuelle
 	if (myConfig.options[0]) {
 		if (currentPageNumber < 1) {
-			btnPrevPage.className = "page-item disabled";
+			btnPrevPage.className = "page-item disabled-custom";
 		} else {
 			btnPrevPage.className = "page-item active";
 		}
@@ -319,7 +323,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 	});
 	myPlayer.on('timeupdate', function () {
 		checkChap();
-		if(VISIBLECHAP){
+		if(myConfig.pages[currentPageNumber].type == "video" && VISIBLECHAP){
 			chapTimerUpdate();
 		}
 	});
@@ -932,16 +936,14 @@ function reloadPage() {
 }
 
 function hideByClass(className) {
-	var eltsToHide = document.getElementsByClassName(className);
-	for (var i = 0; i < eltsToHide.length; i++) {
-		eltsToHide[i].style.display = 'none';
+	for (eltsToHide of document.getElementsByClassName(className)) {
+		eltsToHide.style.display = 'none';
 	}
 }
 
 function showByClass(className) {
-	var eltsToHide = document.getElementsByClassName(className);
-	for (var i = 0; i < eltsToHide.length; i++) {
-		eltsToHide[i].style.display = 'block';
+	for (eltsToHide of document.getElementsByClassName(className)) {
+		eltsToHide.style.display = 'block';
 	}
 }
 
