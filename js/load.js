@@ -44,6 +44,7 @@ var quill = new Quill('#editor', {
 
 	theme: 'snow'
 });
+//on desactive l'edition
 quill.disable()
 
 //gestion popover
@@ -193,22 +194,22 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
 
 		//SOMMAIRE
 		if (myConfig.options[0]) { //on affiche la liste des pages si l'option dans la config est cochée
-			if (myConfig.options[1]) {
+			if (myConfig.options[1]) { //on affiche le bouton page precedente
 				pagesNameIndex.innerHTML += '<li class="page-item" id="btnPrevPage"><a class="page-link" onclick="prevPage()">Précédent</a></li>'
 			} else {
 				pagesNameIndex.innerHTML += '<li class="page-item" id="btnPrevPage" style="display : none"><a class="page-link" onclick="prevPage()">&laquo;</a></li>'
 			}
 			for (const page of myConfig.pages) {
 				//Si la page n'a pas de nom on lui met un nom par defaut (son index)
-				var name = (page.pageNumber - 1)
-				if (page.pageName != "") {
+				var name = (page.pageNumber)
+				if (myConfig.options[2] && page.pageName != "") {
 					name = page.pageName;
 				}
-				//pagesNameIndex.innerHTML += '<li class="page-item"><a class="dropdown-item" onclick="jumpToPage(' + (page.pageNumber - 1) + ')"> ' + page.pageName + '</a></li>';
 				pagesNameIndex.innerHTML += '<li class="page-item"><a class="page-link" onclick="jumpToPage(' + (page.pageNumber - 1) + ')">' + name + '&#8203</a></li>'
 			}
 		}
-		pagesNameIndex.innerHTML += '<li class="page-item active" id="btnNextPage"><a class="page-link" onclick="nextPage()">Suivant</a></li>'
+		//on affiche toujour le bouton page suivant
+		pagesNameIndex.innerHTML += '<li class="page-item active-custom" id="btnNextPage"><a class="page-link" onclick="nextPage()">Suivant</a></li>'
 		showByClass("pages-index");
 
 		//init csv
@@ -237,7 +238,7 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 		if (currentPageNumber < 1) {
 			btnPrevPage.className = "page-item disabled-custom";
 		} else {
-			btnPrevPage.className = "page-item active";
+			btnPrevPage.className = "page-item active-custom";
 		}
 	}
 

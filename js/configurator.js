@@ -3,10 +3,13 @@ var nbPages = 0; //nb de page pour l'affichage au "compteur"
 var pagesState = []; //0: à configurer | 1 : configuré
 var myURLs = new Map(); //liste des URL utilisés pendant les configs
 var myPlayer = videojs('player', {});
+checkOptions();
+//empeche de quitter la page
 window.onbeforeunload = function () {
 	return "";
 };
 
+//toolbar Quill
 var toolbarOptions = [
 	['bold', 'italic', 'underline', 'strike'],        // toggled buttons
 	['blockquote', 'code-block'],
@@ -26,7 +29,7 @@ var toolbarOptions = [
 
 	['clean']                                         // remove formatting button
 ];
-
+//editeur Quill
 var quill = new Quill('#editor', {
 modules: { 
 	imageResize: {
@@ -48,7 +51,6 @@ $(document).on('DOMSubtreeModified', function() {
 				$('.fadein').removeClass('fadein');
 		})
 });
-
 /* ╔══════DEBUT══════╗ AJOUT SUPPRESSION PAGE =========================================*/
 function addPage() {
 	//structure globale de l'input
@@ -190,7 +192,7 @@ function configPage(e) {
 		case "2": //Video
 			maintitle.innerHTML = "VIDEO - Page " + currentPageNumber;
 			configVideo();
-			checkVideoOption();
+			checkVideoOptions();
 			break;
 		case "3": // 
 			//configTextEditor();
@@ -216,6 +218,15 @@ function namePageUpdate(inputElt) { //petit patch un peu sale pour changer dynam
 	if (document.getElementById("page" + pageNumber).getElementsByClassName("btn btn-success")[0]) {
 		myConfig.pages[pageNumber - 1].pageName = inputElt.value;
 		
+	}
+}
+
+function checkOptions() {
+	if (switch1.checked) {
+		switch3.disabled = false;
+	} else {
+		switch3.checked = false;
+		switch3.disabled = true;
 	}
 }
 /* ======= VIDEO =======*/
@@ -513,7 +524,7 @@ function createChapterInput() {
 		'<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[A-Za-zÀ-ÖØ-öø-ÿ0-9_.,!:-? ]*$">' +
 		'<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="(HH:)MM:SS" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)([0-5][0-9])">';
 	chapcontainer.appendChild(div1);
-	checkVideoOption();
+	checkVideoOptions();
 
 }
 
@@ -522,10 +533,10 @@ function removeChapterInput() {
 		document.getElementById("chapcontainer").removeChild(document.getElementById("chapter" + nbOfChapters));
 		nbOfChapters--;
 	}
-	checkVideoOption();
+	checkVideoOptions();
 }
 
-function checkVideoOption() {
+function checkVideoOptions() {
 	if (customCheck3.checked && nbOfChapters!=0) {
 		customCheck4.disabled = false;
 	} else {
