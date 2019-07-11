@@ -457,6 +457,7 @@ function loadConfig() {
 
 function emptyLoad() {
 	//reset des infos apres import
+	$('[data-toggle="popover"]').popover("hide"); 
 	mainerror.innerHTML = "";
 	imported.innerHTML = "";
 	nbJson = 0; //checker si on a pas importé pls config en mm temps
