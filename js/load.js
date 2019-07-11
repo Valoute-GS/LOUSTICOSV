@@ -594,7 +594,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 		var timer = d.toLocaleDateString() + "(" + d.toLocaleDateString("fr-FR", {
 			weekday: "short"
 		}) + ")-" + d.toLocaleTimeString();
-		var cPageNumber = currentPageNumber;
+		var cPageNumber = currentPageNumber+1;
 		var cChapterNumber = "";
 		var reachedPage = ""; //TODO:
 		var reachedChap = "";
@@ -607,7 +607,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 		// on assigne videotimer si necessaire (aka si sur une page de type video)
 		if (currentPageNumber < myConfig.pages.length && myConfig.pages[currentPageNumber].type === "video") {
-			cChapterNumber = currentChapterNumber;
+			cChapterNumber = currentChapterNumber+1;
 			// reachedChap cf CHAP_ATT
 			videoTimer = myPlayer.currentTime();
 			tfChap = duration(tChapCSV, now);
@@ -631,7 +631,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + "0" + ";" + "" + ";" + "" + ";" + "");
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + "0" + ";" + "" + ";" + "" + ";" + "");
 				break;
 				// ═══════════════════════════════════════════════════════════════════════════════════════════════════ START_PAGE ══════╝ */
 				// ═════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_ATT ══════╗ */
@@ -663,7 +663,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" +
-					reachedChap + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+					reachedChap + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ═════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_ATT ══════╝ */
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_USED ══════╗ */
@@ -672,7 +672,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + previousTime + ";" + tfChap + ";" + tfPlay);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(previousTime) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ CHAP_USED ══════╝ */
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_CHAP ══════╗ */
@@ -681,7 +681,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + previousTime + ";" + tfChap + ";" + tfPlay);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(previousTime) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_CHAP ══════╝ */
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_CHAP ══════╗ */
@@ -690,7 +690,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + previousTime + ";" + tfChap + ";" + tfPlay);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(previousTime) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_CHAP ══════╝ */
 				// ══════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_START ══════╗ */
@@ -698,7 +698,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + "" + ";" + "");
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + "" + ";" + "");
 				break;
 				// ══════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_START ══════╝ */
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_END ══════╗ */
@@ -708,7 +708,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ VIDEO_END ══════╝ */
 				// ═════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╗ */
@@ -728,7 +728,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ═════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╝ */
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════════ PAUSE ══════╗ */
@@ -748,7 +748,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + "" + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ═════════════════════════════════════════════════════════════════════════════════════════════════════════ PLAY ══════╝ */
 				// ══════════════════════════════════════════════════════════════════════════════════════════════════ NAVBAR_USED ══════╗ */
@@ -757,7 +757,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + previousTime + ";" + tfChap + ";" + tfPlay);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(previousTime) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ══════════════════════════════════════════════════════════════════════════════════════════════════ NAVBAR_USED ══════╝ */
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_PAGE ══════╗ */
@@ -767,9 +767,13 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin = tfTest;
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].duree = myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin - myJSONGeneral.visites[myJSONGeneral.visites.length - 1].debut;
 
-				//on ajoute une ligne au csv de log 
-				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + reachedPage + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+				//on ajoute une ligne au csv de log
+				var cPageNumberNotEnd = (cPageNumber+1);
+				if(cPageNumberNotEnd > myConfig.pages.length){
+					cPageNumberNotEnd = ""
+				}
+				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + cPageNumberNotEnd + ";" +
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_PAGE ══════╝ */
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_PAGE ══════╗ */
@@ -780,8 +784,8 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].duree = myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin - myJSONGeneral.visites[myJSONGeneral.visites.length - 1].debut;
 
 				//on ajoute une ligne au csv de log 
-				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + reachedPage + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + (cPageNumber-1) + ";" +
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_PAGE ══════╝ */
 				// ═════════════════════════════════════════════════════════════════════════════════════════════════════ SOMMAIRE ══════╗ */
@@ -792,17 +796,17 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].duree = myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin - myJSONGeneral.visites[myJSONGeneral.visites.length - 1].debut;
 				myJSONGeneral.sommaire.totalClics++;
 				myJSONGeneral.sommaire.clicsOn[myReachedPage]++;
-				reachedPage = myReachedPage;
+				reachedPage = myReachedPage+1;
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + reachedPage + ";" +
-					"" + ";" + action + ";" + tfTest + ";" + tfPage + ";" + videoTimer + ";" + tfChap + ";" + tfPlay);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ═════════════════════════════════════════════════════════════════════════════════════════════════════ SOMMAIRE ══════╝ */
 				// ══════════════════════════════════════════════════════════════════════════════════════════════════════════ END ══════╗ */
 			case "END":
 				//on ajoute une ligne au csv de log 
-				this.lines.push(timer + ";" + "" + ";" + "" + ";" + "" + ";" + "" + ";" + action + ";" + tfTest + ";" + "" + ";" + "" + ";" + "" + ";" + "");
+				this.lines.push(timer + ";" + "" + ";" + "" + ";" + "" + ";" + "" + ";" + action + ";" + toNum(tfTest) + ";" + "" + ";" + "" + ";" + "" + ";" + "");
 				break;
 				// ══════════════════════════════════════════════════════════════════════════════════════════════════════════ END ══════╝ */
 				// ══════════════════════════════════════════════════════════════════════════════════════════════════════ default ══════╗ */
@@ -832,11 +836,6 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 			myJSONGeneral.diapos[currentPageNumber].duree += tfPage;
 		}
 	}
-
-
-
-
-
 }
 //classes qui seront transformé en CSV par la suite
 class InfosGeneralJSON {
@@ -865,13 +864,13 @@ class InfosGeneralJSON {
 		for (const diapo of this.diapos) { //chaque diapo
 			var d = "D" + iDiapo + "-"; //D1-duree D1-dureePlay etc.
 			titles += ";" + d + "duree" + ";" + d + "dureePlay" + ";" + d + "dureePause" + ";" + d + "nbPlay" + ";" + d + "nbPause";
-			values += ";" + diapo.duree + ";" + diapo.dureePlay + ";" + diapo.dureePause + ";" + diapo.nbPlay + ";" + diapo.nbPause;
+			values += ";" + toNum(diapo.duree) + ";" + toNum(diapo.dureePlay) + ";" + toNum(diapo.dureePause) + ";" + diapo.nbPlay + ";" + diapo.nbPause;
 
 			var iChap = 1; //numero de chap
 			for (const chap of diapo.infosChaps) { //chaque chap de chaque diapo
 				d = "D" + iDiapo + "-C" + iChap + "-"; //D1-C1-duree D1-C1-dureePlay (...) D1-C2-duree D1-C2-dureePlay etc.
 				titles += ";" + d + "duree" + ";" + d + "dureePlay" + ";" + d + "dureePause" + ";" + d + "nbPlay" + ";" + d + "nbPause";
-				values += ";" + chap.duree + ";" + chap.dureePlay + ";" + chap.dureePause + ";" + chap.nbPlay + ";" + chap.nbPause;
+				values += ";" + toNum(chap.duree) + ";" + toNum(chap.dureePlay) + ";" + toNum(chap.dureePause) + ";" + chap.nbPlay + ";" + chap.nbPause;
 				iChap++;
 			}
 			iDiapo++;
@@ -890,9 +889,9 @@ class InfosGeneralJSON {
 		for (const visite of this.visites) {
 			valuesV += (1 + visite.diapoNum) + ";" +
 				visite.nth + ";" +
-				visite.debut + ";" +
-				visite.fin + ";" +
-				visite.duree + ";" +
+				toNum(visite.debut) + ";" +
+				toNum(visite.fin) + ";" +
+				toNum(visite.duree) + ";" +
 				visite.nbPlay + ";" +
 				visite.nbPause + ";" +
 				visite.nbChapSuiv + ";" +
@@ -900,12 +899,6 @@ class InfosGeneralJSON {
 				visite.nbChapList + ";" +
 				visite.nbNavBar + "\n";
 		}
-		var nbVoidCol = titles.split(";").length - titlesV.split(";").length; //combien de ";" vide il faut ajouter pour creer le csv
-		/*for (let i = 0; i < nbVoidCol; i++) {
-		    titlesV += ";";
-		    valuesV += ";";
-		}*/
-
 		res += titles + "\n" + values + titlesV + valuesV;
 		return "data:text/csv;charset=utf-8," + res;
 	}
@@ -1011,8 +1004,10 @@ function duration(from, to) { //return en sec le temps écoulé entre deux dates
 	return (to - from) / 1000;
 }
 
-Number.prototype.toNum = function() {
-	return this.toFixed(2).replace(".",",");
+function toNum(n) {
+	if(n!=""){
+		return n.toFixed(2).replace(".",",");
+	}
+	return n;
 };
-
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
