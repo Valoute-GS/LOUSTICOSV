@@ -20,7 +20,13 @@
 	<link href="css/video-js.css" rel="stylesheet">
 	<script src="js/videojs-ie8.min.js"></script>
 
+	<!-- Quill -->
+	<link rel="stylesheet" href="css/katex.min.css">
+	<script src="js/katex.min.js"></script>
+	<link href="css/quill.snow.css" rel="stylesheet">
+
 	<script src="js/html5sortable.js"></script>
+	
 
 </head>
 
@@ -59,7 +65,9 @@
 						accept="application/json, video/mp4, video/webm, video/quicktime">
 					<div class="btn-group mx-auto">
 						<div class="btn-group mr-1" role="group">
-							<button class="load btn btn-outline-primary" type="button" id="load-file-name">
+							<button class="load btn btn-outline-primary" type="button" id="load-file-name"
+								data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
+								data-content="Veuillez importer un unique fichier de configuration au format .json ainsi que ses fichiers vidéo attachés. Il est possile de n'importer que le fichier .json dans un premier temps afin de savoir quels sont les fichiers associés nécessaire.">
 								Charger une configuration (.json), et ses fichiers annexes, pour la modifier</button>
 							<button class="load btn btn-primary" type="button" id="importload-btn">🔍 Importer</button>
 							<button class="btn btn-success" id="btnSelectConfig" type="button"
@@ -78,31 +86,29 @@
 					<input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
 					<div class="ml-1">
 						<div class="btn-group" role="group">
-							<!-- exemple popover
-                        <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover"data-trigger="hover" data-placement="top"data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">?</button>
-                        -->
 							<button class="btn btn-outline-success" type="button" onclick="addPage()">Ajouter une
 								page</button>
 							<button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
 								page</button>
 						</div>
-						<button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Sauvegarder</button>
+						<button class="btn btn-outline-primary" type="button"
+							onclick="finishConfig()">Sauvegarder</button>
 					</div>
 				</div>
 				<form>
 					<div class="custom-control custom-checkbox custom-control-inline">
 						<input type="checkbox" class="custom-control-input config-option" id="switch1">
-						<label class="custom-control-label" for="switch1" 
-							data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
+						<label class="custom-control-label" for="switch1" data-container="body" data-toggle="popover"
+							data-trigger="hover" data-placement="top"
 							data-content="Affiche la liste des pages et permet de au participant de se déplacer d'une page à l'autre.">
 							Sommaire visible</label>
 					</div>
 					<div class="custom-control custom-checkbox custom-control-inline">
 						<input type="checkbox" class="custom-control-input config-option" id="switch2">
-						<label class="custom-control-label" for="switch2" 
-						data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
-						data-content="Permet au participant de naviguer vers la page précédente (ie la page d'index-1)">
-						Bouton page précédente</label>
+						<label class="custom-control-label" for="switch2" data-container="body" data-toggle="popover"
+							data-trigger="hover" data-placement="top"
+							data-content="Permet au participant de naviguer vers la page précédente (ie la page d'index-1)">
+							Bouton page précédente</label>
 					</div>
 				</form>
 				<ul id="pcontainer" class="mt-3 js-sortable sortable list flex flex-column">
@@ -120,11 +126,19 @@
 				<textarea class="form-control rounded-0" id="text-input" rows="10"></textarea>
 			</div>
 		</main>
-		<!-- Configuration text editor 
-        <main role="main" class="configurator configurator-text-editor" style="display: none">
-                <div id="editorjs"></div>
-            </main> 
-            -->
+		<!-- Configuration editeur de text -->
+		<main role="main" class="configurator configurator-text-editor" style="display: none">
+			<div class="mb-3">
+				<button class="btn btn-primary" type="button" onclick="saveText()">Sauvegarder</button>
+				<button type="button" class="btn btn-danger ml-3" id="btn-chapter-done"
+					onclick="exitText()">Annuler</button>
+			</div>
+			<div id="editor">
+				<p>Entrez du texte ici</p>
+				<p><br></p>
+			</div>
+
+		</main>
 		<!-- Configuration video -->
 		<main role="main" class="configurator configurator-video" style="display: none">
 			<div id="videoerror"></div>
@@ -144,58 +158,58 @@
 				<div class="custom-control custom-checkbox custom-control-inline">
 					<!--PPLLOWED-->
 					<input type="checkbox" class="custom-control-input video-option" id="customCheck1">
-					<label class="custom-control-label" for="customCheck1"
-					data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
-					data-content="Autorise le participant à mettre la vidéo en pause et à reprendre la lecture à sa guise.">
-					Play/Pause autorisé</label>
+					<label class="custom-control-label" for="customCheck1" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Autorise le participant à mettre la vidéo en pause et à reprendre la lecture à sa guise.">
+						Play/Pause autorisé</label>
 				</div>
 				<div class="custom-control custom-checkbox custom-control-inline">
 					<!--FREENAV-->
 					<input type="checkbox" class="custom-control-input video-option" id="customCheck2">
-					<label class="custom-control-label" for="customCheck2"
-					data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
-					data-content="Autorise le participant à utiliser la barre de navigation, et donc à sa deplacer où il veut sur la vidéo.">
-					Barre de navigation utilisable</label>
+					<label class="custom-control-label" for="customCheck2" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Autorise le participant à utiliser la barre de navigation, et donc à sa deplacer où il veut sur la vidéo.">
+						Barre de navigation utilisable</label>
 				</div>
 				<div class="custom-control custom-checkbox custom-control-inline">
 					<!--VISIBLECHAPZONE-->
 					<input type="checkbox" class="custom-control-input video-option" id="customCheck3">
-					<label class="custom-control-label" for="customCheck3"
-					data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
-					data-content="Laisse un espace sur la gauche de la vidéo (où les eventuels chapitres seront afichés).">
-					Zone chapitres</label>
+					<label class="custom-control-label" for="customCheck3" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Laisse un espace sur la gauche de la vidéo (où les eventuels chapitres seront afichés).">
+						Zone chapitres</label>
 				</div>
 				<div class="custom-control custom-checkbox custom-control-inline">
 					<!--VISIBLECHAP-->
 					<input type="checkbox" class="custom-control-input video-option" id="customCheck4">
-					<label class="custom-control-label" for="customCheck4"
-					data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
-					data-content="La liste des chapitres sera visible dans l'espace réservé. REQUIS : Zone chapitre + un chapitre ou plus.">
-					Chapitres visibles</label>
+					<label class="custom-control-label" for="customCheck4" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="La liste des chapitres sera visible dans l'espace réservé. REQUIS : Zone chapitre + un chapitre ou plus.">
+						Chapitres visibles</label>
 				</div>
 				<div class="custom-control custom-checkbox custom-control-inline">
 					<!--VISIBLEDATECHAP-->
 					<input type="checkbox" class="custom-control-input video-option" id="customCheck5">
-					<label class="custom-control-label" for="customCheck5"
-					data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
-					data-content="En plus du nom du chapitre sera affiché sa date. REQUIS : Chapitres visibles.">
-					Date chapitre visibles</label>
+					<label class="custom-control-label" for="customCheck5" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="En plus du nom du chapitre sera affiché sa date. REQUIS : Chapitres visibles.">
+						Timer chapitre visibles</label>
 				</div>
 				<div class="custom-control custom-checkbox custom-control-inline">
 					<!--CLICKABLECHAP-->
 					<input type="checkbox" class="custom-control-input video-option" id="customCheck6">
-					<label class="custom-control-label" for="customCheck6"
-					data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
-					data-content="Le candidat peut atteindre un chapitre en cliquant dessus. REQUIS : Chapitres visibles.">
-					Chapitres cliquables</label>
+					<label class="custom-control-label" for="customCheck6" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Le candidat peut atteindre un chapitre en cliquant dessus. REQUIS : Chapitres visibles.">
+						Chapitres cliquables</label>
 				</div>
 				<div class="custom-control custom-checkbox custom-control-inline">
 					<!--NAVIGABLECHAP-->
 					<input type="checkbox" class="custom-control-input video-option" id="customCheck7">
-					<label class="custom-control-label" for="customCheck7"
-					data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
-					data-content="Le candidat peut naviguer vers le chapitre précédent/suivant. REQUIS : Un chapitre ou plus.">
-					Chapitre suiv/prec</label>
+					<label class="custom-control-label" for="customCheck7" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Le candidat peut naviguer vers le chapitre précédent/suivant. REQUIS : Un chapitre ou plus.">
+						Chapitre suiv/prec</label>
 				</div>
 			</div>
 
@@ -218,7 +232,9 @@
 					id="inputGroupVideo" accept="video/mp4, video/webm, video/quicktime">
 				<div class="btn-group mx-auto">
 					<div class="btn-group mr-1" role="group">
-						<button class="browse btn btn-outline-primary" type="button" id="input-file-name">
+						<button class="browse btn btn-outline-primary" type="button" id="input-file-name"
+							data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
+							data-content="Les formats conseillés sont .mp4 .mov .webm. Il est possible que certains navigateurs supportent plus ou moins de formats que ceux conseillés (risque de lecture impossible).">
 							Choisir un fichier video</button>
 						<button class="browse btn btn-primary" type="button" id="import-btn">🔍 Importer</button>
 					</div>
@@ -233,12 +249,13 @@
 		<!-- DEBUT du footer -->
 		<footer class="mastfoot mt-auto navbar-fixed-bottom">
 			<div class="inner">
-				<p>indev - V0.6.1</p>
+				<p>indev - V0.7</p>
 			</div>
 		</footer>
 		<!-- FIN du footer -->
 	</div>
 	<!-- Javascript -->
+	<script src="js/quill.min.js"></script>
 	<script src='js/video.js'></script>
 	<script src="js/jquery-3.3.1.slim.min.js"></script>
 	<script src="js/popper.min.js"></script>

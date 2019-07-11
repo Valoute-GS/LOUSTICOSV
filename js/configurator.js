@@ -7,14 +7,39 @@ window.onbeforeunload = function () {
 	return "";
 };
 
-/*const editor = new EditorJS({
-		autofocus: true
-});*/
+var toolbarOptions = [
+	['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+	['blockquote', 'code-block'],
 
+	[{ 'header': 1 }, { 'header': 2 }],               // custom button values
+	[{ 'list': 'ordered'}, { 'list': 'bullet' }],
+	[{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+	[{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+	[{ 'direction': 'rtl' }],                         // text direction
+
+	[{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+	[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+	[ 'link', 'image', 'video', 'formula' ],          // add's image support
+	[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+	[{ 'font': [] }],
+	[{ 'align': [] }],
+
+	['clean']                                         // remove formatting button
+];
+
+var quill = new Quill('#editor', {
+modules: {
+	toolbar: toolbarOptions
+},
+
+theme: 'snow'
+});
+
+//gestion popover
 $(function () {
 		$('[data-toggle="popover"]').popover()
 })
-
+//detection pour generer l'effet de fondu
 $(document).on('DOMSubtreeModified', function() {
 		$(function(){
 				$('.fadein').removeClass('fadein');
@@ -35,7 +60,7 @@ function addPage() {
 		'<input type="text" class="form-control" style="width: 40%" placeholder="Nom de la page" onchange="namePageUpdate(this)">' +
 		'<select class="custom-select">' +
 		'<option selected>Format ...</option>' +
-		'<option value="1">Texte</option>' +
+		'<option value="1">Editeur de texte</option>' +
 		'<option value="2">Video</option>' +
 		// '<option value="3">Questions</option>' +
 		'</select>' +
@@ -156,7 +181,7 @@ function configPage(e) {
 
 	switch (format) {
 		case "1": //Texte
-			configText();
+			configTextEditor();
 			maintitle.innerHTML = "TEXTE - Page " + currentPageNumber;
 			break;
 		case "2": //Video
@@ -222,6 +247,7 @@ function configVideo() {
 		myPlayer.pause();
 	} else {
 		var index = 0;
+		document.getElementById("input-file-name").innerHTML = "Choisir un fichier video";
 		for (const option of document.getElementsByClassName("custom-control-input video-option")) {
 			option.checked = false;
 			index++;
@@ -280,11 +306,46 @@ function exitText() {
 	showByClass("configurator-main");
 }
 
-/* ==== TEXT EDITOR ====*/
+/* ======= TEXT EDITOR =======*/
+quill.setHTML = (html) => {
+	editor.innerHTML = html;
+  };
+  
+  // get html content
+  quill.getHTML = () => {
+	return editor.innerHTML;
+  };
+
 function configTextEditor() {
 	hideByClass("configurator");
+
+	// restauration de la cofiguration si deja faite
+	let state = pagesState[currentPageNumber - 1];
+	if (state === 0) { // vierge
+		quill.setText('')
+	} else if (state === 1) { // si c'est un text qui a deja ete config
+		quill.setContents(myConfig.pages[currentPageNumber - 1].text)
+	} else { //deja config dans un autre format
+		quill.setText('')
+	}
+
 	showByClass("configurator-text-editor")
 }
+
+function saveText() {
+	if (saveTextConfig() == true) {
+		hideByClass("configurator");
+		maintitle.innerHTML = "LOUSTIC OS - Créer";
+		showByClass("configurator-main");
+	}
+}
+
+function exitText() {
+	hideByClass("configurator");
+	maintitle.innerHTML = "LOUSTIC OS - Créer";
+	showByClass("configurator-main");
+}
+
 /* ╚═══════FIN═══════╝ CONFIG PAGE ====================================================*/
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
@@ -338,7 +399,7 @@ function controlConfig(canBeLoaded) { //check si tous les fichiers nécessaires 
 		for (const page of loadedConfig.pages) { //check si les fichiers nécessaires ont bien été importés
 			if (page.type === "video") {
 				if (!imp.includes(page.videoName)) {
-					errorMessages.add("Le fichier " + page.videoName + " est manquant");
+					errorMessages.add("Veuillez ajouter le fichier manquant : " + page.videoName);
 					isCorrect = false;
 				}
 			}
@@ -593,9 +654,8 @@ function saveVideoConfig() { //appui du bouton Terminer
 
 /* ======= TEXT ========*/
 function saveTextConfig() { //appui du bouton Terminer
-	let newText = document.getElementById("text-input").value;
-
-	let newTextConfig = new ConfigTextJson(newText);
+	var cont = quill.getContents();
+	let newTextConfig = new ConfigTextJson(cont);
 	myConfig.pages[currentPageNumber - 1] = newTextConfig; //On sauvergarde les infosde la page (type video) pour le futur export
 	updatePagesState(1);
 	return true;

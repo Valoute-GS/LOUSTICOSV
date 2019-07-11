@@ -67,7 +67,7 @@ main{
 .background {
     top: 0px;
     left: 0px;
-    width: 50%;
+    width: 0%;
     height: 100%;
     background-color: rgba(2, 58, 65, 0.25);
     z-index: 98;

@@ -35,9 +35,24 @@ var startTimeOnPage = 0;
 var previousTime = 0; //timer de la video mis a jour tout le temps (utile pour connaitre le timer avant et apres une action comme nav sur seekbar)
 var myReachedPage = 0; //page vers laquelle on se déplace
 
-$(document).on('DOMSubtreeModified', function() {
-	$(function(){
-			$('.fadein').removeClass('fadein');
+//editeur de texte Quill (ici juste un conteneur)
+var quill = new Quill('#editor', {
+	modules: {
+		toolbar: false
+	},
+
+	theme: 'snow'
+});
+quill.disable()
+
+//gestion popover
+$(function () {
+	$('[data-toggle="popover"]').popover()
+})
+//detection pour generer l'effet de fondu
+$(document).on('DOMSubtreeModified', function () {
+	$(function () {
+		$('.fadein').removeClass('fadein');
 	})
 });
 
@@ -48,6 +63,7 @@ $(document).on('click', '.browse', function () { //gestion du faux input file
 });
 var nbJson = 0; //checker si on a pas importé pls config en mm temps
 function loadFiles(files) { //import des fichiers + affichage
+	$('[data-toggle="popover"]').popover("hide"); 
 	//iteration sur les fichiers selectionnés
 	for (const file of files) {
 		if (file.type === "application/json") {
@@ -92,7 +108,7 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
 		for (const page of myConfig.pages) { //check si les fichiers nécessaires ont bien été importés
 			if (page.type === "video") {
 				if (!imp.includes(page.videoName)) {
-					errorMessages.add("Le fichier " + page.videoName + " est manquant");
+					errorMessages.add("Veuillez ajouter le fichier manquant : " + page.videoName);
 					isCorrect = false;
 				}
 			}
@@ -176,15 +192,15 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
 
 		//SOMMAIRE
 		if (myConfig.options[0]) { //on affiche la liste des pages si l'option dans la config est cochée
-			if(myConfig.options[1]){
+			if (myConfig.options[1]) {
 				pagesNameIndex.innerHTML += '<li class="page-item" id="btnPrevPage"><a class="page-link" onclick="prevPage()">Précédent</a></li>'
-			}else{
+			} else {
 				pagesNameIndex.innerHTML += '<li class="page-item" id="btnPrevPage" style="display : none"><a class="page-link" onclick="prevPage()">&laquo;</a></li>'
 			}
 			for (const page of myConfig.pages) {
 				//Si la page n'a pas de nom on lui met un nom par defaut (son index)
-				var name = (page.pageNumber-1)
-				if(page.pageName != ""){
+				var name = (page.pageNumber - 1)
+				if (page.pageName != "") {
 					name = page.pageName;
 				}
 				//pagesNameIndex.innerHTML += '<li class="page-item"><a class="dropdown-item" onclick="jumpToPage(' + (page.pageNumber - 1) + ')"> ' + page.pageName + '</a></li>';
@@ -234,7 +250,7 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 			for (pageNameIndex of pagesNameIndex.getElementsByTagName("li")) {
 				if (currentPageNumber + 1 === i) {
 					pageNameIndex.classList.add("active");
-				} else if (i != 0 && i != myConfig.pages.length+1) {
+				} else if (i != 0 && i != myConfig.pages.length + 1) {
 					pageNameIndex.classList.remove("active");
 				}
 				i++;
@@ -293,12 +309,12 @@ function finishConfig() { //récup des infos et résulatats
 function dlcsv() { //génère le lien de téléchargement pour les CSVs
 	// NOTE: a décommenter dans la version final
 	var dlAnchorElem = document.getElementById('download-link');
-	dlAnchorElem.setAttribute("href", myCsvLogs);
-	dlAnchorElem.setAttribute("download", "myCsvLogs_" + testID + ".csv");
-	dlAnchorElem.click();
 	dlAnchorElem.setAttribute("href", myJSONGeneral.toCSV());
 	dlAnchorElem.setAttribute("download", "myCsvSynthesis_" + testID + ".csv");
-	dlAnchorElem.click();
+	dlAnchorElem.click()
+	dlAnchorElem.setAttribute("href", myCsvLogs);
+	dlAnchorElem.setAttribute("download", "myCsvLogs_" + testID + ".csv");
+	dlAnchorElem.click();;
 }
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
@@ -323,7 +339,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 	});
 	myPlayer.on('timeupdate', function () {
 		checkChap();
-		if(myConfig.pages[currentPageNumber].type == "video" && VISIBLECHAP){
+		if (myConfig.pages[currentPageNumber].type == "video" && VISIBLECHAP) {
 			chapTimerUpdate();
 		}
 	});
@@ -388,7 +404,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 		if (VISIBLEDATECHAP) {
 			for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
 				chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
-					'<button class="btn btn-block btn-outline-primary btn-chapter" type="button" onclick="gotoTime(this.children[2].innerHTML)">' +
+					'<button class="btn btn-block btn-outline-primary btn-chapter px-0 py-0" type="button" onclick="gotoTime(this.children[2].innerHTML)">' +
 					'<div class="background-text">' + chapter.name + ' : ' + chapter.date + '</div><div class="background">&#8203</div>' +
 					'<div style="display : none;">' + chapter.date + '</div>' +
 					'</button>' +
@@ -475,24 +491,35 @@ function checkChap() { //check quel est le chapitre courant durant la lecture d'
 }
 
 function chapTimerUpdate() { //permet de mettre a jour la barre de progression du chapitre en cours
-	if(myConfig.pages[currentPageNumber].options[3]){ //si les chapitres sont visibles
+	if (myConfig.pages[currentPageNumber].options[4]) { //si les timer de chapitres sont visibles
 		var i = 1;
 		for (const chap of document.getElementsByClassName("background")) {
-			if(i === currentChapterNumber){
+			if (i === currentChapterNumber) {
 				//On calcule le pourcentage de progression
-				var chapCurrentTime = myPlayer.currentTime() - toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber-1].date);
+				var chapCurrentTime = myPlayer.currentTime() - toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber - 1].date);
 				var chapDuration = 1;
-				if(currentChapterNumber == myConfig.pages[currentPageNumber].chapters.length){ //si c'est le dernier chap
-					chapDuration = myPlayer.duration() - toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber-1].date);
-				}else{
-					chapDuration = toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber].date) - toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber-1].date);
+				if (currentChapterNumber == myConfig.pages[currentPageNumber].chapters.length) { //si c'est le dernier chap
+					chapDuration = myPlayer.duration() - toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber - 1].date);
+				} else {
+					chapDuration = toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber].date) - toSeconds(myConfig.pages[currentPageNumber].chapters[currentChapterNumber - 1].date);
 				}
 				//on applique ce pourcentage via le CSS
-				chap.style.width = (100 * chapCurrentTime/chapDuration) + '%';
-				
-			}else{
+				chap.style.width = (100 * chapCurrentTime / chapDuration) + '%';
+
+			} else {
 				//chapitre non en cours -> vide
 				chap.style.width = "0%";
+			}
+			i++;
+		}
+	}else{
+		var i = 1;
+		for (const btnchap of document.getElementsByClassName("btn-chapter")) {
+			if (i === currentChapterNumber) {
+				btnchap.classList.add("border-danger");
+			} else {
+				//chapitre non en cours -> 
+				btnchap.classList.remove("border-danger");
 			}
 			i++;
 		}
@@ -525,8 +552,7 @@ function loadText() { //page de type texte
 	hideByClass("load");
 	showByClass("load-text");
 
-	document.getElementById("text-display").innerHTML = "";
-	document.getElementById("text-display").innerHTML += myConfig.pages[currentPageNumber].text;
+	quill.setContents(myConfig.pages[currentPageNumber].text)
 }
 /* ╚═══════FIN═══════╝ TEXT  ==========================================================*/
 
@@ -984,5 +1010,9 @@ function toSeconds(time) {
 function duration(from, to) { //return en sec le temps écoulé entre deux dates
 	return (to - from) / 1000;
 }
+
+Number.prototype.toNum = function() {
+	return this.toFixed(2).replace(".",",");
+};
 
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/

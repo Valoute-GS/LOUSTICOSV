@@ -19,6 +19,11 @@
 	<!-- videoJS -->
 	<link href="css/video-js.css" rel="stylesheet">
 	<script src="js/videojs-ie8.min.js"></script>
+	
+	<!-- Quill -->
+	<link rel="stylesheet" href="css/katex.min.css">
+	<script src="js/katex.min.js"></script>
+	<link href="css/quill.snow.css" rel="stylesheet">
 
 </head>
 
@@ -36,7 +41,8 @@
 					<div class="navbar-nav ml-auto">
 						<a class="nav-item nav-link" href="index.html">Accueil</a>
 						<a class="nav-item nav-link" href="configurator.html">Configurateur</a>
-						<a class="nav-item nav-link active" href="#">Lancer un test<span class="sr-only">(current)</span></a>
+						<a class="nav-item nav-link active" href="#">Lancer un test<span
+								class="sr-only">(current)</span></a>
 					</div>
 				</div>
 			</nav>
@@ -51,7 +57,6 @@
 			</nav>
 		</div>
 
-
 		<!-- DEBUT de la main part -->
 		<!-- Input config -->
 		<main role="main" class="load load-main fadein">
@@ -65,11 +70,13 @@
 						accept="application/json, video/mp4, video/webm, video/quicktime">
 					<div class="btn-group mx-auto">
 						<div class="btn-group mr-1" role="group">
-							<button class="browse btn btn-outline-primary" type="button" id="input-file-name">
-								Importer un fichier de configuration (.json) et ses fichiers associés</button>
+							<button class="browse btn btn-outline-primary" type="button" id="input-file-name" data-container="body" data-toggle="popover"
+							data-trigger="hover" data-placement="bottom"
+							data-content="Veuillez importer un unique fichier de configuration au format .json ainsi que ses fichiers vidéo attachés. Il est possile de n'importer que le fichier .json dans un premier temps afin de savoir quels sont les fichiers associés nécessaire.">
+							Importer un fichier de configuration (.json) et ses fichiers associés</button>
 							<button class="browse btn btn-primary" type="button" id="import-btn">🔍 Importer</button>
-							<button class="btn btn-success" id="btnSelectConfig" type="button" onclick="controlConfig(true)"
-								style="display: none;">Démarrer</button>
+							<button class="btn btn-success" id="btnSelectConfig" type="button"
+								onclick="controlConfig(true)" style="display: none;">Démarrer le test</button>
 						</div>
 						<div class="btn-group mr-2" role="group">
 							<button class="btn btn-danger" type="button" onclick="reloadPage()">Annuler</button>
@@ -119,8 +126,9 @@
 				<div class="col-md-9 mx-auto">
 					<!-- onseeking="console.log('---- SEEKING ----');" onseeked="console.log('---- OK ----')" onplaying="console.log('Playing');" -->
 					<video id='myvideo' class='video-js vjs-default-skin vjs-big-play-centered' preload="auto"
-						oncontextmenu="return false" width="100%" height="100%" onpause="pauseVideo(true)" onplay="playVideo(true)"
-						onended="videoEnded()" data-setup='{ "aspectRatio":"16:9", "fluid": true}' controls>
+						oncontextmenu="return false" width="100%" height="100%" onpause="pauseVideo(true)"
+						onplay="playVideo(true)" onended="videoEnded()"
+						data-setup='{ "aspectRatio":"16:9", "fluid": true}' controls>
 						<!--ontimeupdate="checkChapter()"-->
 						<source src='videos/defaut.mp4' type='video/mp4'>
 						<p class='vjs-no-js'>
@@ -134,7 +142,9 @@
 
 		<!-- Text -->
 		<main role="main" class="load load-text my-auto" style="display: none">
-			<div class="text-center mx-auto" id="text-display">
+			<div id="editor">
+				<p>Entrez du texte ici</p>
+				<p><br></p>
 			</div>
 		</main>
 
@@ -153,13 +163,14 @@
 		<!-- DEBUT du footer -->
 		<footer class="mastfoot mt-auto navbar-fixed-bottom">
 			<div>
-				<p>indev - V0.6.1</p>
+				<p>indev - V0.7</p>
 			</div>
 		</footer>
 		<!-- FIN du footer -->
 	</div>
 
 	<!-- Javascript -->
+	<script src="js/quill.min.js"></script>
 	<script src="js/jquery-3.3.1.slim.min.js"></script>
 	<script src="js/popper.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
