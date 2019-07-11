@@ -38,6 +38,7 @@ var myReachedPage = 0; //page vers laquelle on se déplace
 //editeur de texte Quill (ici juste un conteneur)
 var quill = new Quill('#editor', {
 	modules: {
+		imageResize: false,
 		toolbar: false
 	},
 

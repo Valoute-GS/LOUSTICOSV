@@ -28,7 +28,10 @@ var toolbarOptions = [
 ];
 
 var quill = new Quill('#editor', {
-modules: {
+modules: { 
+	imageResize: {
+	displaySize: true
+  },
 	toolbar: toolbarOptions
 },
 
