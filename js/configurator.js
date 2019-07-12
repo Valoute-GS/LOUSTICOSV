@@ -486,6 +486,7 @@ function loadConfig() {
 	for (let i = 1; i <= myConfig.options.length; i++) {
 		document.getElementById("switch" + i).checked = myConfig.options[i - 1]
 	}
+	checkOptions();
 	let index = 0;
 	for (const page of myConfig.pages) {
 		currentPageNumber = index + 1;
