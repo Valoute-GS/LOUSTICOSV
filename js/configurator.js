@@ -632,17 +632,14 @@ function saveVideoConfig() { //appui du bouton Terminer
 		chapters[index].date = eltDate.value;
 		if (!eltDate.checkValidity()) { //format non valide selon la regex
 			complete = false;
-			errorMessages.add("Un timer ne respecte pas le format (HH:)MM:SS (Heure facultative)");
-			console.log("format incorrect");
+			errorMessages.add("Au moins un timer ne respecte pas le format (HH:)MM:SS (Heure facultative)");
 			eltDate.className = "form-control chapter-date border-danger";
 		} else {
 			if (prevDate < toSeconds(eltDate.value)) {
 				eltDate.className = "form-control chapter-date border-success";
-				console.log("format OK");
 			} else {
 				complete = false;
 				errorMessages.add("Les timers doivent être dans un ordre croissant et compris dans le temps de la video");
-				console.log("ordre incorrect");
 				eltDate.className = "form-control chapter-date border-danger";
 			}
 			prevDate = toSeconds(eltDate.value);
@@ -650,7 +647,6 @@ function saveVideoConfig() { //appui du bouton Terminer
 
 		if (eltDate && myPlayer.duration() < toSeconds(eltDate.value)) { //si la video est plus longue que la date du dernier chap
 			complete = false;
-			console.log("duree incorrecte");
 			eltDate.className = "form-control chapter-date border-danger";
 			errorMessages.add("Les timers doivent être dans un ordre croissant et compris dans le temps de la video");
 		}
@@ -696,6 +692,8 @@ function saveTextConfig() { //appui du bouton Terminer
 /* ======= CONFIG ======*/
 function finishConfig() {
 	var options = [];
+	mainerror.innerHTML = "";
+	var errorMessages = new Set([]);
 	for (const optionElt of document.getElementsByClassName("config-option")) {
 		options.push(optionElt.checked);
 	}
@@ -712,14 +710,26 @@ function finishConfig() {
 		dlAnchorElem.setAttribute("href", dataStr);
 		dlAnchorElem.setAttribute("download", myConfig.name + ".json");
 		dlAnchorElem.click();
-
-
 	} else {
-		alertmain.innerHTML = bAlert("Configuration incomplete ou erronée");
+		for (const message of errorMessages) {
+			mainerror.innerHTML += bAlert(message);
+		}
 	}
 
-	function configChecker() {
-		return pagesState.every(isSet) && pagesState.length > 0 && isSomething(document.getElementById("config-name").value)
+	function configChecker() { //vérifie que tout est bon dans la config
+		if (!pagesState.every(isSet)) {
+			errorMessages.add("Au moins une page n'a pas été configurée");
+		}
+		if (!pagesState.length > 0) {
+			errorMessages.add("Veuillez ajouter au moins une page");
+		}
+		if (!isSomething(myConfig.name)) {
+			errorMessages.add("Veuillez ajouter un nom à votre configuration");
+			document.getElementById("config-name").className = "form-control border-danger";
+		}else{
+			document.getElementById("config-name").className = "form-control border-success";
+		}
+		return pagesState.every(isSet) && pagesState.length > 0 && isSomething(myConfig.name)
 	}
 
 }
