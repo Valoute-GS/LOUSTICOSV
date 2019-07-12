@@ -26,7 +26,7 @@
 	<link href="css/quill.snow.css" rel="stylesheet">
 
 	<script src="js/html5sortable.js"></script>
-	
+
 
 </head>
 
@@ -43,8 +43,7 @@
 				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 					<div class="navbar-nav ml-auto">
 						<a class="nav-item nav-link" href="index.html">Accueil</a>
-						<a class="nav-item nav-link active" href="#">Configurateur<span
-								class="sr-only">(current)</span></a>
+						<a class="nav-item nav-link active" href="#">Configurateur<span class="sr-only">(current)</span></a>
 						<a class="nav-item nav-link" href="load.html">Lancer un test</a>
 					</div>
 				</div>
@@ -65,13 +64,13 @@
 						accept="application/json, video/mp4, video/webm, video/quicktime">
 					<div class="btn-group mx-auto">
 						<div class="btn-group mr-1" role="group">
-							<button class="load btn btn-outline-primary" type="button" id="load-file-name"
-								data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
+							<button class="load btn btn-outline-primary" type="button" id="load-file-name" data-container="body"
+								data-toggle="popover" data-trigger="hover" data-placement="bottom"
 								data-content="Veuillez importer un unique fichier de configuration au format .json ainsi que ses fichiers vidéo attachés. Il est possile de n'importer que le fichier .json dans un premier temps afin de savoir quels sont les fichiers associés nécessaire.">
 								Charger une configuration (.json), et ses fichiers annexes, pour la modifier</button>
 							<button class="load btn btn-primary" type="button" id="importload-btn">🔍 Importer</button>
-							<button class="btn btn-success" id="btnSelectConfig" type="button"
-								onclick="controlConfig(true)" style="display: none;">Charger</button>
+							<button class="btn btn-success" id="btnSelectConfig" type="button" onclick="controlConfig(true)"
+								style="display: none;">Charger</button>
 						</div>
 						<div class="btn-group mr-2" role="group" id="cancel-load-btn">
 							<button class="btn btn-outline-danger" type="button" onclick="emptyLoad()">Annuler</button>
@@ -91,8 +90,7 @@
 							<button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
 								page</button>
 						</div>
-						<button class="btn btn-outline-primary" type="button"
-							onclick="finishConfig()">Sauvegarder</button>
+						<button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Sauvegarder</button>
 					</div>
 				</div>
 				<div onchange="checkOptions()">
@@ -126,8 +124,7 @@
 		<!-- Configuration text -->
 		<main role="main" class="configurator configurator-text" style="display: none">
 			<button class="btn btn-primary" type="button" onclick="saveText()">Sauvegarder</button>
-			<button type="button" class="btn btn-danger ml-3" id="btn-chapter-done"
-				onclick="exitText()">Annuler</button>
+			<button type="button" class="btn btn-danger ml-3" id="btn-chapter-done" onclick="exitText()">Annuler</button>
 			<div class="form-group">
 				<label for="text-input">Entrez du texte ici : </label>
 				<textarea class="form-control rounded-0" id="text-input" rows="10"></textarea>
@@ -137,8 +134,7 @@
 		<main role="main" class="configurator configurator-text-editor" style="display: none">
 			<div class="mb-3">
 				<button class="btn btn-primary" type="button" onclick="saveText()">Sauvegarder</button>
-				<button type="button" class="btn btn-danger ml-3" id="btn-chapter-done"
-					onclick="exitText()">Annuler</button>
+				<button type="button" class="btn btn-danger ml-3" id="btn-chapter-done" onclick="exitText()">Annuler</button>
 			</div>
 			<div id="editor">
 				<p>Entrez du texte ici</p>
@@ -158,8 +154,7 @@
 				</div>
 				<button type="button" class="btn btn-primary ml-3" id="btn-chapter-done"
 					onclick="saveVideo()">Sauvegarder</button>
-				<button type="button" class="btn btn-danger ml-3" id="btn-chapter-done"
-					onclick="exitVideo()">Annuler</button>
+				<button type="button" class="btn btn-danger ml-3" id="btn-chapter-done" onclick="exitVideo()">Annuler</button>
 			</div>
 			<div class="mb-3" onchange="checkVideoOptions()">
 				<div class="custom-control custom-checkbox custom-control-inline">
@@ -227,10 +222,9 @@
 				<div class="col-md">
 					<!-- video player -->
 					<div class="full-vid">
-						<video oncontextmenu="return false;" id="player"
-							class="video-js vjs-default-skin vjs-big-play-centered"
-							onerror="alert('Veuillez selectionner une video valide');" controls width="100%"
-							height="100%" data-setup='{ "aspectRatio":"16:9", "fluid": true }'></video>
+						<video oncontextmenu="return false;" id="player" class="video-js vjs-default-skin vjs-big-play-centered"
+							onerror="alert('Veuillez selectionner une video valide');" controls width="100%" height="100%"
+							data-setup='{ "aspectRatio":"16:9", "fluid": true }'></video>
 					</div>
 				</div>
 			</div>
@@ -239,8 +233,8 @@
 					id="inputGroupVideo" accept="video/mp4, video/webm, video/quicktime">
 				<div class="btn-group mx-auto">
 					<div class="btn-group mr-1" role="group">
-						<button class="browse btn btn-outline-primary" type="button" id="input-file-name"
-							data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
+						<button class="browse btn btn-outline-primary" type="button" id="input-file-name" data-container="body"
+							data-toggle="popover" data-trigger="hover" data-placement="bottom"
 							data-content="Les formats conseillés sont .mp4 .mov .webm. Il est possible que certains navigateurs supportent plus ou moins de formats que ceux conseillés (risque de lecture impossible).">
 							Choisir un fichier video</button>
 						<button class="browse btn btn-primary" type="button" id="import-btn">🔍 Importer</button>
@@ -256,7 +250,7 @@
 		<!-- DEBUT du footer -->
 		<footer class="mastfoot mt-auto navbar-fixed-bottom">
 			<div class="inner">
-				<p>indev - V0.7</p>
+				<p>indev - V0.7.2</p>
 			</div>
 		</footer>
 		<!-- FIN du footer -->

@@ -65,7 +65,7 @@ $(document).on('click', '.browse', function () { //gestion du faux input file
 });
 var nbJson = 0; //checker si on a pas importé pls config en mm temps
 function loadFiles(files) { //import des fichiers + affichage
-	$('[data-toggle="popover"]').popover("hide"); 
+	$('[data-toggle="popover"]').popover("hide");
 	//iteration sur les fichiers selectionnés
 	for (const file of files) {
 		if (file.type === "application/json") {
@@ -514,7 +514,7 @@ function chapTimerUpdate() { //permet de mettre a jour la barre de progression d
 			}
 			i++;
 		}
-	}else{
+	} else {
 		var i = 1;
 		for (const btnchap of document.getElementsByClassName("btn-chapter")) {
 			if (i === currentChapterNumber) {
@@ -596,7 +596,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 		var timer = d.toLocaleDateString() + "(" + d.toLocaleDateString("fr-FR", {
 			weekday: "short"
 		}) + ")-" + d.toLocaleTimeString();
-		var cPageNumber = currentPageNumber+1;
+		var cPageNumber = currentPageNumber + 1;
 		var cChapterNumber = "";
 		var reachedPage = ""; //TODO:
 		var reachedChap = "";
@@ -609,7 +609,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 		// on assigne videotimer si necessaire (aka si sur une page de type video)
 		if (currentPageNumber < myConfig.pages.length && myConfig.pages[currentPageNumber].type === "video") {
-			cChapterNumber = currentChapterNumber+1;
+			cChapterNumber = currentChapterNumber + 1;
 			// reachedChap cf CHAP_ATT
 			videoTimer = myPlayer.currentTime();
 			tfChap = duration(tChapCSV, now);
@@ -770,8 +770,8 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].duree = myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin - myJSONGeneral.visites[myJSONGeneral.visites.length - 1].debut;
 
 				//on ajoute une ligne au csv de log
-				var cPageNumberNotEnd = (cPageNumber+1);
-				if(cPageNumberNotEnd > myConfig.pages.length){
+				var cPageNumberNotEnd = (cPageNumber + 1);
+				if (cPageNumberNotEnd > myConfig.pages.length) {
 					cPageNumberNotEnd = ""
 				}
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + cPageNumberNotEnd + ";" +
@@ -786,7 +786,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].duree = myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin - myJSONGeneral.visites[myJSONGeneral.visites.length - 1].debut;
 
 				//on ajoute une ligne au csv de log 
-				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + (cPageNumber-1) + ";" +
+				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + (cPageNumber - 1) + ";" +
 					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ PREV_PAGE ══════╝ */
@@ -798,7 +798,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].duree = myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin - myJSONGeneral.visites[myJSONGeneral.visites.length - 1].debut;
 				myJSONGeneral.sommaire.totalClics++;
 				myJSONGeneral.sommaire.clicsOn[myReachedPage]++;
-				reachedPage = myReachedPage+1;
+				reachedPage = myReachedPage + 1;
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + reachedPage + ";" +
@@ -1007,8 +1007,8 @@ function duration(from, to) { //return en sec le temps écoulé entre deux dates
 }
 
 function toNum(n) {
-	if(n!=""){
-		return n.toFixed(2).replace(".",",");
+	if (n != "") {
+		return n.toFixed(2).replace(".", ",");
 	}
 	return n;
 };

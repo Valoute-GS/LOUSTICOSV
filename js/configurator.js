@@ -11,45 +11,75 @@ window.onbeforeunload = function () {
 
 //toolbar Quill
 var toolbarOptions = [
-	['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+	['bold', 'italic', 'underline', 'strike'], // toggled buttons
 	['blockquote', 'code-block'],
 
-	[{ 'header': 1 }, { 'header': 2 }],               // custom button values
-	[{ 'list': 'ordered'}, { 'list': 'bullet' }],
-	[{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-	[{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-	[{ 'direction': 'rtl' }],                         // text direction
+	[{
+		'header': 1
+	}, {
+		'header': 2
+	}], // custom button values
+	[{
+		'list': 'ordered'
+	}, {
+		'list': 'bullet'
+	}],
+	[{
+		'script': 'sub'
+	}, {
+		'script': 'super'
+	}], // superscript/subscript
+	[{
+		'indent': '-1'
+	}, {
+		'indent': '+1'
+	}], // outdent/indent
+	[{
+		'direction': 'rtl'
+	}], // text direction
 
-	[{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-	[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-	[ 'link', 'image', 'video', 'formula' ],          // add's image support
-	[{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-	[{ 'font': [] }],
-	[{ 'align': [] }],
+	[{
+		'size': ['small', false, 'large', 'huge']
+	}], // custom dropdown
+	[{
+		'header': [1, 2, 3, 4, 5, 6, false]
+	}],
+	['link', 'image', 'video', 'formula'], // add's image support
+	[{
+		'color': []
+	}, {
+		'background': []
+	}], // dropdown with defaults from theme
+	[{
+		'font': []
+	}],
+	[{
+		'align': []
+	}],
 
-	['clean']                                         // remove formatting button
+	['clean'] // remove formatting button
 ];
 //editeur Quill
 var quill = new Quill('#editor', {
-modules: { 
-	imageResize: {
-	displaySize: true
-  },
-	toolbar: toolbarOptions
-},
+	modules: {
+		imageResize: {
+			displaySize: true
+		},
+		toolbar: toolbarOptions
+	},
 
-theme: 'snow'
+	theme: 'snow'
 });
 
 //gestion popover
 $(function () {
-		$('[data-toggle="popover"]').popover()
+	$('[data-toggle="popover"]').popover()
 })
 //detection pour generer l'effet de fondu
-$(document).on('DOMSubtreeModified', function() {
-		$(function(){
-				$('.fadein').removeClass('fadein');
-		})
+$(document).on('DOMSubtreeModified', function () {
+	$(function () {
+		$('.fadein').removeClass('fadein');
+	})
 });
 /* ╔══════DEBUT══════╗ AJOUT SUPPRESSION PAGE =========================================*/
 function addPage() {
@@ -100,16 +130,16 @@ function rmThisPage(e) {
 	var pageNum = e.parentElement.parentElement.id.substring(4);
 	console.log(myConfig);
 	elt.parentNode.removeChild(elt);
-	pagesState.splice(pageNum-1, 1);
-	myConfig.pages.splice(pageNum-1, 1);
+	pagesState.splice(pageNum - 1, 1);
+	myConfig.pages.splice(pageNum - 1, 1);
 	nbPages--;
 	console.log(myConfig);
 
 	for (var i = pageNum; i <= pcontainer.children.length; i++) {
-		console.log(pcontainer.children[i-1].id + " -> " + i);
-		pcontainer.children[i-1].id = "page"+i;
-		pcontainer.children[i-1].getElementsByClassName("input-group-text")[0].innerHTML = "#" + (i);
-		
+		console.log(pcontainer.children[i - 1].id + " -> " + i);
+		pcontainer.children[i - 1].id = "page" + i;
+		pcontainer.children[i - 1].getElementsByClassName("input-group-text")[0].innerHTML = "#" + (i);
+
 	}
 }
 /* ╚═══════FIN═══════╝ AJOUT SUPPRESSION PAGE =========================================*/
@@ -135,11 +165,11 @@ function sortablePageUpdate() {
 			//on parcourt toutes les "pages"
 			for (const pageElt of pcontainer.children) {
 				var newPageNum = i;
-				var oldPageNum = (pageElt.id.substring(4) -1);				
+				var oldPageNum = (pageElt.id.substring(4) - 1);
 				if (!(pageElt.id.substring(4) == (i + 1))) { //modif car la page a changé d'index
 					//maj de l'HTML
-					pageElt.id = "page" + (i+1);
-					pageElt.getElementsByClassName("input-group-text")[0].innerHTML = "#" + (i+1);
+					pageElt.id = "page" + (i + 1);
+					pageElt.getElementsByClassName("input-group-text")[0].innerHTML = "#" + (i + 1);
 					//maj de myConfig
 					myConfig.pages[newPageNum] = mem_myConfig.pages[oldPageNum];
 					//maj de l'etat des pages
@@ -217,7 +247,7 @@ function namePageUpdate(inputElt) { //petit patch un peu sale pour changer dynam
 	var pageNumber = inputElt.parentElement.id.substring(4);
 	if (document.getElementById("page" + pageNumber).getElementsByClassName("btn btn-success")[0]) {
 		myConfig.pages[pageNumber - 1].pageName = inputElt.value;
-		
+
 	}
 }
 
@@ -281,12 +311,12 @@ function saveVideo() {
 
 function exitVideo() {
 	hideByClass("configurator");
-		maintitle.innerHTML = "LOUSTIC OS - Créer";
-		showByClass("configurator-main");
-		myPlayer.reset();
-		videoerror.innerHTML = "";
-		inputGroupVideo.value = "";
-		document.getElementById("input-file-name").innerHTML = "Choisir un fichier video";
+	maintitle.innerHTML = "LOUSTIC OS - Créer";
+	showByClass("configurator-main");
+	myPlayer.reset();
+	videoerror.innerHTML = "";
+	inputGroupVideo.value = "";
+	document.getElementById("input-file-name").innerHTML = "Choisir un fichier video";
 }
 
 /* ======= TEXT =======*/
@@ -323,12 +353,12 @@ function exitText() {
 /* ======= TEXT EDITOR =======*/
 quill.setHTML = (html) => {
 	editor.innerHTML = html;
-  };
-  
-  // get html content
-  quill.getHTML = () => {
+};
+
+// get html content
+quill.getHTML = () => {
 	return editor.innerHTML;
-  };
+};
 
 function configTextEditor() {
 	hideByClass("configurator");
@@ -367,9 +397,10 @@ var nbJson = 0; //checker si on a pas importé pls config en mm temps
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 var loadedConfig = "";
 $(document).on('click', '.load', function () { //gestion du faux input file
-    var file = $(this).parent().parent().parent().find('.loadfile');
-    file.trigger('click');
+	var file = $(this).parent().parent().parent().find('.loadfile');
+	file.trigger('click');
 });
+
 function loadFiles(files) { //import des fichiers + affichage
 	//iteration sur les fichiers selectionnés
 	for (const file of files) {
@@ -424,10 +455,10 @@ function controlConfig(canBeLoaded) { //check si tous les fichiers nécessaires 
 	}
 	if (isCorrect) { //si tout est okay on passe a la suite
 		btnSelectConfig.style.display = "inline";
-        document.getElementById("load-file-name").className = "load btn btn-outline-success";
-        document.getElementById("load-file-name").disabled = true;
-        document.getElementById("importload-btn").className = "load btn btn-outline-success";
-        document.getElementById("importload-btn").disabled = true;
+		document.getElementById("load-file-name").className = "load btn btn-outline-success";
+		document.getElementById("load-file-name").disabled = true;
+		document.getElementById("importload-btn").className = "load btn btn-outline-success";
+		document.getElementById("importload-btn").disabled = true;
 		if (canBeLoaded) {
 			loadConfig()
 		};
@@ -471,7 +502,7 @@ function loadConfig() {
 
 function emptyLoad() {
 	//reset des infos apres import
-	$('[data-toggle="popover"]').popover("hide"); 
+	$('[data-toggle="popover"]').popover("hide");
 	mainerror.innerHTML = "";
 	imported.innerHTML = "";
 	nbJson = 0; //checker si on a pas importé pls config en mm temps
@@ -482,7 +513,7 @@ function emptyLoad() {
 	document.getElementById("importload-btn").className = "load btn btn-primary";
 	document.getElementById("importload-btn").disabled = false;
 	btnSelectConfig.style.display = "none";
-	input.value="";
+	input.value = "";
 }
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
@@ -492,9 +523,10 @@ var fileUrl;
 var fileType;
 var fileName;
 $(document).on('click', '.browse', function () { //gestion du faux input file
-    var file = $(this).parent().parent().parent().find('.file');
-    file.trigger('click');
+	var file = $(this).parent().parent().parent().find('.file');
+	file.trigger('click');
 });
+
 function handleFiles(file) {
 	document.getElementById("input-file-name").innerHTML = file[0].name;
 	//infos sur la video courante
@@ -537,7 +569,7 @@ function removeChapterInput() {
 }
 
 function checkVideoOptions() {
-	if (customCheck3.checked && nbOfChapters!=0) {
+	if (customCheck3.checked && nbOfChapters != 0) {
 		customCheck4.disabled = false;
 	} else {
 		customCheck4.checked = false;
@@ -555,9 +587,9 @@ function checkVideoOptions() {
 		customCheck6.checked = false;
 		customCheck6.disabled = true;
 	}
-	if(nbOfChapters!=0){
+	if (nbOfChapters != 0) {
 		customCheck7.disabled = false;
-	} else{
+	} else {
 		customCheck7.checked = false;
 		customCheck7.disabled = true;
 	}
@@ -726,7 +758,7 @@ function finishConfig() {
 		if (!isSomething(myConfig.name)) {
 			errorMessages.add("Veuillez ajouter un nom à votre configuration");
 			document.getElementById("config-name").className = "form-control border-danger";
-		}else{
+		} else {
 			document.getElementById("config-name").className = "form-control border-success";
 		}
 		return pagesState.every(isSet) && pagesState.length > 0 && isSomething(myConfig.name)
