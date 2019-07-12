@@ -63,14 +63,12 @@ $(document).on('click', '.browse', function () { //gestion du faux input file
 	var file = $(this).parent().parent().parent().find('.file');
 	file.trigger('click');
 });
-var nbJson = 0; //checker si on a pas importé pls config en mm temps
+
 function loadFiles(files) { //import des fichiers + affichage
-	$('[data-toggle="popover"]').popover("hide");
 	//iteration sur les fichiers selectionnés
 	for (const file of files) {
 		if (file.type === "application/json") {
-			nbJson++;
-			if (nbJson > 1) { //On ne garde que le premier fichier json et on avertis si pls ont été choisis
+			if (myConfig != "") { //On ne garde que le premier fichier json et on avertis si pls ont été choisis
 				alert("Le fichier : " + file.name + " n'a pas été importé, veuillez ne sélectionner qu'un fichier de configuration (.json)")
 			} else {
 				imported.innerHTML += '<li class="list-group-item list-group-item-primary my-1">' + file.name + '</li>';
@@ -83,13 +81,15 @@ function loadFiles(files) { //import des fichiers + affichage
 				//Quand la lecture est terminée on controle l'état de la config chargéeé
 				reader.onloadend = function () {
 					controlConfig(false);
-
 				};
+				//on demande ensuite a charger les fichiers annexe et on change les contraintes de l'input
+				document.getElementById("input-file-name").innerHTML = "Importer les fichiers annexes requis";
+				input.accept = "video/mp4, video/webm, video/quicktime";
+				input.multiple = true;
 			}
 		} else { //fichier non-json
 			imported.innerHTML += '<li class="list-group-item my-1">' + file.name + '</li>';
 			importedFiles.set(file.name, file);
-
 			controlConfig(false);
 		}
 	}
@@ -97,11 +97,12 @@ function loadFiles(files) { //import des fichiers + affichage
 
 function controlConfig(continueToInfos) { //check si tous les fichiers nécessaires sont disponibles (ceux en trop seront ignorés pour l'instant)
 	var isCorrect = true;
-	var errorMessages = new Set([]);
+	var missingFiles = new Set([]);
+	var errorMessages = "";
 	mainerror.innerHTML = "";
+	$('[data-toggle="popover"]').popover("hide"); //on force le popover à se fermer car il se bloque parfois
 
 	if (myConfig !== "") { //Si un config a été chargée
-
 		//check les fichiers importés/necessaires
 		var imp = [];
 		for (const impFile of importedFiles.values()) {
@@ -110,35 +111,35 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
 		for (const page of myConfig.pages) { //check si les fichiers nécessaires ont bien été importés
 			if (page.type === "video") {
 				if (!imp.includes(page.videoName)) {
-					errorMessages.add("Veuillez ajouter le fichier manquant : " + page.videoName);
+					missingFiles.add("Veuillez ajouter le fichier manquant : " + page.videoName);
 					isCorrect = false;
 				}
 			}
 		}
-
 	} else { //si aucun fichier json selectionné
-		errorMessages.add("Veuillez sélectionner un fichier de configuration .json");
+		errorMessages = "Veuillez sélectionner un fichier de configuration .json";
 		isCorrect = false;
 	}
-
 	if (isCorrect) { //si tout est okay on passe a la suite
-		document.getElementById("input-file-name").className = "browse btn btn-outline-success";
-		document.getElementById("input-file-name").disabled = "true"
-		document.getElementById("import-btn").className = "browse btn btn-outline-success";
-		document.getElementById("import-btn").disabled = "true"
 		btnSelectConfig.style.display = "inline";
+		document.getElementById("input-file-name").className = "browse btn btn-outline-success";
+		document.getElementById("input-file-name").disabled = true;
+		document.getElementById("import-btn").className = "browse btn btn-outline-success";
+		document.getElementById("import-btn").disabled = true;
 		if (continueToInfos) {
 			// a partir de la on demandera avant de quitter ou refrech la page
-			// NOTE: a décommenter dans la version final
 			window.onbeforeunload = function () {
 				return "";
 			};
 			personnalInfos()
 		};
 	} else { //sinon on affiches les erreurs
-		document.getElementById("input-file-name").className = "browse btn btn-outline-primary";
-		for (const message of errorMessages) {
-			mainerror.innerHTML += bAlert(message);
+		//document.getElementById("input-file-name").className = "browse btn btn-outline-primary";
+		for (const message of missingFiles) {
+			mainerror.innerHTML += missingAlert(message);
+		}
+		if (errorMessages != "") {
+			mainerror.innerHTML += bAlert(errorMessages);
 		}
 	}
 }
@@ -980,6 +981,14 @@ function bAlert(message) {
 		'<span aria-hidden="true">&times;' +
 		'</span></button></div>';
 
+}
+
+function missingAlert(message) {
+	return '<div class="alert alert-info alert-dismissible" role="alert">' +
+		'<strong>Fichier requis</strong> ' + message +
+		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+		'<span aria-hidden="true">&times;' +
+		'</span></button></div>';
 }
 
 function toSeconds(time) {

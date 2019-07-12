@@ -64,15 +64,15 @@
 			</ul>
 			<div class="mx-3">
 				<div class="btn-toolbar" role="toolbar">
-					<input type="file" name="img[]" multiple class="custom-file-input file" id="input"
+					<input type="file" name="img[]" class="custom-file-input file" id="input"
 						onchange="loadFiles(this.files)" id="inputLoadConfig"
-						accept="application/json, video/mp4, video/webm, video/quicktime">
+						accept="application/json">
 					<div class="btn-group mx-auto">
 						<div class="btn-group mr-1" role="group">
 							<button class="browse btn btn-outline-primary" type="button" id="input-file-name" data-container="body"
 								data-toggle="popover" data-trigger="hover" data-placement="bottom"
-								data-content="Veuillez importer un unique fichier de configuration au format .json ainsi que ses fichiers vidéo attachés. Il est possile de n'importer que le fichier .json dans un premier temps afin de savoir quels sont les fichiers associés nécessaire.">
-								Importer un fichier de configuration (.json) et ses fichiers associés</button>
+								data-content="Charger et modifer une configuration existante.">
+								Charger un fichier de configuration (.json)</button>
 							<button class="browse btn btn-primary" type="button" id="import-btn">🔍 Importer</button>
 							<button class="btn btn-success" id="btnSelectConfig" type="button" onclick="controlConfig(true)"
 								style="display: none;">Démarrer le test</button>
