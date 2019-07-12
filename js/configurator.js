@@ -608,16 +608,19 @@ function saveVideoConfig() { //appui du bouton Terminer
 	var chapterDateElts = document.getElementsByClassName("chapter-date");
 	var videoOptionsElts = document.getElementsByClassName("video-option");
 
-	var complete = true;
-
 	var chapters = [];
 	var options = [];
 	var index = 0;
+	//var pour l'affichage des erreurs
+	var complete = true;
+	var errorMessages = new Set([]);
+	videoerror.innerHTML = "";
 
 	for (var eltTitle of chapterTitleElts) { //on recupere les titres dans les inputs pour les chapitres
 		var newChap = new ChapJson(eltTitle.value, "-1");
-		if (!eltTitle.checkValidity()) {
+		if (!eltTitle.checkValidity()) { //format non valide selon la regex
 			complete = false;
+			errorMessages.add("Un titre ne respecte pas le format autorisé");
 			eltTitle.className = "form-control chapter-title border-danger";
 		} else {
 			eltTitle.className = "form-control chapter-title border-success";
@@ -627,18 +630,32 @@ function saveVideoConfig() { //appui du bouton Terminer
 	var prevDate = -1;
 	for (var eltDate of chapterDateElts) { //on recupere les dates dans les inputs pour les chapitres
 		chapters[index].date = eltDate.value;
-		if (!eltDate.checkValidity()) { //format valide selon la regex
+		if (!eltDate.checkValidity()) { //format non valide selon la regex
 			complete = false;
+			errorMessages.add("Un timer ne respecte pas le format (HH:)MM:SS (Heure facultative)");
+			console.log("format incorrect");
 			eltDate.className = "form-control chapter-date border-danger";
 		} else {
 			if (prevDate < toSeconds(eltDate.value)) {
 				eltDate.className = "form-control chapter-date border-success";
+				console.log("format OK");
 			} else {
 				complete = false;
+				errorMessages.add("Les timers doivent être dans un ordre croissant et compris dans le temps de la video");
+				console.log("ordre incorrect");
 				eltDate.className = "form-control chapter-date border-danger";
 			}
 			prevDate = toSeconds(eltDate.value);
 		}
+
+		if (eltDate && myPlayer.duration() < toSeconds(eltDate.value)) { //si la video est plus longue que la date du dernier chap
+			complete = false;
+			console.log("duree incorrecte");
+			eltDate.className = "form-control chapter-date border-danger";
+			errorMessages.add("Les timers doivent être dans un ordre croissant et compris dans le temps de la video");
+		}
+
+
 		index++;
 	}
 	for (const videoOptionElt of videoOptionsElts) { //on recupere les options selectionnees ou non dans les checkboxes
@@ -647,13 +664,10 @@ function saveVideoConfig() { //appui du bouton Terminer
 
 	if (!isSomething(fileName) || !isSomething(myPlayer.src())) {
 		complete = false;
-	} else {
-		if (myPlayer.duration() < prevDate) { //si la video est plus longue que la date du dernier chap
-			complete = false;
-		}
+		errorMessages.add("Veuillez importer un fichier video");
 	}
 
-	if (complete) {
+	if (complete) { //la config video est complete et correcte
 		let newVideoConfig = new ConfigVideoJson(fileName, fileType, options, chapters);
 		myConfig.pages[currentPageNumber - 1] = newVideoConfig; //On sauvergarde les infos de la page (type video) pour le futur export
 		updatePagesState(2);
@@ -662,7 +676,10 @@ function saveVideoConfig() { //appui du bouton Terminer
 		inputGroupVideo.value = "";
 		return true;
 	} else {
-		videoerror.innerHTML = bAlert("Configuration video incomplete ou invalide");
+		//on affiche la liste de message d'erreur
+		for (const message of errorMessages) {
+			videoerror.innerHTML += bAlert(message);
+		}
 		return false;
 	}
 }
@@ -702,8 +719,6 @@ function finishConfig() {
 	}
 
 	function configChecker() {
-		console.log(pagesState.every(isSet));
-
 		return pagesState.every(isSet) && pagesState.length > 0 && isSomething(document.getElementById("config-name").value)
 	}
 
