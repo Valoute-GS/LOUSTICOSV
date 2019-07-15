@@ -555,7 +555,7 @@ function createChapterInput() {
 	//structure globale de l'input
 	nbOfChapters++;
 	var div1 = document.createElement("div");
-	div1.className = "input-group my-1 fadein";
+	div1.className = "input-group my-1 fadein ";
 	div1.id = "chapter" + nbOfChapters;
 	div1.innerHTML =
 		'<div class="input-group-prepend">' +

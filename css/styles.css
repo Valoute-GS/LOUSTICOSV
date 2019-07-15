@@ -15,7 +15,8 @@ ul {
 }
 
 /*Cacher les inputs qui sont remplacé par des inputs custom avec trigger sur l'input caché*/
-.file {
+.file,
+.loadfile {
     visibility: hidden;
     position: absolute;
 }
