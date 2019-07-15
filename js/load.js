@@ -412,12 +412,12 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 	}
 	//CHAPITRES VISIBLES
 	if (VISIBLECHAP) {
-		chapcontainer.innerHTML += '<li class="list-group-item border-0 bg-transparent my-1 p-0">Chapitres</li>';
+		chapcontainer.innerHTML += '<li class="list-group-item border-0 bg-transparent my-1">Chapitres</li>';
 		if (VISIBLEDATECHAP) {
 			for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
 				chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
-					'<button class="btn btn-block btn-outline-primary btn-chapter px-0 py-0" type="button" onclick="gotoTime(this.children[2].innerHTML)">' +
-					'<div class="background-text">' + chapter.name + ' : ' + chapter.date + '</div><div class="background">&#8203</div>' +
+					'<button class="btn btn-block btn-outline-primary btn-chapter p-0" type="button" onclick="gotoTime(this.children[1].innerHTML)">' +
+					chapter.name + ' : ' + chapter.date + '<div class="background">&#8203</div>' +
 					'<div style="display : none;">' + chapter.date + '</div>' +
 					'</button>' +
 					'</li>';
@@ -425,8 +425,8 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 		} else {
 			for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
 				chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
-					'<button class="btn btn-block btn-outline-primary btn-chapter px-0 py-0" type="button" onclick="gotoTime(this.children[2].innerHTML)">' +
-					'<div class="background-text">' + chapter.name + '</div><div class="background">&#8203</div>' +
+					'<button class="btn btn-block btn-outline-primary btn-chapter p-0" type="button" onclick="gotoTime(this.children[1].innerHTML)">' +
+					chapter.name + '<div class="background">&#8203</div>' +
 					'<div style="display : none;">' + chapter.date + '</div>' +
 					'</button>' +
 					'</li>';
@@ -437,7 +437,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 	if (!CLICKABLECHAP) {
 		for (const btn of document.getElementsByClassName("btn-chapter")) {
 			btn.disabled = "true";
-			btn.className = "btn btn-block text-primary btn-outline-secondary btn-chapter px-0 py-0"
+			btn.className = "btn btn-block text-primary btn-outline-secondary btn-chapter"
 		}
 	}
 	//CHAPITRES CLIQUABLE
@@ -618,7 +618,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 		}) + ")-" + d.toLocaleTimeString();
 		var cPageNumber = currentPageNumber + 1;
 		var cChapterNumber = "";
-		var reachedPage = ""; //TODO:
+		var reachedPage = "";
 		var reachedChap = "";
 		//action
 		var tfTest = duration(startTimeOnTest, now);
