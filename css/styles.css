@@ -86,6 +86,7 @@ main {
 /*sommaire des pages*/
 .page-item .page-link {
     cursor: pointer;
+    height: 100%;
 }
 .page-item.disabled-custom .page-link {
     color: #6c7d71;
