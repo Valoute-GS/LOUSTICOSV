@@ -368,8 +368,11 @@ function configPdf() {
 	// restauration de la cofiguration si deja faite
 	let state = pagesState[currentPageNumber - 1];
 	if (state === 3) { // si c'est un pdf qui a deja ete config
-		initPDFViewer(myURLs.get(myConfig.pages[currentPageNumber - 1].pdf));
-		document.getElementById("input-pdf-name").innerHTML = myConfig.pages[currentPageNumber - 1].pdf;
+	
+		console.log(myConfig);
+		pdfName = myConfig.pages[currentPageNumber - 1].pdf;
+		initPDFViewer(myURLs.get(pdfName));
+		document.getElementById("input-pdf-name").innerHTML = pdfName;
 	}
 	showByClass("configurator-pdf")
 }
@@ -418,7 +421,7 @@ function loadFiles(files) { //import des fichiers + affichage
 				};
 				//on demande ensuite a charger les fichiers annexe et on change les contraintes de l'input
 				document.getElementById("load-file-name").innerHTML = "Importer les fichiers annexes requis";
-				input.accept = "video/mp4, video/webm, video/quicktime";
+				input.accept = "video/*, application/pdf";
 				input.multiple = true;
 			}
 		} else { //fichier non-json, video/mp4, video/webm, video/quicktime --> restriction sur le format ?
@@ -446,6 +449,12 @@ function controlConfig(canBeLoaded) { //check si tous les fichiers nécessaires 
 			if (page.type === "video") {
 				if (!imp.has(page.videoName)) {
 					missingFiles.add("Veuillez ajouter le fichier manquant : " + page.videoName);
+					isCorrect = false;
+				}
+			}
+			if (page.type === "pdf") {
+				if (!imp.has(page.pdf)) {
+					missingFiles.add("Veuillez ajouter le fichier manquant : " + page.pdf);
 					isCorrect = false;
 				}
 			}
@@ -486,11 +495,11 @@ function loadConfig() {
 	}
 	checkOptions();
 	let index = 0;
+	document.getElementById("config-name").value = myConfig.name;
 	for (const page of myConfig.pages) {
 		currentPageNumber = index + 1;
 		addPage();
 		document.getElementById("page" + currentPageNumber).getElementsByClassName("form-control")[0].value = page.pageName;
-		document.getElementById("config-name").value = myConfig.name;
 		if (page.type === "video") {
 			updatePagesState(2);
 			document.getElementById("page" + currentPageNumber).getElementsByClassName("custom-select")[0].selectedIndex = 2;
@@ -499,6 +508,11 @@ function loadConfig() {
 		} else if (page.type === "text") {
 			updatePagesState(1);
 			document.getElementById("page" + currentPageNumber).getElementsByClassName("custom-select")[0].selectedIndex = 1;
+		} else if (page.type === "pdf") {
+			updatePagesState(3);
+			document.getElementById("page" + currentPageNumber).getElementsByClassName("custom-select")[0].selectedIndex = 3;
+			fileUrl = URL.createObjectURL(importedFiles.get(page.pdf));
+			myURLs.set(page.pdf, fileUrl);
 		}
 		index++;
 	}
@@ -611,7 +625,7 @@ let pageMode = 1;
 let cursorIndex = Math.floor(currentPageIndex / pageMode);
 let pdfInstance = null;
 let totalPagesCount = 0;
-var pdfName;
+var pdfName = "";
 
 const viewport = document.querySelector("#viewport");
 window.initPDFViewer = function (pdfURL) {
@@ -849,7 +863,7 @@ function saveTextConfig() {
 }
 
 /* ======= PDF =========*/
-function savePdfConfig() {
+function savePdfConfig() {	
 	if (pdfInstance != null) {
 		let newPdfConfig = new ConfigPdfJson(pdfName);
 		myConfig.pages[currentPageNumber - 1] = newPdfConfig; //On sauvergarde les infosde la page (type video) pour le futur export

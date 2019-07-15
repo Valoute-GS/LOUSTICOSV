@@ -84,7 +84,7 @@ function loadFiles(files) { //import des fichiers + affichage
 				};
 				//on demande ensuite a charger les fichiers annexe et on change les contraintes de l'input
 				document.getElementById("input-file-name").innerHTML = "Importer les fichiers annexes requis";
-				input.accept = "video/mp4, video/webm, video/quicktime";
+				input.accept = "video/*, application/pdf";
 				input.multiple = true;
 			}
 		} else { //fichier non-json
@@ -112,6 +112,12 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
 			if (page.type === "video") {
 				if (!imp.includes(page.videoName)) {
 					missingFiles.add("Veuillez ajouter le fichier manquant : " + page.videoName);
+					isCorrect = false;
+				}
+			}
+			if (page.type === "pdf") {
+				if (!imp.includes(page.pdf)) {
+					missingFiles.add("Veuillez ajouter le fichier manquant : " + page.pdf);
 					isCorrect = false;
 				}
 			}
@@ -270,6 +276,9 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 				break;
 			case "text":
 				loadText();
+				break;
+			case "pdf":
+				loadPdf();
 				break;
 
 			default:
@@ -559,6 +568,16 @@ function loadText() { //page de type texte
 }
 /* ╚═══════FIN═══════╝ TEXT  ==========================================================*/
 
+/* ╔══════DEBUT══════╗ PDF  ===========================================================*/
+function loadPdf() { //page de type pdf
+	hideByClass("load");
+	resetPdf();
+	var currentPage = myConfig.pages[currentPageNumber];	
+	var currentFile = importedFiles.get(currentPage.pdf);
+	initPDFViewer(URL.createObjectURL(currentFile));
+	showByClass("load-pdf");
+}
+/* ╚═══════FIN═══════╝ PDF  ===========================================================*/
 
 /* ╔══════DEBUT══════╗ CSV ============================================================*/
 class Csv {
@@ -771,11 +790,11 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].duree = myJSONGeneral.visites[myJSONGeneral.visites.length - 1].fin - myJSONGeneral.visites[myJSONGeneral.visites.length - 1].debut;
 
 				//on ajoute une ligne au csv de log
-				var cPageNumberNotEnd = (cPageNumber + 1);
-				if (cPageNumberNotEnd > myConfig.pages.length) {
-					cPageNumberNotEnd = ""
+				var nexPageNumber = (cPageNumber + 1);
+				if (nexPageNumber > myConfig.pages.length) { //on n'affice pas si c'est la fin de la config
+					nexPageNumber = ""
 				}
-				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + cPageNumberNotEnd + ";" +
+				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + nexPageNumber + ";" +
 					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay));
 				break;
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_PAGE ══════╝ */
@@ -1022,3 +1041,101 @@ function toNum(n) {
 	return n;
 };
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
+
+
+
+let currentPageIndex = 0;
+let pageMode = 1;
+let cursorIndex = Math.floor(currentPageIndex / pageMode);
+let pdfInstance = null;
+let totalPagesCount = 0;
+var pdfName;
+
+const viewport = document.querySelector("#viewport");
+window.initPDFViewer = function (pdfURL) {
+	pdfjsLib.getDocument(pdfURL).then(pdf => {
+		pdfInstance = pdf;
+		totalPagesCount = pdf.numPages;
+		initPager();
+		render();
+	});
+};
+
+function onPagerButtonsClick(event) {
+	const action = event.target.getAttribute("data-pager");
+	if (action === "prev") {
+		if (currentPageIndex === 0) {
+			return;
+		}
+		currentPageIndex -= pageMode;
+		if (currentPageIndex < 0) {
+			currentPageIndex = 0;
+		}
+		render();
+	}
+	if (action === "next") {
+		if (currentPageIndex === totalPagesCount - 1) {
+			return;
+		}
+		currentPageIndex += pageMode;
+		if (currentPageIndex > totalPagesCount - 1) {
+			currentPageIndex = totalPagesCount - 1;
+		}
+		render();
+	}
+}
+
+function initPager() {
+	const pager = document.querySelector("#pager");
+	pager.addEventListener("click", onPagerButtonsClick);
+	return () => {
+		pager.removeEventListener("click", onPagerButtonsClick);
+	};
+}
+
+function render() {
+	cursorIndex = Math.floor(currentPageIndex / pageMode);
+	const startPageIndex = cursorIndex * pageMode;
+	const endPageIndex =
+		startPageIndex + pageMode < totalPagesCount ?
+		startPageIndex + pageMode - 1 :
+		totalPagesCount - 1;
+
+	const renderPagesPromises = [];
+	for (let i = startPageIndex; i <= endPageIndex; i++) {
+		renderPagesPromises.push(pdfInstance.getPage(i + 1));
+	}
+
+	Promise.all(renderPagesPromises).then(pages => {
+		const pagesHTML = `<div style="width: ${
+		  pageMode > 1 ? "50%" : "100%"
+		}"><canvas></canvas></div>`.repeat(pages.length);
+		viewport.innerHTML = pagesHTML;
+		pages.forEach(renderPage);
+	});
+}
+
+function renderPage(page) {
+	let pdfViewport = page.getViewport(1);
+
+	const container =
+		viewport.children[page.pageIndex - cursorIndex * pageMode];
+	pdfViewport = page.getViewport(container.offsetWidth / pdfViewport.width);
+	const canvas = container.children[0];
+	const context = canvas.getContext("2d");
+	canvas.height = pdfViewport.height;
+	canvas.width = pdfViewport.width;
+
+	page.render({
+		canvasContext: context,
+		viewport: pdfViewport
+	});
+}
+
+function resetPdf() {
+	currentPageIndex = 0;
+	cursorIndex = Math.floor(currentPageIndex / pageMode);
+	pdfInstance = null;
+	totalPagesCount = 0;
+	viewport.innerHTML = "";
+}
