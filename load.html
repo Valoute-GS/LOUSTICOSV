@@ -124,9 +124,8 @@
 				<!-- video player -->
 				<div class="col-md-9 mx-auto">
 					<video id='myvideo' class='video-js vjs-default-skin vjs-big-play-centered' preload="auto"
-						oncontextmenu="return false" onpause="pauseVideo(true)"
-						onplay="playVideo(true)" onended="videoEnded()"
-						data-setup='{ "aspectRatio":"16:9", "fluid": true}' controls>
+						oncontextmenu="return false" onpause="pauseVideo(true)" onplay="playVideo(true)"
+						onended="videoEnded()" data-setup='{ "aspectRatio":"16:9", "fluid": true}' controls>
 						<!--ontimeupdate="checkChapter()"-->
 						<source src='videos/defaut.mp4' type='video/mp4'>
 						<p class='vjs-no-js'>
@@ -148,15 +147,18 @@
 
 		<!-- PDF -->
 		<div class="load load-pdf" style="display: none">
-			<div class="mx-auto mt-3" id="app">
-				<div class="mb-3" role="toolbar" id="toolbar">
+			<div class="row mt-3 mx-auto" style="width: 100%">
+				<div class="col-md mb-3" role="toolbar" id="toolbar">
 					<div id="pager">
-						<button class="btn btn-outline-primary" data-pager="prev">Diapo précédente</button>
-						<button class="btn btn-outline-primary" data-pager="next">Diapo suivante</button>
+						<button class="btn btn-sm btn-outline-info" data-pager="prev">Diapo précédente</button>
+						<button class="btn btn-sm btn-outline-info" data-pager="next">Diapo suivante</button>
 					</div>
 				</div>
-				<div id="viewport-container">
-					<div role="main" id="viewport"></div>
+
+				<div class="col-md-9 mx-auto" id="app">
+					<div id="viewport-container">
+						<div role="main" id="viewport"></div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -173,7 +175,7 @@
 		<a id='download-link'></a>
 		<!-- FIN de la main part -->
 
-		
+
 		<!-- FIN du footer -->
 	</div>
 

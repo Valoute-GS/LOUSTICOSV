@@ -100,7 +100,7 @@ function addPage() {
 		'<option value="3">PDF</option>' +
 		'</select>' +
 		'<div class="ml-1">' +
-		'<button class="btn btn-warning btn-configure" type="button" onclick="configPage(this)" >Configurer</button>' +
+		'<button class="btn btn-warning btn-configure" data-hover="Modifier" type="button" onclick="configPage(this)" >Configurer</button>' +
 		'</div>' +
 		'<div class="ml-1">' +
 		'<button class="btn btn-outline-success disabled handle">↕</button>' +
@@ -118,7 +118,6 @@ function addPage() {
 function rmPage() {
 	if (nbPages > 0) { //si il y a des inputs dans la liste
 		nbPages--;
-		var pcontainer = document.getElementById('pcontainer');
 		pcontainer.removeChild(pcontainer.lastChild);
 		pagesState.pop();
 		myConfig.pages.pop();
@@ -236,12 +235,12 @@ function configPage(e) {
 }
 
 function updatePagesState(newState) {
-	var page = document.getElementById("page" + currentPageNumber);
+	var pageInput = document.getElementById("page" + currentPageNumber);
 	pagesState[currentPageNumber - 1] = newState;
-	var concernedButton = page.getElementsByClassName("btn-configure")[0];
-	document.getElementById("page" + currentPageNumber).getElementsByClassName("custom-select")[0].className = "custom-select border-success";
-	concernedButton.className = "btn btn-success btn-configure";
-	concernedButton.innerHTML = "Configuré"
+	var concernedButton = pageInput.getElementsByClassName("btn-configure")[0];
+	document.getElementById("page" + currentPageNumber).getElementsByClassName("custom-select")[0].className = "custom-select border-success"; //feedbck sur le format configure
+	concernedButton.className = "btn btn-success btn-configure hover-btn";
+	concernedButton.innerHTML = "<span>Configuré</span>";
 }
 
 function namePageUpdate(inputElt) { //petit patch un peu sale pour changer dynamiquement le nom de la page (si deja configurée)
@@ -335,9 +334,7 @@ function configTextEditor() {
 
 	// restauration de la cofiguration si deja faite
 	let state = pagesState[currentPageNumber - 1];
-	if (state === 0) { // vierge
-		quill.setText('')
-	} else if (state === 1) { // si c'est un text qui a deja ete config
+	if (state === 1) { // si c'est un text qui a deja ete config
 		quill.setContents(myConfig.pages[currentPageNumber - 1].text)
 	} else { //deja config dans un autre format
 		quill.setText('')
@@ -365,14 +362,16 @@ function configPdf() {
 	hideByClass("configurator");
 	resetPdf();
 	inputGroupPdf.value = "";
+	pager.style.display = "none";
 	// restauration de la cofiguration si deja faite
 	let state = pagesState[currentPageNumber - 1];
 	if (state === 3) { // si c'est un pdf qui a deja ete config
-	
-		console.log(myConfig);
+		pager.style.display = "block";
 		pdfName = myConfig.pages[currentPageNumber - 1].pdf;
 		initPDFViewer(myURLs.get(pdfName));
 		document.getElementById("input-pdf-name").innerHTML = pdfName;
+	}else{
+
 	}
 	showByClass("configurator-pdf")
 }
@@ -579,7 +578,6 @@ function createChapterInput() {
 		'<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="(HH:)MM:SS" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)([0-5][0-9])">';
 	chapcontainer.appendChild(div1);
 	checkVideoOptions();
-
 }
 
 function removeChapterInput() {
@@ -724,6 +722,7 @@ function handlePdf(file) {
 		fileUrl = URL.createObjectURL(file[0]);
 		pdfName = file[0].name
 		document.getElementById("input-pdf-name").innerHTML = pdfName;
+		pager.style.display = "block";
 		myURLs.set(file[0].name, fileUrl);
 		initPDFViewer(fileUrl);
 	}
