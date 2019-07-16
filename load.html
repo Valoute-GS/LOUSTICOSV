@@ -59,14 +59,14 @@
 
 		<!-- DEBUT de la main part -->
 		<!-- Input config -->
-		<main role="main" class="load load-main fadein">
+		<div class="load load-main fadein">
 			<div id="mainerror"></div>
 			<ul class="list-group" id="imported">
 			</ul>
 			<div class="mx-3">
 				<div class="btn-toolbar" role="toolbar">
 					<input type="file" name="img[]" class="custom-file-input file" id="input"
-						onchange="loadFiles(this.files)" id="inputLoadConfig" accept="application/json">
+						onchange="loadFiles(this.files)" accept="application/json">
 					<div class="btn-group mx-auto">
 						<div class="btn-group mr-1" role="group">
 							<button class="browse btn btn-outline-primary" type="button" id="input-file-name"
@@ -84,10 +84,10 @@
 				</div>
 			</div>
 
-		</main>
+		</div>
 
 		<!-- input infos candidat -->
-		<main role="main" class="load load-form-infos" style="display: none;">
+		<div class="load load-form-infos" style="display: none;">
 			<form>
 				<div class="form-row">
 					<div class="col">
@@ -112,10 +112,10 @@
 				<button class="btn btn-block btn-lg btn-primary" type="button" onclick="startConfig()">Démarrer
 					!</button>
 			</div>
-		</main>
+		</div>
 
 		<!-- Video player -->
-		<main role="main" class="load load-video my-auto" style="display: none;">
+		<div class="load load-video my-auto" style="display: none;">
 			<div class="row mt-3 mx-auto" style="width: 100%">
 				<!-- Chapters -->
 				<ul class="list-group col-md my-auto p-0" id="chapcontainer">
@@ -123,9 +123,8 @@
 				</ul>
 				<!-- video player -->
 				<div class="col-md-9 mx-auto">
-					<!-- onseeking="console.log('---- SEEKING ----');" onseeked="console.log('---- OK ----')" onplaying="console.log('Playing');" -->
 					<video id='myvideo' class='video-js vjs-default-skin vjs-big-play-centered' preload="auto"
-						oncontextmenu="return false" width="100%" height="100%" onpause="pauseVideo(true)"
+						oncontextmenu="return false" onpause="pauseVideo(true)"
 						onplay="playVideo(true)" onended="videoEnded()"
 						data-setup='{ "aspectRatio":"16:9", "fluid": true}' controls>
 						<!--ontimeupdate="checkChapter()"-->
@@ -137,18 +136,18 @@
 					</video>
 				</div>
 			</div>
-		</main>
+		</div>
 
 		<!-- Text -->
-		<main role="main" class="load load-text my-auto" style="display: none">
+		<div class="load load-text my-auto" style="display: none">
 			<div id="editor">
 				<p>Entrez du texte ici</p>
 				<p><br></p>
 			</div>
-		</main>
+		</div>
 
 		<!-- PDF -->
-		<main role="main" class="load load-pdf" style="display: none">
+		<div class="load load-pdf" style="display: none">
 			<div class="mx-auto mt-3" id="app">
 				<div class="mb-3" role="toolbar" id="toolbar">
 					<div id="pager">
@@ -160,15 +159,15 @@
 					<div role="main" id="viewport"></div>
 				</div>
 			</div>
-		</main>
+		</div>
 
-		<main role="main" class="load load-finish" style="display: none">
+		<div class="load load-finish" style="display: none">
 			<div class="text-center mx-auto">
 				<h1>Merci de votre attention</h1>
 				<button class="btn btn-primary" type="button" onclick="personnalInfos();">Relancer le même test</button>
 				<button class="btn btn-primary" type="button" onclick="reloadPage()">Charger un nouveau test</button>
 			</div>
-		</main>
+		</div>
 
 
 		<a id='download-link'></a>

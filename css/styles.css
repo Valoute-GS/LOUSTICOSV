@@ -16,7 +16,8 @@ ul {
     list-style-type: none;
 }
 /*fade effect*/
-main {
+.configurator,
+.load {
     transition: opacity 0.7s;
     opacity: 1;
 }
