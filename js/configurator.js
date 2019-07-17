@@ -225,6 +225,7 @@ function configPage(e) {
 			break;
 		case "3": //PDF
 			configPdf();
+			checkPdfOptions()
 			maintitle.innerHTML = "PDF - Page " + currentPageNumber;
 			break;
 
@@ -360,9 +361,16 @@ function exitText() {
 /* ======= PDF =======*/
 function configPdf() {
 	hideByClass("configurator");
+	//reset des champs
 	resetPdf();
 	inputGroupPdf.value = "";
+	chappdfcontainer.innerHTML = ""
+	pdferror.innerHTML = "";
 	pager.style.display = "none";
+	for(const option of document.getElementsByClassName("pdf-option")){
+		option.checked = false;
+	}
+
 	// restauration de la cofiguration si deja faite
 	let state = pagesState[currentPageNumber - 1];
 	if (state === 3) { // si c'est un pdf qui a deja ete config
@@ -370,9 +378,19 @@ function configPdf() {
 		pdfName = myConfig.pages[currentPageNumber - 1].pdf;
 		initPDFViewer(myURLs.get(pdfName));
 		document.getElementById("input-pdf-name").innerHTML = pdfName;
-	}else{
 
+		for(const chap of myConfig.pages[currentPageNumber - 1].chapters){
+			createPdfChapter()
+			chappdfcontainer.lastChild.getElementsByClassName("pdfchapter-title")[0].value = chap.name;
+			chappdfcontainer.lastChild.getElementsByClassName("pdfchapter-slide")[0].value = chap.date;
+		}
+		var i = 0;
+		for(const option of myConfig.pages[currentPageNumber - 1].options){
+			document.getElementsByClassName("pdf-option")[i].checked = option;
+			i++;
+		}
 	}
+
 	showByClass("configurator-pdf")
 }
 
@@ -582,7 +600,7 @@ function createChapterInput() {
 
 function removeChapterInput() {
 	if (nbOfChapters > 0) { //si il y a des inputs dans la liste
-		document.getElementById("chapcontainer").removeChild(document.getElementById("chapter" + nbOfChapters));
+		chapcontainer.removeChild(chapcontainer.lastChild);
 		nbOfChapters--;
 	}
 	checkVideoOptions();
@@ -624,6 +642,7 @@ let cursorIndex = Math.floor(currentPageIndex / pageMode);
 let pdfInstance = null;
 let totalPagesCount = 0;
 var pdfName = "";
+var nbPdfChapters = 0;
 
 const viewport = document.querySelector("#viewport");
 window.initPDFViewer = function (pdfURL) {
@@ -728,6 +747,41 @@ function handlePdf(file) {
 	}
 }
 
+function createPdfChapter() { //TODO:
+	nbPdfChapters++;
+	
+	var div1 = document.createElement("div");
+	div1.className = "input-group my-1";
+	div1.id = "chapter" + nbPdfChapters;
+	div1.innerHTML = '<div class="input-group-prepend">' +
+		'<span class="input-group-text">Chapitre ' + nbPdfChapters + '</span>' +
+		'</div>' +
+		'<input type="text" class="form-control pdfchapter-title" id="pdfinput-title-' + nbPdfChapters + '" placeholder="Titre" required pattern="^[A-Za-zÀ-ÖØ-öø-ÿ0-9_.,!:-? ]*$">' +
+		'<input type="number" min="0" class="form-control pdfchapter-slide" id="pdfinput-slide-' + nbPdfChapters + '" placeholder="N° page" required >';
+	//on utilise pas directement chappdfcontainer.innerHTML sinon les inputs se reset
+	chappdfcontainer.appendChild(div1);
+	checkPdfOptions()
+}
+
+function removePdfChapter() { //TODO:
+	if(nbPdfChapters > 0){
+		chappdfcontainer.removeChild(chappdfcontainer.lastChild);
+		nbPdfChapters--;
+		checkPdfOptions()
+	}
+}
+
+function checkPdfOptions() {
+	if(pdfOption1.checked && nbPdfChapters != 0){
+		pdfOption2.disabled = false;
+		pdfOption3.disabled = false;
+	}else {
+		pdfOption2.checked = false;
+		pdfOption2.disabled = true;
+		pdfOption3.checked = false;
+		pdfOption3.disabled = true;
+	}
+}
 /* ╚═══════FIN═══════╝ PDF ============================================================*/
 
 /* ╔══════DEBUT══════╗ EXPORTS ========================================================*/
@@ -764,18 +818,20 @@ class ConfigTextJson {
 	}
 }
 class ConfigPdfJson {
-	constructor(pdfName) {
+	constructor(pdfName, options, chapters) {
 		this.pageName = currentPageName;
 		this.pageNumber = currentPageNumber;
 		this.type = "pdf";
 		this.pdf = pdfName;
+		this.options = options;
+		this.chapters = chapters;
 	}
 }
 
 var myConfig = new maConfig("", [], []);
 
 /* ======= VIDEO =======*/
-function saveVideoConfig() { 
+function saveVideoConfig() {
 	var chapterTitleElts = document.getElementsByClassName("chapter-title");
 	var chapterDateElts = document.getElementsByClassName("chapter-date");
 	var videoOptionsElts = document.getElementsByClassName("video-option");
@@ -853,7 +909,7 @@ function saveVideoConfig() {
 }
 
 /* ======= TEXT ========*/
-function saveTextConfig() { 
+function saveTextConfig() {
 	var cont = quill.getContents();
 	let newTextConfig = new ConfigTextJson(cont);
 	myConfig.pages[currentPageNumber - 1] = newTextConfig; //On sauvergarde les infosde la page (type video) pour le futur export
@@ -862,13 +918,71 @@ function saveTextConfig() {
 }
 
 /* ======= PDF =========*/
-function savePdfConfig() {	
-	if (pdfInstance != null) {
-		let newPdfConfig = new ConfigPdfJson(pdfName);
-		myConfig.pages[currentPageNumber - 1] = newPdfConfig; //On sauvergarde les infosde la page (type video) pour le futur export
+function savePdfConfig() {
+
+	var chapters = [];
+	var options = [];
+
+	var errorMessages = new Set([]);
+	pdferror.innerHTML = "";
+
+	if (pdfInstance === null) { //aucun pdf n'a ete chargé
+		errorMessages.add(bAlert("Ajouter un pdf"));
+	}
+	else{ //pdf ok
+		var prevSlide = -1;
+		var index = 0;
+		//pour chaque chapitre
+		for(const chap of chappdfcontainer.children){
+			var titleElt = chap.getElementsByClassName("pdfchapter-title")[0];
+			var slideElt = chap.getElementsByClassName("pdfchapter-slide")[0];
+			chapters[index] = new ChapJson(titleElt.value,slideElt.value);
+
+			if(titleElt.checkValidity()){ // le titre est valide 
+				titleElt.classList.add("border-success");
+				titleElt.classList.remove("border-danger");
+			}else{ //titre pas valide
+				errorMessages.add(bAlert("Titre invalide"));
+				titleElt.classList.remove("border-success");
+				titleElt.classList.add("border-danger");
+			}
+			if(slideElt.checkValidity()){ //le numero de slide est valide
+				slideElt.classList.add("border-success");
+				slideElt.classList.remove("border-danger");
+				if((prevSlide >= +slideElt.value) || (+slideElt.value > totalPagesCount)){ //dans l'ordre et compris dans le diapo
+					errorMessages.add(bAlert("Chap pas dans l'ordre, pas compris dans le nb de page, mauvais format"));
+					slideElt.classList.remove("border-success");
+					slideElt.classList.add("border-danger");
+				}
+				if(slideElt.value){ //pour controler l'ordre on met a jour prevSlide
+					prevSlide = slideElt.value;
+				}
+			}else{ //numero de slide non valide
+				errorMessages.add(bAlert("Chap pas dans l'ordre, pas compris dans le nb de page, mauvais format"));
+				slideElt.classList.remove("border-success");
+				slideElt.classList.add("border-danger");
+			}
+			index++;
+		}
+	}
+
+	
+	for (const mess of errorMessages) {
+		pdferror.innerHTML+=mess;
+	}
+
+	//si il n'y a pas d'erreur
+	if(pdferror.innerHTML===""){
+		//on check les options
+		for (const optionElt of document.getElementsByClassName("pdf-option")) { //on recupere les options selectionnees ou non dans les checkboxes
+			options.push(optionElt.checked);
+		}
+		let newPdfConfig = new ConfigPdfJson(pdfName, options, chapters);
+		myConfig.pages[currentPageNumber - 1] = newPdfConfig; //On sauvergarde les infosde la page (type pdf) pour le futur export
 		updatePagesState(3);
 		return true;
 	}
+	return false;
 }
 
 /* ======= CONFIG ======*/
@@ -958,7 +1072,6 @@ function missingAlert(message) {
 		'<span aria-hidden="true">&times;' +
 		'</span></button></div>';
 }
-
 
 function toSeconds(time) {
 	var a = time.split(':'); // split au séparateur ":"

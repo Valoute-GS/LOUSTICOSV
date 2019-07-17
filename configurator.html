@@ -155,14 +155,15 @@
 				</div>
 
 				<button type="button" class="btn btn-outline-success" onclick="createPdfChapter()">Ajouter un chapitre</button>
-				<button type="button" class="btn btn-outline-danger mr-5" onclick="removePdfChapter()">Retirer un chapitre</button>
+				<button type="button" class="btn btn-outline-danger mr-5" onclick="removePdfChapter()">Retirer un
+					chapitre</button>
 				<button class="btn btn-primary" type="button" onclick="savePdf()">Sauvegarder</button>
 				<button class="btn btn-danger ml-1" type="button" onclick="exitPdf()">Annuler</button>
 			</div>
 
 			<div class="mb-3" onchange="checkPdfOptions()">
 				<div class="custom-control custom-checkbox custom-control-inline">
-					<!--PPLLOWED-->
+					<!--ZONECHAP-->
 					<input type="checkbox" class="custom-control-input pdf-option" id="pdfOption1">
 					<label class="custom-control-label" for="pdfOption1" data-container="body" data-toggle="popover"
 						data-trigger="hover" data-placement="bottom"
@@ -170,12 +171,20 @@
 						Zone Chapitre</label>
 				</div>
 				<div class="custom-control custom-checkbox custom-control-inline">
-					<!--PPLLOWED-->
+					<!--CHAPVISIBLE-->
 					<input type="checkbox" class="custom-control-input pdf-option" id="pdfOption2">
 					<label class="custom-control-label" for="pdfOption2" data-container="body" data-toggle="popover"
 						data-trigger="hover" data-placement="bottom"
-						data-content="Laisse un espace sur la gauche du pdf (où les eventuels chapitres seront afichés).">
-						Chapitre visibles</label>
+						data-content="La liste des chapitres sera visible dans l'espace réservé. REQUIS : Zone chapitre + un chapitre ou plus.">
+						Chapitres visibles</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--CHAPCLICK-->
+					<input type="checkbox" class="custom-control-input pdf-option" id="pdfOption3">
+					<label class="custom-control-label" for="pdfOption3" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Le participant peut atteindre un chapitre en cliquant dessus. REQUIS : Chapitres visibles.">
+						Chapitres cliquables</label>
 				</div>
 			</div>
 
@@ -217,8 +226,9 @@
 						</div>
 					</div>
 				</div>
-				
-				<button type="button" class="btn btn-outline-success" onclick="createChapterInput()">Ajouter un chapitre</button>
+
+				<button type="button" class="btn btn-outline-success" onclick="createChapterInput()">Ajouter un
+					chapitre</button>
 				<button type="button" class="btn btn-outline-danger" onclick="removeChapterInput()">Retirer un chapitre</button>
 				<button type="button" class="btn btn-primary ml-3" onclick="saveVideo()">Sauvegarder</button>
 				<button type="button" class="btn btn-danger ml-3" onclick="exitVideo()">Annuler</button>
