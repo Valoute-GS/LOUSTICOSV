@@ -367,6 +367,7 @@ function configPdf() {
 	chappdfcontainer.innerHTML = ""
 	pdferror.innerHTML = "";
 	pager.style.display = "none";
+	nbPdfChapters = 0;
 	for(const option of document.getElementsByClassName("pdf-option")){
 		option.checked = false;
 	}
@@ -676,9 +677,11 @@ function onPagerButtonsClick(event) {
 		}
 		render();
 	}
+	pagecounter.innerHTML = currentPageIndex+1 +"/"+totalPagesCount;
 }
 
 function initPager() {
+	pagecounter.innerHTML = "1/"+totalPagesCount;
 	const pager = document.querySelector("#pager");
 	pager.addEventListener("click", onPagerButtonsClick);
 	return () => {
@@ -747,7 +750,7 @@ function handlePdf(file) {
 	}
 }
 
-function createPdfChapter() { //TODO:
+function createPdfChapter() {
 	nbPdfChapters++;
 	
 	var div1 = document.createElement("div");
@@ -763,7 +766,7 @@ function createPdfChapter() { //TODO:
 	checkPdfOptions()
 }
 
-function removePdfChapter() { //TODO:
+function removePdfChapter() {
 	if(nbPdfChapters > 0){
 		chappdfcontainer.removeChild(chappdfcontainer.lastChild);
 		nbPdfChapters--;
@@ -774,10 +777,13 @@ function removePdfChapter() { //TODO:
 function checkPdfOptions() {
 	if(pdfOption1.checked && nbPdfChapters != 0){
 		pdfOption2.disabled = false;
-		pdfOption3.disabled = false;
-	}else {
+	} else {
 		pdfOption2.checked = false;
 		pdfOption2.disabled = true;
+	}
+	if(pdfOption2.checked){
+		pdfOption3.disabled = false;
+	} else {
 		pdfOption3.checked = false;
 		pdfOption3.disabled = true;
 	}
@@ -980,6 +986,7 @@ function savePdfConfig() {
 		let newPdfConfig = new ConfigPdfJson(pdfName, options, chapters);
 		myConfig.pages[currentPageNumber - 1] = newPdfConfig; //On sauvergarde les infosde la page (type pdf) pour le futur export
 		updatePagesState(3);
+		inputGroupPdf.value = "";
 		return true;
 	}
 	return false;

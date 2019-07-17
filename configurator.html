@@ -193,6 +193,7 @@
 					<div class="mt-3" id="pager">
 						<button class="btn btn-sm btn-outline-info" data-pager="prev">Diapo précédente</button>
 						<button class="btn btn-sm btn-outline-info" data-pager="next">Diapo suivante</button>
+						<button class="btn btn-sm btn-outline-info disabled" style="cursor: default" id="pagecounter">-/-</button>
 					</div>
 					<div id="chappdfcontainer">
 						<!--insertion en JS-->
@@ -210,23 +211,6 @@
 		<div class="configurator configurator-video" style="display: none">
 			<div id="videoerror"></div>
 			<div class="mt-3 mb-1">
-
-				<div class="btn-group" role="group">
-					<div class="btn-toolbar" role="toolbar">
-						<input type="file" name="img[]" class="custom-pdf-input file" onchange="handlePdf(this.files)"
-							id="inputGroupPdf" accept="application/pdf">
-						<div class="btn-group mx-auto">
-							<div class="btn-group mr-5" role="group">
-								<button class="browse btn btn-outline-primary" type="button" id="input-pdf-name" data-container="body"
-									data-toggle="popover" data-trigger="hover" data-placement="bottom"
-									data-content="Importer un fichier .pdf, le format portrait est déconseillé pour faciliter la lecture.">
-									Choisir un fichier pdf</button>
-								<button class="browse btn btn-primary" type="button">🔍 Importer</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
 				<button type="button" class="btn btn-outline-success" onclick="createChapterInput()">Ajouter un
 					chapitre</button>
 				<button type="button" class="btn btn-outline-danger" onclick="removeChapterInput()">Retirer un chapitre</button>
