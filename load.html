@@ -147,14 +147,15 @@
 
 		<!-- PDF -->
 		<div class="load load-pdf" style="display: none">
+			<div id="pager">
+				<button class="btn btn-sm btn-outline-info" data-pager="prev">Diapo précédente</button>
+				<button class="btn btn-sm btn-outline-info" data-pager="next">Diapo suivante</button>
+				<button class="btn btn-sm btn-outline-info disabled" id="slidecounter" style="cursor: default">-/-</button>
+			</div>
 			<div class="row mt-3 mx-auto" style="width: 100%">
-				<div class="col-md mb-3" role="toolbar" id="toolbar">
-					<div id="pager">
-						<button class="btn btn-sm btn-outline-info" data-pager="prev">Diapo précédente</button>
-						<button class="btn btn-sm btn-outline-info" data-pager="next">Diapo suivante</button>
-					</div>
-				</div>
-
+				<ul class="list-group col-md my-auto p-0" id="pdfchapcontainer" style="display: none">
+						<!-- Chapters are inserted and displayed in this div -->
+				</ul>
 				<div class="col-md-9 mx-auto" id="app">
 					<div id="viewport-container">
 						<div role="main" id="viewport"></div>
@@ -175,8 +176,6 @@
 		<a id='download-link'></a>
 		<!-- FIN de la main part -->
 
-
-		<!-- FIN du footer -->
 	</div>
 
 	<!-- Javascript -->
