@@ -322,10 +322,10 @@ function dlcsv() { //génère le lien de téléchargement pour les CSVs
 	// NOTE: a décommenter dans la version final
 	var dlAnchorElem = document.getElementById('download-link');
 	dlAnchorElem.setAttribute("href", myJSONGeneral.toCSV());
-	dlAnchorElem.setAttribute("download", testID + "_syn" + ".csv");
+	dlAnchorElem.setAttribute("download", testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_syn" + ".csv");
 	dlAnchorElem.click()
 	dlAnchorElem.setAttribute("href", myCsvLogs);
-	dlAnchorElem.setAttribute("download", testID + "_logs" + ".csv");
+	dlAnchorElem.setAttribute("download", testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_logs" + ".csv");
 	dlAnchorElem.click();;
 }
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
