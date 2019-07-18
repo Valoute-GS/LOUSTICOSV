@@ -331,7 +331,7 @@ function dlcsv() { //génère le lien de téléchargement pour les CSVs
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
 /* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
-function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
+function loadVideo() { //page de type video, change l'interface et remplit les champs en fonction de la configuration
 	//FIXME: Redondances sur certaine partie qui n'ont besoin d'etre executée qu'une fois et non a chaque loadVideo()
 	hideByClass("load");
 	var currentPage = myConfig.pages[currentPageNumber];
@@ -412,7 +412,7 @@ function loadVideo() { //page de type video, change l'interface et rempli les ch
 	}
 	//CHAPITRES VISIBLES
 	if (VISIBLECHAP) {
-		chapcontainer.innerHTML += '<li class="list-group-item border-0 bg-transparent my-1">Chapitres</li>';
+		chapcontainer.innerHTML += '<li class="list-group-item border-0 bg-transparent my-1">Chapitres : </li>';
 		if (VISIBLEDATECHAP) {
 			for (const chapter of myConfig.pages[currentPageNumber].chapters) { //berk
 				chapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
@@ -589,6 +589,7 @@ function loadPdf() { //page de type pdf
 
 	if (VISIBLECHAP) {
 		if (CLICKABLECHAP) { //visible et cliquable
+			pdfchapcontainer.innerHTML += '<li class="list-group-item border-0 bg-transparent my-1">Chapitres :</li>';
 			for (const chapter of currentPage.chapters) {
 				pdfchapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
 					'<button class="btn btn-block btn-outline-primary btn-chapter btn-chap-pdf p-0" type="button" onclick="gotoSlide(this.children[0].innerHTML)">' +
