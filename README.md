@@ -22,9 +22,14 @@ Un tutoriel détaillé et imagé est disponible via [ce lien](https://docs.googl
 
  1. Télécharger le dossier compressé sur la [Dropbox du LOUSTIC](https://www.dropbox.com/home/Valentin%20Utiel-%20stage%20outil%20suivi) ou sur [GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/master) **Clone or Download -> Download ZIP**
  2. L'extraire dans le répertoire désiré.
- 3. Entrer dans le dossier `./LOUSTIC_OS`
- 4. Exécuter le ficher `index.html` dans votre navigateur préféré 
- 
+ 3. Exécuter `Loustic - OS` dans votre navigateur préféré.
+
+*Alternative*
+
+ 3. Entrer dans le dossier `./src`
+ 4. Exécuter le ficher `index.html` 
+
+
  Navigateurs testées : Chrome/Mozilla/Opéra
 
 ~~**Sous Android :**~~
