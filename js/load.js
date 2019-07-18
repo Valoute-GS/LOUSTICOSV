@@ -331,7 +331,7 @@ function dlcsv() { //génère le lien de téléchargement pour les CSVs
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
 /* ╔══════DEBUT══════╗ PLAYER VIDEO  ==================================================*/
-function loadVideo() { //page de type video, change l'interface et rempli les champs en fonction de la configuration
+function loadVideo() { //page de type video, change l'interface et remplit les champs en fonction de la configuration
 	//FIXME: Redondances sur certaine partie qui n'ont besoin d'etre executée qu'une fois et non a chaque loadVideo()
 	hideByClass("load");
 	var currentPage = myConfig.pages[currentPageNumber];
