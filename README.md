@@ -60,16 +60,23 @@ Une page de type **Vidéo** est composée de :
 
  - Un **fichier vidéo** : nécessaire au format .mp4 (conseillé), .webm, .mov (suivant les navigateurs certains formats ne son pas pris en charge), **fichier local** à importer dans le champs prévu
  - Des **Options** activables : changeant la mise en forme et les interactions possibles lors du test
- - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **Timestamp** nécessaires.
+ - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **Timer** nécessaires.
 
+Note : Le **Timer** d'un chapitre représente le début de ce dernier, c'est à dire que :
+ - Le chapitre 1 dure du Timer 1 jusqu'au Timer 2.
+ - Entre le début de la vidéo et le premier chapitre aucune statistique avancée ne sera recuillie, il est possible de creéer un chapitre commençant à 0:00 pour remédier à cela.
+ - Le dernier chapitre dure de son Timer jusqu'à la fin de la vidéo.
+ 
 ### Format Editeur de texte/médias
 Une page de type **Editeur de texte/médias** se configure de façon traditionnelle, c'est un éditeur de texte simple mais riche. Il est ainsi possible d'insérer des images, des vidéos du web (nécessite une connexion internet),etc. en plus des fonction d'éditions classiques.
 
 ### Format PDF
 Une page de type **PDF** est composé de :
- - - Un **fichier PDF** : nécessaire au format .PDF, .webm, .mov (suivant les navigateurs certains formats ne son pas pris en charge), **fichier local** à importer dans le champ en bas de page
+ - Un **fichier PDF** : nécessaire au format .PDF, .webm, .mov (suivant les navigateurs certains formats ne son pas pris en charge), **fichier local** à importer dans le champ en bas de page
  - Des **Options** activables : changeant la mise en forme et les interactions possibles lors du test
- - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **numéro de pages** nécessaires.
+ - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **Numéro de page** nécessaires.
+
+Note : Le fonctionnement des chapitres est similaire à ceux d'une vidéo.
 
 ### Modifier une configuration
 Il est possible de charger une configuration existante au format .json depuis le champs **Charger un fichier de configuration** puis ses **fichiers associés**. Une fois tous les fichiers importés, cliquer sur **Charger**. Ensuite cela se déroule comme pour une nouvelle configuration.
