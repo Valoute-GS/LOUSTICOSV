@@ -612,7 +612,145 @@ function loadPdf() { //page de type pdf
 	showByClass("load-pdf");
 }
 /* ╚═══════FIN═══════╝ PDF  ===========================================================*/
+/* ╔══════DEBUT══════╗ PDF JS =========================================================*/
+//code umprunté au tuto https://pspdfkit.com/blog/2019/implement-pdf-viewer-pdf-js/
+let currentPageIndex = 0;
+let pageMode = 1;
+let cursorIndex = Math.floor(currentPageIndex / pageMode);
+let pdfInstance = null;
+let totalPagesCount = 0;
+var pdfName;
+var fromSlide = 0;
+var chapChecker = [];
 
+const viewport = document.querySelector("#viewport");
+window.initPDFViewer = function (pdfURL) {
+	pdfjsLib.getDocument(pdfURL).then(pdf => {
+		pdfInstance = pdf;
+		totalPagesCount = pdf.numPages;
+		initPager();
+		render();
+	});
+};
+
+function onPagerButtonsClick(event) {
+	const action = event.target.getAttribute("data-pager");
+	if (action === "prev") {
+		if (currentPageIndex === 0) {
+			return;
+		}
+		currentPageIndex -= pageMode;
+		if (currentPageIndex < 0) {
+			currentPageIndex = 0;
+		} else { //on charge une page du slide
+			fromSlide = currentPageIndex+1;
+			myCsvLogs.addLine("PREV_SLIDE");
+			render();
+		}
+	}
+	if (action === "next") {
+		if (currentPageIndex === totalPagesCount - 1) {
+			return;
+		}
+		currentPageIndex += pageMode;
+		if (currentPageIndex > totalPagesCount - 1) {
+			currentPageIndex = totalPagesCount - 1;
+		} else { //on charge une page du slide
+			fromSlide = currentPageIndex-1;
+			myCsvLogs.addLine("NEXT_SLIDE");
+			render();
+		}
+	}
+}
+
+function initPager() {
+	chapChecker = [];
+	for(const chap of myConfig.pages[currentPageNumber].chapters){
+		chapChecker.push(chap.date);
+	}
+	chapChecker.push(Number.MAX_SAFE_INTEGER);
+
+	const pager = document.querySelector("#pager");
+	pager.addEventListener("click", onPagerButtonsClick);
+	return () => {
+		pager.removeEventListener("click", onPagerButtonsClick);
+	};
+}
+
+function render() {
+	cursorIndex = Math.floor(currentPageIndex / pageMode);
+	const startPageIndex = cursorIndex * pageMode;
+	const endPageIndex =
+		startPageIndex + pageMode < totalPagesCount ?
+		startPageIndex + pageMode - 1 :
+		totalPagesCount - 1;
+
+	const renderPagesPromises = [];
+	for (let i = startPageIndex; i <= endPageIndex; i++) {
+		renderPagesPromises.push(pdfInstance.getPage(i + 1));
+	}
+
+	Promise.all(renderPagesPromises).then(pages => {
+		const pagesHTML = `<div style="width: ${
+		  pageMode > 1 ? "50%" : "100%"
+		}"><canvas></canvas></div>`.repeat(pages.length);
+		viewport.innerHTML = pagesHTML;
+		pages.forEach(renderPage);
+	});
+
+	slidecounter.innerHTML = currentPageIndex + 1 + "/" + totalPagesCount
+	var i = 0;
+	for(const chap of myConfig.pages[currentPageNumber].chapters){
+		var btn = document.getElementsByClassName("btn-chap-pdf")[i];
+
+		if(chap.date == (currentPageIndex+1)){
+			myCsvLogs.addLine("CHAP_SLIDE_ATT")
+		}
+
+		if(currentPageIndex+1>=chapChecker[i] && currentPageIndex+1<chapChecker[i+1]){
+			btn.classList.add("border-danger");
+		}else{
+			btn.classList.remove("border-danger");
+		}
+		i++;
+	}
+}
+
+function renderPage(page) {
+	let pdfViewport = page.getViewport(1);
+
+	const container =
+		viewport.children[page.pageIndex - cursorIndex * pageMode];
+	pdfViewport = page.getViewport(container.offsetWidth / pdfViewport.width);
+	const canvas = container.children[0];
+	const context = canvas.getContext("2d");
+	canvas.height = pdfViewport.height;
+	canvas.width = pdfViewport.width;
+
+	page.render({
+		canvasContext: context,
+		viewport: pdfViewport
+	});
+}
+
+function resetPdf() {
+	currentPageIndex = 0;
+	cursorIndex = Math.floor(currentPageIndex / pageMode);
+	pdfInstance = null;
+	totalPagesCount = 0;
+	viewport.innerHTML = "";
+}
+
+function gotoSlide(n) {
+	if (currentPageIndex != (n - 1)) {
+		fromSlide = currentPageIndex;
+		currentPageIndex = n - 1;
+		myCsvLogs.addLine("GOTO_SLIDE");
+		render();
+	}
+
+}
+/* ╚═══════FIN═══════╝ PDF JS =========================================================*/
 /* ╔══════DEBUT══════╗ CSV ============================================================*/
 class Csv {
 	constructor() {
@@ -1148,145 +1286,3 @@ function toNum(n) {
 	return n;
 };
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/
-
-
-
-/* ╔══════DEBUT══════╗ PDF JS =========================================================*/
-//code umprunté au tuto https://pspdfkit.com/blog/2019/implement-pdf-viewer-pdf-js/
-let currentPageIndex = 0;
-let pageMode = 1;
-let cursorIndex = Math.floor(currentPageIndex / pageMode);
-let pdfInstance = null;
-let totalPagesCount = 0;
-var pdfName;
-var fromSlide = 0;
-var chapChecker = [];
-
-const viewport = document.querySelector("#viewport");
-window.initPDFViewer = function (pdfURL) {
-	pdfjsLib.getDocument(pdfURL).then(pdf => {
-		pdfInstance = pdf;
-		totalPagesCount = pdf.numPages;
-		initPager();
-		render();
-	});
-};
-
-function onPagerButtonsClick(event) {
-	const action = event.target.getAttribute("data-pager");
-	if (action === "prev") {
-		if (currentPageIndex === 0) {
-			return;
-		}
-		currentPageIndex -= pageMode;
-		if (currentPageIndex < 0) {
-			currentPageIndex = 0;
-		} else { //on charge une page du slide
-			fromSlide = currentPageIndex+1;
-			myCsvLogs.addLine("PREV_SLIDE");
-			render();
-		}
-	}
-	if (action === "next") {
-		if (currentPageIndex === totalPagesCount - 1) {
-			return;
-		}
-		currentPageIndex += pageMode;
-		if (currentPageIndex > totalPagesCount - 1) {
-			currentPageIndex = totalPagesCount - 1;
-		} else { //on charge une page du slide
-			fromSlide = currentPageIndex-1;
-			myCsvLogs.addLine("NEXT_SLIDE");
-			render();
-		}
-	}
-}
-
-function initPager() {
-	chapChecker = [];
-	for(const chap of myConfig.pages[currentPageNumber].chapters){
-		chapChecker.push(chap.date);
-	}
-	chapChecker.push(Number.MAX_SAFE_INTEGER);
-
-	const pager = document.querySelector("#pager");
-	pager.addEventListener("click", onPagerButtonsClick);
-	return () => {
-		pager.removeEventListener("click", onPagerButtonsClick);
-	};
-}
-
-function render() {
-	cursorIndex = Math.floor(currentPageIndex / pageMode);
-	const startPageIndex = cursorIndex * pageMode;
-	const endPageIndex =
-		startPageIndex + pageMode < totalPagesCount ?
-		startPageIndex + pageMode - 1 :
-		totalPagesCount - 1;
-
-	const renderPagesPromises = [];
-	for (let i = startPageIndex; i <= endPageIndex; i++) {
-		renderPagesPromises.push(pdfInstance.getPage(i + 1));
-	}
-
-	Promise.all(renderPagesPromises).then(pages => {
-		const pagesHTML = `<div style="width: ${
-		  pageMode > 1 ? "50%" : "100%"
-		}"><canvas></canvas></div>`.repeat(pages.length);
-		viewport.innerHTML = pagesHTML;
-		pages.forEach(renderPage);
-	});
-
-	slidecounter.innerHTML = currentPageIndex + 1 + "/" + totalPagesCount
-	var i = 0;
-	for(const chap of myConfig.pages[currentPageNumber].chapters){
-		var btn = document.getElementsByClassName("btn-chap-pdf")[i];
-
-		if(chap.date == (currentPageIndex+1)){
-			myCsvLogs.addLine("CHAP_SLIDE_ATT")
-		}
-
-		if(currentPageIndex+1>=chapChecker[i] && currentPageIndex+1<chapChecker[i+1]){
-			btn.classList.add("border-danger");
-		}else{
-			btn.classList.remove("border-danger");
-		}
-		i++;
-	}
-}
-
-function renderPage(page) {
-	let pdfViewport = page.getViewport(1);
-
-	const container =
-		viewport.children[page.pageIndex - cursorIndex * pageMode];
-	pdfViewport = page.getViewport(container.offsetWidth / pdfViewport.width);
-	const canvas = container.children[0];
-	const context = canvas.getContext("2d");
-	canvas.height = pdfViewport.height;
-	canvas.width = pdfViewport.width;
-
-	page.render({
-		canvasContext: context,
-		viewport: pdfViewport
-	});
-}
-
-function resetPdf() {
-	currentPageIndex = 0;
-	cursorIndex = Math.floor(currentPageIndex / pageMode);
-	pdfInstance = null;
-	totalPagesCount = 0;
-	viewport.innerHTML = "";
-}
-
-function gotoSlide(n) {
-	if (currentPageIndex != (n - 1)) {
-		fromSlide = currentPageIndex;
-		currentPageIndex = n - 1;
-		myCsvLogs.addLine("GOTO_SLIDE");
-		render();
-	}
-
-}
-/* ╚═══════FIN═══════╝ PDF JS =========================================================*/
