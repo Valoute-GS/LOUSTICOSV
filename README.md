@@ -98,7 +98,7 @@ Il est ensuite possible de relancer une session avec un nouvel utilisateur sans 
 Une configuration et ses fichiers sont disponibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/master/examples).
 
 # Données de sortie
-A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples).
+A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/master/examples).
 
 ### Fichier de log
 Fichier contenant l'**intégralité de l'activité** du test.
