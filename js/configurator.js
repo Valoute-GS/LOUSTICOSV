@@ -637,6 +637,7 @@ function checkVideoOptions() {
 /* ╚═══════FIN═══════╝ VIDEO CREATOR ==================================================*/
 
 /* ╔══════DEBUT══════╗ PDF ============================================================*/
+//code umprunté au tuto https://pspdfkit.com/blog/2019/implement-pdf-viewer-pdf-js/
 let currentPageIndex = 0;
 let pageMode = 1;
 let cursorIndex = Math.floor(currentPageIndex / pageMode);
