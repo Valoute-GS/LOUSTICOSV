@@ -146,8 +146,7 @@ function rmThisPage(e) {
 var itemsBeforeUpdate = "";
 var items = "";
 /* ╔══════DEBUT══════╗ SORTABLE PAGE ==================================================*/
-function sortablePageUpdate() {
-	//gestion de la fonctionnalité sortable (reorganisation)
+function sortablePageUpdate() { //gestion de la fonctionnalité sortable (reorganisation)
 	//def des elements sortable
 	sortable('.js-sortable', {
 		forcePlaceholderSize: true,
@@ -206,7 +205,7 @@ var currentPage, currentPageName, currentPageNumber;
 var childNodes;
 var format;
 
-function configPage(e) {
+function configPage(e) { //lance le bon configurateur de page en foncion du type
 	currentPage = e.parentElement.parentElement; //du bouton on remonte a la page pour recup ses infos    
 	currentPageNumber = currentPage.id.substring(4);
 	childNodes = currentPage.childNodes;
@@ -235,7 +234,12 @@ function configPage(e) {
 	}
 }
 
-function updatePagesState(newState) {
+function updatePagesState(newState) { //mets a jour l'état de la page (configuré ou non et son type) 
+	/*	0 : pas configuré
+		1 : editeur de texte
+		2 : video
+		3 : pdf
+	*/
 	var pageInput = document.getElementById("page" + currentPageNumber);
 	pagesState[currentPageNumber - 1] = newState;
 	var concernedButton = pageInput.getElementsByClassName("btn-configure")[0];
@@ -244,15 +248,14 @@ function updatePagesState(newState) {
 	concernedButton.innerHTML = "<span>Configuré</span>";
 }
 
-function namePageUpdate(inputElt) { //petit patch un peu sale pour changer dynamiquement le nom de la page (si deja configurée)
+function namePageUpdate(inputElt) { //petit patch un peu sale pour changer dynamiquement le nom de la page dans myConfig (si deja configurée)
 	var pageNumber = inputElt.parentElement.id.substring(4);
 	if (document.getElementById("page" + pageNumber).getElementsByClassName("btn btn-success")[0]) {
 		myConfig.pages[pageNumber - 1].pageName = inputElt.value;
-
 	}
 }
 
-function checkOptions() {
+function checkOptions() { //checkboxes conditionnelles
 	if (switch1.checked) {
 		switch3.disabled = false;
 	} else {
@@ -310,7 +313,7 @@ function saveVideo() {
 	}
 }
 
-function exitVideo() {
+function exitVideo() { //retour a la main page du configurateur 
 	hideByClass("configurator");
 	maintitle.innerHTML = "LOUSTIC OS - Créer";
 	showByClass("configurator-main");
@@ -368,7 +371,7 @@ function configPdf() {
 	pdferror.innerHTML = "";
 	pager.style.display = "none";
 	nbPdfChapters = 0;
-	for(const option of document.getElementsByClassName("pdf-option")){
+	for (const option of document.getElementsByClassName("pdf-option")) {
 		option.checked = false;
 	}
 
@@ -380,13 +383,13 @@ function configPdf() {
 		initPDFViewer(myURLs.get(pdfName));
 		document.getElementById("input-pdf-name").innerHTML = pdfName;
 
-		for(const chap of myConfig.pages[currentPageNumber - 1].chapters){
+		for (const chap of myConfig.pages[currentPageNumber - 1].chapters) {
 			createPdfChapter()
 			chappdfcontainer.lastChild.getElementsByClassName("pdfchapter-title")[0].value = chap.name;
 			chappdfcontainer.lastChild.getElementsByClassName("pdfchapter-slide")[0].value = chap.date;
 		}
 		var i = 0;
-		for(const option of myConfig.pages[currentPageNumber - 1].options){
+		for (const option of myConfig.pages[currentPageNumber - 1].options) {
 			document.getElementsByClassName("pdf-option")[i].checked = option;
 			i++;
 		}
@@ -565,7 +568,7 @@ $(document).on('click', '.browse', function () { //gestion du faux input file
 	file.trigger('click');
 });
 
-function handleFiles(file) {
+function handleFiles(file) { //gestion de l'input pour la video
 	if (isSomething(file[0])) {
 		document.getElementById("input-file-name").innerHTML = file[0].name;
 		//infos sur la video courante
@@ -607,7 +610,7 @@ function removeChapterInput() {
 	checkVideoOptions();
 }
 
-function checkVideoOptions() {
+function checkVideoOptions() { //checkboxes conditionnelles pour les options sur la video
 	if (customCheck3.checked && nbOfChapters != 0) {
 		customCheck4.disabled = false;
 	} else {
@@ -678,11 +681,11 @@ function onPagerButtonsClick(event) {
 		}
 		render();
 	}
-	pagecounter.innerHTML = currentPageIndex+1 +"/"+totalPagesCount;
+	pagecounter.innerHTML = currentPageIndex + 1 + "/" + totalPagesCount;
 }
 
 function initPager() {
-	pagecounter.innerHTML = "1/"+totalPagesCount;
+	pagecounter.innerHTML = "1/" + totalPagesCount;
 	const pager = document.querySelector("#pager");
 	pager.addEventListener("click", onPagerButtonsClick);
 	return () => {
@@ -738,7 +741,7 @@ function resetPdf() {
 	document.getElementById("input-pdf-name").innerHTML = "Choisir un fichier pdf";
 }
 
-function handlePdf(file) {
+function handlePdf(file) { //gestion input file pdf
 	//infos sur le pdf courante
 	if (isSomething(file[0])) {
 		resetPdf();
@@ -751,9 +754,9 @@ function handlePdf(file) {
 	}
 }
 
-function createPdfChapter() {
+function createPdfChapter() { //ajoute un chapitre
 	nbPdfChapters++;
-	
+
 	var div1 = document.createElement("div");
 	div1.className = "input-group my-1";
 	div1.id = "chapter" + nbPdfChapters;
@@ -768,21 +771,21 @@ function createPdfChapter() {
 }
 
 function removePdfChapter() {
-	if(nbPdfChapters > 0){
+	if (nbPdfChapters > 0) {
 		chappdfcontainer.removeChild(chappdfcontainer.lastChild);
 		nbPdfChapters--;
 		checkPdfOptions()
 	}
 }
 
-function checkPdfOptions() {
-	if(pdfOption1.checked && nbPdfChapters != 0){
+function checkPdfOptions() { //checkboxes conditionnelles pour les options du pdf
+	if (pdfOption1.checked && nbPdfChapters != 0) {
 		pdfOption2.disabled = false;
 	} else {
 		pdfOption2.checked = false;
 		pdfOption2.disabled = true;
 	}
-	if(pdfOption2.checked){
+	if (pdfOption2.checked) {
 		pdfOption3.disabled = false;
 	} else {
 		pdfOption3.checked = false;
@@ -792,6 +795,7 @@ function checkPdfOptions() {
 /* ╚═══════FIN═══════╝ PDF ============================================================*/
 
 /* ╔══════DEBUT══════╗ EXPORTS ========================================================*/
+//export vers le fichier de config json
 class maConfig {
 	constructor(name, options, pages) {
 		this.name = name;
@@ -935,36 +939,35 @@ function savePdfConfig() {
 
 	if (pdfInstance === null) { //aucun pdf n'a ete chargé
 		errorMessages.add(bAlert("Ajouter un pdf"));
-	}
-	else{ //pdf ok
+	} else { //pdf ok
 		var prevSlide = -1;
 		var index = 0;
 		//pour chaque chapitre
-		for(const chap of chappdfcontainer.children){
+		for (const chap of chappdfcontainer.children) {
 			var titleElt = chap.getElementsByClassName("pdfchapter-title")[0];
 			var slideElt = chap.getElementsByClassName("pdfchapter-slide")[0];
-			chapters[index] = new ChapJson(titleElt.value,slideElt.value);
+			chapters[index] = new ChapJson(titleElt.value, slideElt.value);
 
-			if(titleElt.checkValidity()){ // le titre est valide 
+			if (titleElt.checkValidity()) { // le titre est valide 
 				titleElt.classList.add("border-success");
 				titleElt.classList.remove("border-danger");
-			}else{ //titre pas valide
+			} else { //titre pas valide
 				errorMessages.add(bAlert("Titre invalide"));
 				titleElt.classList.remove("border-success");
 				titleElt.classList.add("border-danger");
 			}
-			if(slideElt.checkValidity()){ //le numero de slide est valide
+			if (slideElt.checkValidity()) { //le numero de slide est valide
 				slideElt.classList.add("border-success");
 				slideElt.classList.remove("border-danger");
-				if((prevSlide >= +slideElt.value) || (+slideElt.value > totalPagesCount)){ //dans l'ordre et compris dans le diapo
+				if ((prevSlide >= +slideElt.value) || (+slideElt.value > totalPagesCount)) { //dans l'ordre et compris dans le diapo
 					errorMessages.add(bAlert("Chap pas dans l'ordre, pas compris dans le nb de page, mauvais format"));
 					slideElt.classList.remove("border-success");
 					slideElt.classList.add("border-danger");
 				}
-				if(slideElt.value){ //pour controler l'ordre on met a jour prevSlide
+				if (slideElt.value) { //pour controler l'ordre on met a jour prevSlide
 					prevSlide = slideElt.value;
 				}
-			}else{ //numero de slide non valide
+			} else { //numero de slide non valide
 				errorMessages.add(bAlert("Chap pas dans l'ordre, pas compris dans le nb de page, mauvais format"));
 				slideElt.classList.remove("border-success");
 				slideElt.classList.add("border-danger");
@@ -973,13 +976,13 @@ function savePdfConfig() {
 		}
 	}
 
-	
+
 	for (const mess of errorMessages) {
-		pdferror.innerHTML+=mess;
+		pdferror.innerHTML += mess;
 	}
 
 	//si il n'y a pas d'erreur
-	if(pdferror.innerHTML===""){
+	if (pdferror.innerHTML === "") {
 		//on check les options
 		for (const optionElt of document.getElementsByClassName("pdf-option")) { //on recupere les options selectionnees ou non dans les checkboxes
 			options.push(optionElt.checked);
@@ -1040,13 +1043,13 @@ function finishConfig() {
 /* ╚═══════FIN═══════╝ EXPORTS ========================================================*/
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
-function hideByClass(className) {
+function hideByClass(className) { //cacher les elements du DOM ayant la classe ClassName
 	for (eltsToHide of document.getElementsByClassName(className)) {
 		eltsToHide.style.display = 'none';
 	}
 }
 
-function showByClass(className) {
+function showByClass(className) { //montrer les elements (...)
 	for (eltsToHide of document.getElementsByClassName(className)) {
 		eltsToHide.style.display = 'block';
 		eltsToHide.classList.add("fadein")
@@ -1064,7 +1067,7 @@ function isSomething(params) {
 	return true;
 }
 
-function bAlert(message) {
+function bAlert(message) { //message d'erreur
 	return '<div class="alert alert-warning alert-dismissible" role="alert">' +
 		'<strong>Erreur</strong> ' + message +
 		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -1073,7 +1076,7 @@ function bAlert(message) {
 
 }
 
-function missingAlert(message) {
+function missingAlert(message) { //message de fichiers maquants
 	return '<div class="alert alert-info alert-dismissible" role="alert">' +
 		'<strong>Fichier requis</strong> ' + message +
 		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -1081,7 +1084,7 @@ function missingAlert(message) {
 		'</span></button></div>';
 }
 
-function toSeconds(time) {
+function toSeconds(time) { //transforme un format HH:MM:SS en secondes 
 	var a = time.split(':'); // split au séparateur ":"
 	var seconds = 0;
 	switch (a.length) {

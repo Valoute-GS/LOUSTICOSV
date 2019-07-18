@@ -60,17 +60,17 @@
 				<div id="mainerror"></div>
 				<ul class="list-group" id="imported"></ul>
 				<div class="btn-toolbar" role="toolbar">
-					<input type="file" name="img[]" class="custom-file-input loadfile" id="input" onchange="loadFiles(this.files)"
-						accept="application/json">
+					<input type="file" name="img[]" class="custom-file-input loadfile" id="input"
+						onchange="loadFiles(this.files)" accept="application/json">
 					<div class="btn-group mx-auto">
 						<div class="btn-group mr-1" role="group">
-							<button class="load btn btn-outline-primary" type="button" id="load-file-name" data-container="body"
-								data-toggle="popover" data-trigger="hover" data-placement="bottom"
+							<button class="load btn btn-outline-primary" type="button" id="load-file-name"
+								data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
 								data-content="Charger et modifer une configuration existante.">
 								Charger un fichier de configuration (.json)</button>
 							<button class="load btn btn-primary" type="button" id="importload-btn">🔍 Importer</button>
-							<button class="btn btn-success" id="btnSelectConfig" type="button" onclick="controlConfig(true)"
-								style="display: none;">Charger</button>
+							<button class="btn btn-success" id="btnSelectConfig" type="button"
+								onclick="controlConfig(true)" style="display: none;">Charger</button>
 						</div>
 						<div class="btn-group mr-2" role="group" id="cancel-load-btn">
 							<button class="btn btn-outline-danger" type="button" onclick="emptyLoad()">Annuler</button>
@@ -86,12 +86,14 @@
 					<input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
 					<div class="ml-5">
 						<div class="btn-group" role="group">
-							<button class="btn btn-outline-success" type="button" onclick="addPage()" data-hover="">Ajouter une
+							<button class="btn btn-outline-success" type="button" onclick="addPage()"
+								data-hover="">Ajouter une
 								page</button>
 							<button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
 								page</button>
 						</div>
-						<button class="btn btn-outline-primary" type="button" onclick="finishConfig()">Sauvegarder</button>
+						<button class="btn btn-outline-primary" type="button"
+							onclick="finishConfig()">Sauvegarder</button>
 					</div>
 				</div>
 				<div onchange="checkOptions()">
@@ -144,8 +146,9 @@
 							id="inputGroupPdf" accept="application/pdf">
 						<div class="btn-group mx-auto">
 							<div class="btn-group mr-5" role="group">
-								<button class="browse btn btn-outline-primary" type="button" id="input-pdf-name" data-container="body"
-									data-toggle="popover" data-trigger="hover" data-placement="bottom"
+								<button class="browse btn btn-outline-primary" type="button" id="input-pdf-name"
+									data-container="body" data-toggle="popover" data-trigger="hover"
+									data-placement="bottom"
 									data-content="Importer un fichier .pdf, le format portrait est déconseillé pour faciliter la lecture.">
 									Choisir un fichier pdf</button>
 								<button class="browse btn btn-primary" type="button">🔍 Importer</button>
@@ -154,7 +157,8 @@
 					</div>
 				</div>
 
-				<button type="button" class="btn btn-outline-success" onclick="createPdfChapter()">Ajouter un chapitre</button>
+				<button type="button" class="btn btn-outline-success" onclick="createPdfChapter()">Ajouter un
+					chapitre</button>
 				<button type="button" class="btn btn-outline-danger mr-5" onclick="removePdfChapter()">Retirer un
 					chapitre</button>
 				<button class="btn btn-primary" type="button" onclick="savePdf()">Sauvegarder</button>
@@ -193,7 +197,8 @@
 					<div class="mt-3" id="pager">
 						<button class="btn btn-sm btn-outline-info" data-pager="prev">Diapo précédente</button>
 						<button class="btn btn-sm btn-outline-info" data-pager="next">Diapo suivante</button>
-						<button class="btn btn-sm btn-outline-info disabled" style="cursor: default" id="pagecounter">-/-</button>
+						<button class="btn btn-sm btn-outline-info disabled" style="cursor: default"
+							id="pagecounter">-/-</button>
 					</div>
 					<div id="chappdfcontainer">
 						<!--insertion en JS-->
@@ -213,7 +218,8 @@
 			<div class="mt-3 mb-1">
 				<button type="button" class="btn btn-outline-success" onclick="createChapterInput()">Ajouter un
 					chapitre</button>
-				<button type="button" class="btn btn-outline-danger" onclick="removeChapterInput()">Retirer un chapitre</button>
+				<button type="button" class="btn btn-outline-danger" onclick="removeChapterInput()">Retirer un
+					chapitre</button>
 				<button type="button" class="btn btn-primary ml-3" onclick="saveVideo()">Sauvegarder</button>
 				<button type="button" class="btn btn-danger ml-3" onclick="exitVideo()">Annuler</button>
 			</div>
@@ -283,7 +289,8 @@
 				<div class="col-md">
 					<!-- video player -->
 					<div class="full-vid">
-						<video oncontextmenu="return false;" id="player" class="video-js vjs-default-skin vjs-big-play-centered"
+						<video oncontextmenu="return false;" id="player"
+							class="video-js vjs-default-skin vjs-big-play-centered"
 							onerror="alert('Veuillez selectionner une video valide');" controls
 							data-setup='{ "aspectRatio":"16:9", "fluid": true }'></video>
 					</div>
@@ -294,8 +301,8 @@
 					id="inputGroupVideo" accept="video/mp4, video/webm, video/quicktime">
 				<div class="btn-group mx-auto">
 					<div class="btn-group mr-1" role="group">
-						<button class="browse btn btn-outline-primary" type="button" id="input-file-name" data-container="body"
-							data-toggle="popover" data-trigger="hover" data-placement="bottom"
+						<button class="browse btn btn-outline-primary" type="button" id="input-file-name"
+							data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
 							data-content="Formats conseillés : .mp4 .mov .webm. Certains navigateurs supportent plus ou moins de formats que ceux conseillés (risque de lecture impossible).">
 							Choisir un fichier video</button>
 						<button class="browse btn btn-primary" type="button">🔍 Importer</button>

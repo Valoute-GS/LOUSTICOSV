@@ -613,6 +613,7 @@ function loadPdf() { //page de type pdf
 	showByClass("load-pdf");
 }
 /* ╚═══════FIN═══════╝ PDF  ===========================================================*/
+
 /* ╔══════DEBUT══════╗ PDF JS =========================================================*/
 //code umprunté au tuto https://pspdfkit.com/blog/2019/implement-pdf-viewer-pdf-js/
 let currentPageIndex = 0;
@@ -624,6 +625,7 @@ var pdfName;
 var fromSlide = 0;
 var chapChecker = [];
 
+//fonctions prises depuis le tuto et modifiées
 const viewport = document.querySelector("#viewport");
 window.initPDFViewer = function (pdfURL) {
 	pdfjsLib.getDocument(pdfURL).then(pdf => {
@@ -634,7 +636,7 @@ window.initPDFViewer = function (pdfURL) {
 	});
 };
 
-function onPagerButtonsClick(event) {
+function onPagerButtonsClick(event) { //gestion des bouton suiv/prec
 	const action = event.target.getAttribute("data-pager");
 	if (action === "prev") {
 		if (currentPageIndex === 0) {
@@ -644,7 +646,7 @@ function onPagerButtonsClick(event) {
 		if (currentPageIndex < 0) {
 			currentPageIndex = 0;
 		} else { //on charge une page du slide
-			fromSlide = currentPageIndex+1;
+			fromSlide = currentPageIndex + 1;
 			myCsvLogs.addLine("PREV_SLIDE");
 			render();
 		}
@@ -657,16 +659,16 @@ function onPagerButtonsClick(event) {
 		if (currentPageIndex > totalPagesCount - 1) {
 			currentPageIndex = totalPagesCount - 1;
 		} else { //on charge une page du slide
-			fromSlide = currentPageIndex-1;
+			fromSlide = currentPageIndex - 1;
 			myCsvLogs.addLine("NEXT_SLIDE");
 			render();
 		}
 	}
 }
 
-function initPager() {
+function initPager() { //initialisation du pager aka les boutons
 	chapChecker = [];
-	for(const chap of myConfig.pages[currentPageNumber].chapters){
+	for (const chap of myConfig.pages[currentPageNumber].chapters) {
 		chapChecker.push(chap.date);
 	}
 	chapChecker.push(Number.MAX_SAFE_INTEGER);
@@ -678,7 +680,7 @@ function initPager() {
 	};
 }
 
-function render() {
+function render() { //charger la page en cours du pdf (avec renderPage)
 	cursorIndex = Math.floor(currentPageIndex / pageMode);
 	const startPageIndex = cursorIndex * pageMode;
 	const endPageIndex =
@@ -701,16 +703,16 @@ function render() {
 
 	slidecounter.innerHTML = currentPageIndex + 1 + "/" + totalPagesCount
 	var i = 0;
-	for(const chap of myConfig.pages[currentPageNumber].chapters){
+	for (const chap of myConfig.pages[currentPageNumber].chapters) {
 		var btn = document.getElementsByClassName("btn-chap-pdf")[i];
 
-		if(chap.date == (currentPageIndex+1)){
+		if (chap.date == (currentPageIndex + 1)) {
 			myCsvLogs.addLine("CHAP_SLIDE_ATT")
 		}
 
-		if(currentPageIndex+1>=chapChecker[i] && currentPageIndex+1<chapChecker[i+1]){
+		if (currentPageIndex + 1 >= chapChecker[i] && currentPageIndex + 1 < chapChecker[i + 1]) {
 			btn.classList.add("border-danger");
-		}else{
+		} else {
 			btn.classList.remove("border-danger");
 		}
 		i++;
@@ -734,7 +736,7 @@ function renderPage(page) {
 	});
 }
 
-function resetPdf() {
+function resetPdf() { //reinit du PDF
 	currentPageIndex = 0;
 	cursorIndex = Math.floor(currentPageIndex / pageMode);
 	pdfInstance = null;
@@ -742,7 +744,7 @@ function resetPdf() {
 	viewport.innerHTML = "";
 }
 
-function gotoSlide(n) {
+function gotoSlide(n) { //aller a une page precise
 	if (currentPageIndex != (n - 1)) {
 		fromSlide = currentPageIndex;
 		currentPageIndex = n - 1;
@@ -816,11 +818,11 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 			}
 		}
 		var tfChapS = ""
-		if(currentPageNumber < myConfig.pages.length && myConfig.pages[currentPageNumber].type === "pdf"){
+		if (currentPageNumber < myConfig.pages.length && myConfig.pages[currentPageNumber].type === "pdf") {
 			tfChapS = duration(tfChapSlide, now);
 			if (tfChapS > 1500000000) {
 				tfChapS = ""
-			}else{
+			} else {
 				tfChapS = toNum(tfChapS);
 			}
 		}
@@ -1006,7 +1008,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + cChapterNumber + ";" + reachedPage + ";" +
-					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay) + ";" + "" + ";" + "" + ";" +  tfChapS);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + toNum(videoTimer) + ";" + toNum(tfChap) + ";" + toNum(tfPlay) + ";" + "" + ";" + "" + ";" + tfChapS);
 				break;
 				// ═════════════════════════════════════════════════════════════════════════════════════════════════════ SOMMAIRE ══════╝ */
 				// ══════════════════════════════════════════════════════════════════════════════════════════════════════════ END ══════╗ */
@@ -1022,10 +1024,10 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 
 				// ═══════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_SLIDE ══════╗ */
 			case "NEXT_SLIDE":
-				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbPdfSuiv++;				
+				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbPdfSuiv++;
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" +
-				"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + "" + ";" + "" + ";" + "" + ";" + (currentPageIndex) + ";" + "" + ";" + tfChapS);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + "" + ";" + "" + ";" + "" + ";" + (currentPageIndex) + ";" + "" + ";" + tfChapS);
 				break;
 				// ═══════════════════════════════════════════════════════════════════════════════════════════════════ NEXT_SLIDE ══════╝ */
 				// ═══════════════════════════════════════════════════════════════════════════════════════════════════ PREV_SLIDE ══════╗ */
@@ -1033,7 +1035,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbPdfPrec++;
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" +
-				"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + "" + ";" + "" + ";" + "" + ";" + (currentPageIndex+2) + ";" + "" + ";" + tfChapS);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + "" + ";" + "" + ";" + "" + ";" + (currentPageIndex + 2) + ";" + "" + ";" + tfChapS);
 				break;
 				// ═══════════════════════════════════════════════════════════════════════════════════════════════════ PREV_SLIDE ══════╝ */
 				// ═══════════════════════════════════════════════════════════════════════════════════════════════════ GOTO_SLIDE ══════╗ */
@@ -1041,14 +1043,14 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbPdfChap++;
 				//on ajoute une ligne au csv de log 
 				this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" +
-				"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + "" + ";" + "" + ";" + "" + ";" + (fromSlide+1) + ";" + "" + ";" + tfChapS);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + "" + ";" + "" + ";" + "" + ";" + (fromSlide + 1) + ";" + "" + ";" + tfChapS);
 				break;
 				// ═══════════════════════════════════════════════════════════════════════════════════════════════════ GOTO_SLIDE ══════╝ */
 				// ═══════════════════════════════════════════════════════════════════════════════════════════════════ GOTO_SLIDE ══════╗ */
 			case "CHAP_SLIDE_ATT":
 				//on ajoute une ligne au csv de log
 				this.lines.push(timer + ";" + cPageNumber + ";" + "" + ";" + "" + ";" +
-				"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + "" + ";" + "" + ";" + "" + ";" + (fromSlide+1) + ";" + (currentPageIndex+1) + ";" + tfChapS);
+					"" + ";" + action + ";" + toNum(tfTest) + ";" + toNum(tfPage) + ";" + "" + ";" + "" + ";" + "" + ";" + (fromSlide + 1) + ";" + (currentPageIndex + 1) + ";" + tfChapS);
 				tfChapSlide = now;
 				break;
 				// ═══════════════════════════════════════════════════════════════════════════════════════════════════ GOTO_SLIDE ══════╝ */
@@ -1186,7 +1188,6 @@ class InfosChap {
 		this.nbPause = 0; //OK:
 	}
 }
-
 class InfosVisite {
 	constructor(debut) {
 		this.diapoNum = currentPageNumber; //OK:
@@ -1212,20 +1213,20 @@ class InfosVisite {
 /* ╚═══════FIN═══════╝ CSV ============================================================*/
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/
-function reloadPage() {
+function reloadPage() { //forcer le rafraichissment de la page
 	window.onbeforeunload = function () {
 
 	};
 	document.location.reload(true);
 }
 
-function hideByClass(className) {
+function hideByClass(className) { //cacher les elements du DOM ayant la classe ClassName
 	for (eltsToHide of document.getElementsByClassName(className)) {
 		eltsToHide.style.display = 'none';
 	}
 }
 
-function showByClass(className) {
+function showByClass(className) { //montrer les elements (...)
 	for (eltsToHide of document.getElementsByClassName(className)) {
 		eltsToHide.style.display = 'block';
 	}
@@ -1233,13 +1234,13 @@ function showByClass(className) {
 
 function generateUniqueID() {
 	var d = new Date();
-	var timer = d.toLocaleDateString().replace(/[/]/g, "") +"_"+ d.toLocaleTimeString().replace(/[:]/g, "");
+	var timer = d.toLocaleDateString().replace(/[/]/g, "") + "_" + d.toLocaleTimeString().replace(/[:]/g, "");
 
-	id = myConfig.name + "_" + timer + document.getElementsByClassName("infos-perso")[0].value; 
+	id = myConfig.name + "_" + timer + document.getElementsByClassName("infos-perso")[0].value;
 	return id;
 }
 
-function bAlert(message) {
+function bAlert(message) { //message d'erreur
 	return '<div class="alert alert-warning alert-dismissible" role="alert">' +
 		'<strong>Erreur</strong> ' + message +
 		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -1248,7 +1249,7 @@ function bAlert(message) {
 
 }
 
-function missingAlert(message) {
+function missingAlert(message) { //message de fichiers maquants
 	return '<div class="alert alert-info alert-dismissible" role="alert">' +
 		'<strong>Fichier requis</strong> ' + message +
 		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -1256,7 +1257,7 @@ function missingAlert(message) {
 		'</span></button></div>';
 }
 
-function toSeconds(time) {
+function toSeconds(time) { //transforme un format HH:MM:SS en secondes 
 	var a = time.split(':'); // split au séparateur ":"
 	var seconds = 0;
 	switch (a.length) {
@@ -1280,7 +1281,7 @@ function duration(from, to) { //return en sec le temps écoulé entre deux dates
 	return (to - from) / 1000;
 }
 
-function toNum(n) {
+function toNum(n) { //format un nombre à la "francaise" (virgule au lieu d'un point) avec deux chiffres apres la virgule
 	if (n != "") {
 		return n.toFixed(2).replace(".", ",");
 	}
