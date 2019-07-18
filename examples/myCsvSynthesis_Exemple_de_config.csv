@@ -1,9 +1,0 @@
-Participant;Config;D1-duree;D1-dureePlay;D1-dureePause;D1-nbPlay;D1-nbPause;D1-C1-duree;D1-C1-dureePlay;D1-C1-dureePause;D1-C1-nbPlay;D1-C1-nbPause;D1-C2-duree;D1-C2-dureePlay;D1-C2-dureePause;D1-C2-nbPlay;D1-C2-nbPause;D1-C3-duree;D1-C3-dureePlay;D1-C3-dureePause;D1-C3-nbPlay;D1-C3-nbPause;D2-duree;D2-dureePlay;D2-dureePause;D2-nbPlay;D2-nbPause;D3-duree;D3-dureePlay;D3-dureePause;D3-nbPlay;D3-nbPause;D3-C1-duree;D3-C1-dureePlay;D3-C1-dureePause;D3-C1-nbPlay;D3-C1-nbPause;D3-C2-duree;D3-C2-dureePlay;D3-C2-dureePause;D3-C2-nbPlay;D3-C2-nbPause;D3-C3-duree;D3-C3-dureePlay;D3-C3-dureePause;D3-C3-nbPlay;D3-C3-nbPause;D4-duree;D4-dureePlay;D4-dureePause;D4-nbPlay;D4-nbPause;Clics sommaire;Sommaire 1;Sommaire 2;Sommaire 3;Sommaire 4
-nom_du_participantExemple_de_config1562924799697;Exemple de config;46,61;32,54;12,24;3;3;22,76;10,52;12,24;3;2;13,11;13,11;0;0;0;10,63;8,91;0;0;1;25,98;0;0;0;0;6,45;0;0;1;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;1,62;0;0;0;0;3;1;0;1;1
-
-Diapo; Nieme visite; Debut; Fin; Duree; Nb play; Nb pause; Nb chap suiv; Nb chap prec; Nb chap list; Nb navbar
-1;1;0,01;44,90;44,89;3;3;1;1;2;0
-2;1;44,90;70,88;25,98;0;0;0;0;0;0
-3;1;70,88;77,33;6,45;1;0;0;0;0;0
-1;2;77,34;79,06;1,73;0;0;0;0;0;0
-4;1;79,06;80,69;1,62;0;0;0;0;0;0
