@@ -31,21 +31,15 @@ ul {
     transition: opacity 0.7s;
     opacity: 1;
 }
+.fadein {
+    opacity: 0;
+}
 
 /*Cacher les inputs qui sont remplacé par des inputs custom avec trigger sur l'input caché*/
 .file,
 .loadfile {
     visibility: hidden;
     position: absolute;
-}
-
-.fadein {
-    opacity: 0;
-}
-
-/*Footer*/
-.mastfoot {
-    color: rgba(0, 0, 0, 0.5);
 }
 
 /*card page d'accueil*/
@@ -81,7 +75,6 @@ ul {
     display: none;
 }
 
-
 /*chargement sur la lecture des chapitre*/
 .background {
     position: absolute;
@@ -92,7 +85,6 @@ ul {
     background-color: rgba(2, 58, 65, 0.25);
     z-index: 98;
 }
-
 
 /*sommaire des pages*/
 .page-item .page-link {

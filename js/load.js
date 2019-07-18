@@ -322,10 +322,10 @@ function dlcsv() { //génère le lien de téléchargement pour les CSVs
 	// NOTE: a décommenter dans la version final
 	var dlAnchorElem = document.getElementById('download-link');
 	dlAnchorElem.setAttribute("href", myJSONGeneral.toCSV());
-	dlAnchorElem.setAttribute("download", "myCsvSynthesis_" + testID + ".csv");
+	dlAnchorElem.setAttribute("download", testID + "_syn" + ".csv");
 	dlAnchorElem.click()
 	dlAnchorElem.setAttribute("href", myCsvLogs);
-	dlAnchorElem.setAttribute("download", "myCsvLogs_" + testID + ".csv");
+	dlAnchorElem.setAttribute("download", testID + "_logs" + ".csv");
 	dlAnchorElem.click();;
 }
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
@@ -591,7 +591,7 @@ function loadPdf() { //page de type pdf
 		if (CLICKABLECHAP) { //visible et cliquable
 			for (const chapter of currentPage.chapters) {
 				pdfchapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
-					'<button class="btn btn-block btn-outline-primary btn-chapter p-0" type="button" onclick="gotoSlide(this.children[0].innerHTML)">' +
+					'<button class="btn btn-block btn-outline-primary btn-chapter btn-chap-pdf p-0" type="button" onclick="gotoSlide(this.children[0].innerHTML)">' +
 					chapter.name + ' : ' + chapter.date +
 					'<div style="display : none;">' + chapter.date + '</div>' +
 					'</button>' +
@@ -600,7 +600,7 @@ function loadPdf() { //page de type pdf
 		} else { //Visible seulement
 			for (const chapter of currentPage.chapters) {
 				pdfchapcontainer.innerHTML += '<li class="list-group-item bg-transparent my-1 p-0">' +
-					'<button class="btn btn-block text-primary btn-outline-secondary btn-chapter p-0 disabled" type="button">' +
+					'<button class="btn btn-block text-primary btn-outline-secondary btn-chapter btn-chap-pdf p-0 disabled" type="button">' +
 					chapter.name + ' : ' + chapter.date + '<div class="background">&#8203</div>' +
 					'</button>' +
 					'</li>';;
@@ -643,8 +643,8 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 	}
 
 	addLine(action) {
-		var now = Date.now();
 		//var pour l'aout de ligne CSV
+		var now = Date.now();
 		var d = new Date();
 
 		// timer  cPageNumber  cChapterNumber  reachedPage  reachedChap  action  tfTest  tfPage  videoTimer  tfChap  tfPlay
@@ -1093,7 +1093,10 @@ function showByClass(className) {
 }
 
 function generateUniqueID() {
-	id = myConfig.name.replace(/[^A-Z0-9]+/ig, "_") + Date.now();
+	var d = new Date();
+	var timer = d.toLocaleDateString().replace(/[/]/g, "") +"_"+ d.toLocaleTimeString().replace(/[:]/g, "");
+
+	id = myConfig.name + "_" + timer + document.getElementsByClassName("infos-perso")[0].value; 
 	return id;
 }
 
@@ -1157,6 +1160,7 @@ let pdfInstance = null;
 let totalPagesCount = 0;
 var pdfName;
 var fromSlide = 0;
+var chapChecker = [];
 
 const viewport = document.querySelector("#viewport");
 window.initPDFViewer = function (pdfURL) {
@@ -1199,6 +1203,12 @@ function onPagerButtonsClick(event) {
 }
 
 function initPager() {
+	chapChecker = [];
+	for(const chap of myConfig.pages[currentPageNumber].chapters){
+		chapChecker.push(chap.date);
+	}
+	chapChecker.push(Number.MAX_SAFE_INTEGER);
+
 	const pager = document.querySelector("#pager");
 	pager.addEventListener("click", onPagerButtonsClick);
 	return () => {
@@ -1228,10 +1238,20 @@ function render() {
 	});
 
 	slidecounter.innerHTML = currentPageIndex + 1 + "/" + totalPagesCount
+	var i = 0;
 	for(const chap of myConfig.pages[currentPageNumber].chapters){
+		var btn = document.getElementsByClassName("btn-chap-pdf")[i];
+
 		if(chap.date == (currentPageIndex+1)){
 			myCsvLogs.addLine("CHAP_SLIDE_ATT")
 		}
+
+		if(currentPageIndex+1>=chapChecker[i] && currentPageIndex+1<chapChecker[i+1]){
+			btn.classList.add("border-danger");
+		}else{
+			btn.classList.remove("border-danger");
+		}
+		i++;
 	}
 }
 
