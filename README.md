@@ -105,3 +105,73 @@ Fichier contenant l'**intégralité de l'activité** du test.
 
 ### Fichier de synthèse
 Fichier contenant une **synthèse** du fichier log, avec des infos complémentaires/calculées comme les temps cumulés, des compteurs d'action etc.
+
+### Détail _log.csv
+| Nom de la colonne | Description |
+| ------ | ----------- |
+| Timer   | Date et heure à laquelle est survenu l'événement |
+| Current page | Numéro de la page en cours |
+| Current chap | Numéro du chapitre en cours (vidéo) |
+| Reached page | Numéro de la page atteinte lors d'un changement de page courante |
+| Reached chap | Numéro du chapitre atteint lors d'un changement de chapitre courant |
+| Action | Nature de l'événement |
+| Time from test begining | Temps en secondes depuis le début du test |
+| Time from page begining | Temps en secondes depuis le début de la page |
+| Video timer | Timer de la video courante |
+| Time from chap begining | Temps en secondes depuis le début du chapitre courant (vidéo) |
+| Time from PLAY | Temps en secondes depuis le dernier événement PLAY |
+| Curr slide Chap | Numéro du chapitre en cours (PDF) |
+| Reached slide Chap | Numéro du chapitre atteint lors d'un changement de chapitre courant |
+| Time from chap slide begining | Temps en secondes depuis le début du chapitre courant (pdf) |
+
+### Liste des actions
+| Nom de l'événement | Description |
+| ------ | ----------- |
+| START_PAGE | Une page commence |
+| CHAP_ATT | Un chapitre vidéo a été atteint (ie changement du chapitre courant) |
+| CHAP_USED | Le candidat a utilisé un **lien vers un chapitre** vidéo |
+| PREV_CHAP | Le candidat a utilisé le bouton **chapitre vidéo précédent** |
+| NEXT_CHAP | Le candidat a utilisé le bouton **chapitre vidéo suivant** |
+| VIDEO_START | Une vidéo a commencé à être lu (ie première lecture depuis l'arrivée sur la page) |
+| VIDEO_END | Une vidéo a finit sa lecture (cela ne signifie pas que toute la vidéo a été visionné, seulement que la dernière image de la vidéo a été lue) |
+| PLAY | Le candidat a utilisé le bouton de **lecture vidéo** |
+| PAUSE | Le candidat a utilisé le bouton de **pause vidéo** |
+| NAVBAR_USED | Le candidat a utilisé la **barre de navigation** pour se déplacer dans la vidéo |
+| NEXT_PAGE | Le candidat a utilisé le bouton **suivant** pour se rendre sur la page suivante |
+| PREV_PAGE | Le candidat a utilisé le bouton **précedent** pour se rendre sur la page suivante |
+| SOMMAIRE | Le candidat a utilisé le sommaire pour se rendre sur une page précise |
+| NEXT_SLIDE | Le candidat a utilisé le bouton **diapo suivant** |
+| PREV_SLIDE | Le candidat a utilisé le bouton **diapo précédente** |
+| GOTO_SLIDE | Le candidat a utilisé un **lien vers un chapitre pdf** (ie vers une page précise) |
+| CHAP_SLIDE_ATT | Un chapitre pdf a été atteint (ie changement du chapitre courant) |
+| END | Le test est fini |
+
+### Détail _syn.csv
+| Nom de la colonne | Description |
+| ------ | ----------- |
+| Participant | id du participant |
+| Config | nom de la config |
+|  |  |
+| Di-(Cj-)duree | Temps total cumulée en secondes passé sur la page *i* (sur le chapitre *j*)|
+| Di-(Cj-)durrePlay | Temps total cumulée en secondes passé en lecture vidéo sur la page *i* (sur le chapitre *j*) |
+| Di-(Cj-)dureePause | Temps total cumulée en secondes passé en pause vidéo sur la page *i* (sur le chapitre *j*) |
+| Di-(Cj-)nbPlay | Nombre total cumulée d'utilisation du bouton de lecture vidéo sur la page *i* (sur le chapitre *j*) |
+| Di-(Cj-)nbPause | Nombre total cumulée d'utilisation du bouton de pause vidéo sur la page *i* (sur le chapitre *j*) |
+|  |  |
+| Clics sommaire |  Nombre total cumulée d'utilisation du **sommaire** de pages |
+| Sommaire i | Nombre total cumulée d'utilisation du **sommaire** pour atteindre la page *i* |
+|  |  |
+| Diapo | Numéro de la page concernée |
+| Nieme visite | Combien-ième visite sur cette page |
+| Début | Temps (depuis le début du test) en seconde : **début de la lecture** de la page |
+| Fin | Temps (depuis le début du test) en seconde : **fin de la lecture** de la page |
+| Durée | Durée en seconde passé sur la page (ie Fin - début) |
+| Nb vid play | Nombre d'utilisation du bouton de **lecture vidéo** sur la page |
+| Nb vid pause | Nombre d'utilisation du bouton de **pause vidéo** sur la page |
+| Nb vid chap suiv | Nombre d'utilisation du bouton **chapitre vidéo suivant** sur la page |
+| Nb vid chap prec | Nombre d'utilisation du bouton **chapitre vidéo précédent** sur la page |
+| Nb vid chap list | Nombre d'utilisation de **lien vers un chapitre** vidéo sur la page |
+| Nb vid navbar | Nombre d'utilisation de la **barre de navigation** sur la page |
+| Nb pdf prec | Nombre d'utilisation du bouton **diapo suivant** sur la page |
+| Nb pdf suiv | Nombre d'utilisation du bouton **diapo précedent** sur la page |
+| Nb pdf chap liste | Nombre d'utilisation de **lien vers un chapitre** pdf sur la page |
