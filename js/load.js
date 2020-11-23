@@ -55,7 +55,7 @@ quill.disable()
 
 //Dropbox access
 const dbx = new Dropbox.Dropbox({
-	accessToken: '4sMA_YdlTWMAAAAAAAAAAeEF7NJtrHDtO38R5d5DTsYtVga7GEMIjUuYyys32_fM'
+	accessToken: 'nBgrEhMNQu8AAAAAAAAAAUn40_x7yO9FAQjLu7cB41tyF3LhkoQ72xeTYTmnrt5Z'
 })
 
 
@@ -78,12 +78,21 @@ $(document).on('DOMSubtreeModified', function () {
 	})
 });
 
-loadConfig();
+/* Parametres : 
+		config: "dbx config URL"
+		files: ["dbx file 1 URL", "dbx file 2 URL"]
+*/
+const params = JSON.parse(urlParams.get("param"));
+console.log(params.config);
+console.log(params.files);
+
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 
 function loadConfig() { //importde la config et des fichiers grace à l'url
+
+//recupere la config depuis la dbx
 	dbx.sharingGetSharedLinkFile({
-			url: "https://www.dropbox.com/s/np0a8d06swdxuiw/config_example.json?dl=0"
+			url: "https://www.dropbox.com/s/" + params.config 
 		})
 		.then(function (data) {
 
@@ -102,83 +111,31 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 			console.error(error);
 		});
 
-	dbx.sharingGetSharedLinkFile({
-		url: "https://www.dropbox.com/s/50s1yhptibip9w2/Success.mp4?dl=0"
-	}).then(function (data) {
-
-		var b = data.result.fileBlob;
-		var reader = new FileReader();
-
-		reader.onload = function () {
-			fileDataURL = this.result;
-		}
-
-		reader.readAsDataURL(b);
-
-		reader.onloadend = function () {
-			importedFiles.set('Success.mp4', dataURItoBlob(fileDataURL));
-			console.log(fileDataURL);
-			console.log(importedFiles);
-			$('#loading').hide();
-			personnalInfos();
-		}
-
-	})
-}
-
-function controlConfig(continueToInfos) { //check si tous les fichiers nécessaires sont disponibles (ceux en trop seront ignorés pour l'instant)
-	var isCorrect = true;
-	var missingFiles = new Set([]);
-	var errorMessages = "";
-	mainerror.innerHTML = "";
-	$('[data-toggle="popover"]').popover("hide"); //on force le popover à se fermer car il se bloque parfois
-
-	if (myConfig !== "") { //Si un config a été chargée
-		//check les fichiers importés/necessaires
-		var imp = [];
-		for (const impFile of importedFiles.values()) {
-			imp.push(impFile.name)
-		}
-		for (const page of myConfig.pages) { //check si les fichiers nécessaires ont bien été importés
-			if (page.type === "video") {
-				if (!imp.includes(page.videoName)) {
-					missingFiles.add("Veuillez ajouter le fichier manquant : " + page.videoName);
-					isCorrect = false;
-				}
+		//recupere les fichiers lié depuis la dbx
+	for (const file of params.files) {
+		dbx.sharingGetSharedLinkFile({
+			url: "https://www.dropbox.com/s/" + file
+		}).then(function (data) {
+	
+			var b = data.result.fileBlob;
+			var reader = new FileReader();
+	
+			reader.onload = function () {
+				fileDataURL = this.result;
 			}
-			if (page.type === "pdf") {
-				if (!imp.includes(page.pdf)) {
-					missingFiles.add("Veuillez ajouter le fichier manquant : " + page.pdf);
-					isCorrect = false;
-				}
+	
+			reader.readAsDataURL(b);
+
+			const filename = file.substring(file.lastIndexOf('/') + 1);
+	
+			reader.onloadend = function () {
+				importedFiles.set(filename, dataURItoBlob(fileDataURL));
+				$('#loading').hide();
+				personnalInfos();
 			}
-		}
-	} else { //si aucun fichier json selectionné
-		errorMessages = "Veuillez sélectionner un fichier de configuration .json";
-		isCorrect = false;
-	}
-	if (isCorrect) { //si tout est okay on passe a la suite
-		btnSelectConfig.style.display = "inline";
-		document.getElementById("input-file-name").className = "browse btn btn-outline-success";
-		document.getElementById("input-file-name").disabled = true;
-		document.getElementById("import-btn").className = "browse btn btn-outline-success";
-		document.getElementById("import-btn").disabled = true;
-		if (continueToInfos) {
-			// a partir de la on demandera avant de quitter ou refrech la page
-			window.onbeforeunload = function () {
-				return "";
-			};
-			personnalInfos()
-		};
-	} else { //sinon on affiches les erreurs
-		//document.getElementById("input-file-name").className = "browse btn btn-outline-primary";
-		for (const message of missingFiles) {
-			mainerror.innerHTML += missingAlert(message);
-		}
-		if (errorMessages != "") {
-			mainerror.innerHTML += bAlert(errorMessages);
-		}
-	}
+	
+		})
+	}	
 }
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
