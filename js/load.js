@@ -35,6 +35,11 @@ var startTimeOnPage = 0;
 var previousTime = 0; //timer de la video mis a jour tout le temps (utile pour connaitre le timer avant et apres une action comme nav sur seekbar)
 var myReachedPage = 0; //page vers laquelle on se déplace
 
+// Acces parametres d'URL
+const queryString = window.location.search;
+console.log("Param : " + queryString);
+const urlParams = new URLSearchParams(queryString);
+
 //editeur de texte Quill (ici juste un conteneur)
 var quill = new Quill('#editor', {
 	modules: {
@@ -47,6 +52,21 @@ var quill = new Quill('#editor', {
 //on desactive l'edition
 quill.disable()
 
+
+//Dropbox access
+const dbx = new Dropbox.Dropbox({
+	accessToken: '4sMA_YdlTWMAAAAAAAAAAeEF7NJtrHDtO38R5d5DTsYtVga7GEMIjUuYyys32_fM'
+})
+
+
+dbx.filesListFolder({
+		path: ''
+	})
+	.then(res => {
+		console.log(res)
+	})
+
+
 //gestion popover
 $(function () {
 	$('[data-toggle="popover"]').popover()
@@ -58,41 +78,52 @@ $(document).on('DOMSubtreeModified', function () {
 	})
 });
 
+loadConfig();
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
-$(document).on('click', '.browse', function () { //gestion du faux input file
-	var file = $(this).parent().parent().parent().find('.file');
-	file.trigger('click');
-});
 
-function loadFiles(files) { //import des fichiers + affichage
-	//iteration sur les fichiers selectionnés
-	for (const file of files) {
-		if (file.type === "application/json") {
-			if (myConfig != "") { //On ne garde que le premier fichier json et on avertis si pls ont été choisis
-				alert("Le fichier : " + file.name + " n'a pas été importé, veuillez ne sélectionner qu'un fichier de configuration (.json)")
-			} else {
-				imported.innerHTML += '<li class="list-group-item list-group-item-primary my-1">' + file.name + '</li>';
-				var selectedFile = file;
-				var reader = new FileReader();
-				reader.onload = function () {
-					myConfig = JSON.parse(reader.result);
-				};
-				reader.readAsText(selectedFile);
-				//Quand la lecture est terminée on controle l'état de la config chargéeé
-				reader.onloadend = function () {
-					controlConfig(false);
-				};
-				//on demande ensuite a charger les fichiers annexe et on change les contraintes de l'input
-				document.getElementById("input-file-name").innerHTML = "Importer les fichiers annexes requis";
-				input.accept = "video/*, application/pdf";
-				input.multiple = true;
+function loadConfig() { //importde la config et des fichiers grace à l'url
+	dbx.sharingGetSharedLinkFile({
+			url: "https://www.dropbox.com/s/np0a8d06swdxuiw/config_example.json?dl=0"
+		})
+		.then(function (data) {
+
+			var b = data.result.fileBlob;
+			var reader = new FileReader();
+
+			reader.onload = function () {
+				myConfig = JSON.parse(this.result);
+				console.log(myConfig);
 			}
-		} else { //fichier non-json
-			imported.innerHTML += '<li class="list-group-item my-1">' + file.name + '</li>';
-			importedFiles.set(file.name, file);
-			controlConfig(false);
+
+			reader.readAsText(b);
+
+		})
+		.catch(function (error) {
+			console.error(error);
+		});
+
+	dbx.sharingGetSharedLinkFile({
+		url: "https://www.dropbox.com/s/50s1yhptibip9w2/Success.mp4?dl=0"
+	}).then(function (data) {
+
+		var b = data.result.fileBlob;
+		var reader = new FileReader();
+
+		reader.onload = function () {
+			fileDataURL = this.result;
 		}
-	}
+
+		reader.readAsDataURL(b);
+
+		reader.onloadend = function () {
+			importedFiles.set('Success.mp4', dataURItoBlob(fileDataURL));
+			console.log(fileDataURL);
+			console.log(importedFiles);
+			$('#loading').hide();
+			personnalInfos();
+		}
+
+	})
 }
 
 function controlConfig(continueToInfos) { //check si tous les fichiers nécessaires sont disponibles (ceux en trop seront ignorés pour l'instant)
@@ -1287,4 +1318,25 @@ function toNum(n) { //format un nombre à la "francaise" (virgule au lieu d'un p
 	}
 	return n;
 };
+
+function dataURItoBlob(dataURI) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    var byteString = atob(dataURI.split(',')[1]);
+
+    // separate out the mime component
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    //New Code
+    return new Blob([ab], {type: 'video/mp4'});
+
+
+}
 /* ╚═══════FIN═══════╝ TOOLS ==========================================================*/

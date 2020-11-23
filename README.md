@@ -1,4 +1,4 @@
-﻿# LOUSTIC OS - Outil de Suivi
+﻿# LOUSTIC OS - Outil de Suivi (A éditer, work in progress)
 
 LOUSTIC OS est un outil de suivi basé sur les technologies HTML5/CSS3/Javascript8.
 L'objectif est de pouvoir créer une suite de médias qu'un participant pourra ensuite visionner, tout en récupérant son activité sur la page. 
