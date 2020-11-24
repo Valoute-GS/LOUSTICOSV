@@ -35,11 +35,6 @@ var startTimeOnPage = 0;
 var previousTime = 0; //timer de la video mis a jour tout le temps (utile pour connaitre le timer avant et apres une action comme nav sur seekbar)
 var myReachedPage = 0; //page vers laquelle on se déplace
 
-// Acces parametres d'URL
-const queryString = window.location.search;
-console.log("Param : " + queryString);
-const urlParams = new URLSearchParams(queryString);
-
 //editeur de texte Quill (ici juste un conteneur)
 var quill = new Quill('#editor', {
 	modules: {
@@ -78,21 +73,59 @@ $(document).on('DOMSubtreeModified', function () {
 	})
 });
 
+
+var params = {
+	"config": "",
+	"files": []
+  }
+
+var paramsUrl;
+
+var button = Dropbox.createChooseButton({
+	success: function (files) {
+		for (const file of files) {
+				const splitURL = file.link.split('/');
+				const shortURL = (splitURL[splitURL.length-2] + '/' + splitURL[splitURL.length-1]).replace('?dl=0', '')
+				console.log(shortURL);
+				if(shortURL.includes(".json")){
+					params.config = shortURL;
+				}else{
+					params.files.push(shortURL)
+				}
+			}
+		paramsUrl = '?param=' + new URLSearchParams(JSON.stringify(params)); 
+		console.log(("param URL : " + paramsUrl).slice(0,-1)); //slice pour supprimer le "=" en trop a la fin
+		loadConfig();
+	},
+	cancel: function () {
+	},
+	folderselect: false,
+	multiselect: true
+});
+
+document.getElementById("dbxchooser").appendChild(button);
+
 /* Parametres : 
 		config: "dbx config URL"
 		files: ["dbx file 1 URL", "dbx file 2 URL"]
 */
-const params = JSON.parse(urlParams.get("param"));
-console.log(params.config);
-console.log(params.files);
+//const params = JSON.parse(urlParams.get("param"));
+
+// Acces parametres d'URL
+const queryString = window.location.search;
+console.log("Param : " + queryString);
+const urlParams = JSON.parse(new URLSearchParams(queryString).get("param"));
+console.log(urlParams);
+//const params = JSON.parse(urlParams.get("param"));
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 
 function loadConfig() { //importde la config et des fichiers grace à l'url
 
+
 //recupere la config depuis la dbx
 	dbx.sharingGetSharedLinkFile({
-			url: "https://www.dropbox.com/s/" + params.config 
+			url: "https://www.dropbox.com/s/" + urlParams.config
 		})
 		.then(function (data) {
 
@@ -112,7 +145,7 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 		});
 
 		//recupere les fichiers lié depuis la dbx
-	for (const file of params.files) {
+	for (const file of urlParams.files) {
 		dbx.sharingGetSharedLinkFile({
 			url: "https://www.dropbox.com/s/" + file
 		}).then(function (data) {
@@ -131,11 +164,12 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 			reader.onloadend = function () {
 				importedFiles.set(filename, dataURItoBlob(fileDataURL));
 				$('#loading').hide();
-				personnalInfos();
 			}
 	
 		})
-	}	
+	}
+	
+	personnalInfos();
 }
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
