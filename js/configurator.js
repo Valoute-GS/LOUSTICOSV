@@ -113,6 +113,7 @@ function addPage() {
 	pcontainer.appendChild(newPage); //ajout de la nouvelle div newPages (cf HTML)
 	pagesState.push(0);
 	sortablePageUpdate();
+	console.log(myURLs);
 }
 
 function rmPage() {
@@ -997,7 +998,7 @@ function savePdfConfig() {
 }
 
 /* ======= CONFIG ======*/
-function finishConfig() {
+function finishConfig(localDownload) {
 	var options = [];
 	mainerror.innerHTML = "";
 	var errorMessages = new Set([]);
@@ -1011,12 +1012,17 @@ function finishConfig() {
 	if (configChecker() == true) {
 		console.log(JSON.stringify(myConfig));
 
-		//lien de telechargement du json
+		if(localDownload){
+			//lien de telechargement du json
 		var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(myConfig));
 		var dlAnchorElem = document.getElementById('download-config');
 		dlAnchorElem.setAttribute("href", dataStr);
 		dlAnchorElem.setAttribute("download", myConfig.name + ".json");
 		dlAnchorElem.click();
+		}else{
+			uploadToDbx();
+		}
+		
 	} else {
 		for (const message of errorMessages) {
 			mainerror.innerHTML += bAlert(message);
@@ -1040,6 +1046,51 @@ function finishConfig() {
 	}
 
 }
+
+function uploadToDbx() {
+	var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(myConfig));
+
+		var filesToUpload = new Map();
+		//parmis les médias en mémoire on garde ceux utiles pour la config
+		for (page of myConfig.pages) {
+			if (page.type == 'video') {
+				filesToUpload.set(page.videoName, myURLs.get(page.videoName));
+			} else if (page.type == 'pdf') {
+				filesToUpload.set(page.pdf, myURLs.get(page.pdf));
+			}
+		}
+
+		//Dropbox access
+		const dbx = new Dropbox.Dropbox({
+			accessToken: '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
+		})
+
+		dbx.filesUpload({
+				path: '/' + myConfig.name + '/' + myConfig.name + ".json",
+				contents: dataStr
+			})
+			.then(function (response) {
+				console.log(response);
+			})
+			.catch(function (error) {
+				console.error(error);
+			});
+
+		for (const file of filesToUpload) {
+			dbx.filesUpload({
+				path: '/' + myConfig.name + '/' + file[0],
+				contents: file[1]
+			})
+			.then(function (response) {
+				console.log(response);
+			})
+			.catch(function (error) {
+				console.error(error);
+			});
+		}
+}
+
+
 /* ╚═══════FIN═══════╝ EXPORTS ========================================================*/
 
 /* ╔══════DEBUT══════╗ TOOLS ==========================================================*/

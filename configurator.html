@@ -27,6 +27,9 @@
 
 	<script src="js/html5sortable.js"></script>
 
+	<script src="js/Dropbox-sdk.min.js"></script>
+	<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs"
+		data-app-key="ezifyzafacskw8e"></script>
 
 </head>
 
@@ -93,8 +96,11 @@
 							<button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
 								page</button>
 						</div>
-						<button class="btn btn-outline-primary" type="button"
-							onclick="finishConfig()">Sauvegarder</button>
+						<div class="btn-group" role="group">
+							<button class="btn btn-outline-primary" type="button" onclick="finishConfig(true)">Télécharger</button>
+							<button class="btn btn-outline-primary" type="button" onclick="finishConfig(false)">Dropbox</button>
+						</div>
+						
 					</div>
 				</div>
 				<div onchange="checkOptions()">
