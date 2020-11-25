@@ -50,11 +50,9 @@
 
 		<!-- DEBUT de la main part -->
 		<!-- Input config -->
-		<div class="load load-main fadein">
+		<div class="load load-main fadein my-auto">
 
-			<ul class="list-group">
-			</ul>
-			<div class="my-3">
+			<div class="mb-3">
 				Chargement du test.
 
 			</div>
@@ -146,11 +144,23 @@
 			</div>
 		</div>
 
-		<div class="load load-finish" style="display: none">
+		<div class="load load-upload fadein my-auto" style="display: none">
+			<div class="mb-3">
+				Envoi des résultats, veuillez patienter.
+
+			</div>
+			<div id="loading-up" class="lds-ellipsis">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+			
+		</div>
+
+		<div class="load load-finish my-auto" style="display: none">
 			<div class="text-center mx-auto">
-				<h1>Merci de votre attention</h1>
-				<button class="btn btn-primary" type="button" onclick="personnalInfos();">Relancer le même test</button>
-				<button class="btn btn-primary" type="button" onclick="reloadPage()">Charger un nouveau test</button>
+				<h3>Merci de votre attention, vos résultats ont bien été envoyé.</h3>
 			</div>
 		</div>
 

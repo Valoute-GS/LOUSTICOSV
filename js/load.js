@@ -67,9 +67,9 @@ $(document).on('DOMSubtreeModified', function () {
 
 // Acces parametres d'URL
 const queryString = window.location.search;
-console.log("Param : " + queryString);
+//console.log("Param : " + queryString);
 const urlParams = JSON.parse(new URLSearchParams(queryString).get("param"));
-console.log(urlParams);
+//console.log(urlParams);
 //const params = JSON.parse(urlParams.get("param"));
 
 loadConfig();
@@ -91,7 +91,7 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 
 			reader.onload = function () {
 				myConfig = JSON.parse(this.result);
-				console.log(myConfig);
+				//console.log(myConfig);
 			}
 
 			reader.readAsText(b);
@@ -286,39 +286,41 @@ function prevPage() { //page precedente
 function jumpToPage(pageNumber) { //utilisation du sommaire
 	myReachedPage = pageNumber;
 	myCsvLogs.addLine("SOMMAIRE");
-	console.log("SOMMAIRE : " + currentPageNumber + "-->" + pageNumber);
+	//console.log("SOMMAIRE : " + currentPageNumber + "-->" + pageNumber);
 	currentPageNumber = pageNumber;
 	loadPage();
 }
 
 function finishConfig() { //récup des infos et résulatats
 	myCsvLogs.addLine("END");
+	hideByClass("load");
+	hideByClass("pages-index");
+	showByClass("load-upload");
+	$('#loading-up').show();
 	uploadResSyn();
 }
 
 function uploadResSyn() { // Upload les résultats dans la dbx
 
 	dbx.filesUpload({
-		path: '/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_syn" + ".csv",
-		contents: myJSONGeneral.toCSV()
-	})
-	.then(res => {
-		uploadResLogs()
-	})
+			path: '/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_syn" + ".csv",
+			contents: myJSONGeneral.toCSV()
+		})
+		.then(res => {
+			uploadResLogs()
+		})
 }
 
 function uploadResLogs() { // Upload les résultats dans la dbx
 
 	dbx.filesUpload({
-		path: '/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_logs" + ".csv",
-		contents: myCsvLogs
-	})
-	.then(res => {
-		
-	hideByClass("load");
-	hideByClass("pages-index")
-	showByClass("load-finish");
-	})
+			path: '/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_logs" + ".csv",
+			contents: myCsvLogs
+		})
+		.then(res => {
+			hideByClass("load");
+			showByClass("load-finish");
+		})
 }
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
@@ -486,7 +488,7 @@ function checkChap() { //check quel est le chapitre courant durant la lecture d'
 			if (!myPlayer.seeking()) { //supprime le seektime
 				currentChapterNumber = tmp; //mise jour de la var chapitre courrant
 				myCsvLogs.addLine("CHAP_ATT");
-				console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
+				//console.log("CHAP_ATT : " + chapFrom + "-->" + chapTo);
 			}
 
 		}
@@ -819,7 +821,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 			}
 		}
 
-		/*console.log(action +
+		/*//console.log(action +
 		    "\n    ├ page : " + currentPageNumber +
 		    "\n    └ chapter : " + currentChapterNumber);*/
 		switch (action) {
@@ -934,7 +936,7 @@ class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la
 				// ════════════════════════════════════════════════════════════════════════════════════════════════════════ PAUSE ══════╗ */
 			case "PAUSE":
 				myJSONGeneral.visites[myJSONGeneral.visites.length - 1].nbPause++;
-				console.log(action + " page : " + currentPageNumber + " chap : " + currentChapterNumber)
+				//console.log(action + " page : " + currentPageNumber + " chap : " + currentChapterNumber)
 				if (currentChapterNumber > 0) {
 					if (tPlay != 0) {
 						myJSONGeneral.diapos[currentPageNumber].infosChaps[currentChapterNumber - 1].dureePlay += duration(tPlay, now);
@@ -1132,7 +1134,7 @@ class InfosGeneralJSON {
 			values += ";" + clic;
 			iSom++;
 		}
-		//console.log((titles.match(/;/g) || []).length + 1); //logs 3 
+		////console.log((titles.match(/;/g) || []).length + 1); //logs 3 
 
 		titlesV += "\n\nDiapo; Nieme visite; Debut; Fin; Duree; Nb vid play; Nb vid pause; Nb vid chap suiv; Nb vid chap prec; Nb vid chap list; Nb vid navbar;Nb pdf prec; Nb pdf suiv; Nb pdf chap list\n";
 		for (const visite of this.visites) {
