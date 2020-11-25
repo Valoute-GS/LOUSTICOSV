@@ -50,16 +50,8 @@ quill.disable()
 
 //Dropbox access
 const dbx = new Dropbox.Dropbox({
-	accessToken: '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
+	accessToken: 'ELOU0P2tYqcAAAAAAAAAAeYlgJGl4CChecfEb_uYsluDfcJi-WeodQbIwFgXSZqB'
 })
-
-
-dbx.filesListFolder({
-		path: ''
-	})
-	.then(res => {
-		console.log(res)
-	})
 
 
 //gestion popover
@@ -72,14 +64,6 @@ $(document).on('DOMSubtreeModified', function () {
 		$('.fadein').removeClass('fadein');
 	})
 });
-
-/* Parametres : 
-	param {
-		config: "dbx config URL"
-		files: ["dbx file 1 URL", "dbx file 2 URL"]
-	}
-*/
-//const params = JSON.parse(urlParams.get("param"));
 
 // Acces parametres d'URL
 const queryString = window.location.search;
@@ -96,7 +80,7 @@ loadConfig();
 function loadConfig() { //importde la config et des fichiers grace à l'url
 
 
-//recupere la config depuis la dbx
+	//recupere la config depuis la dbx
 	dbx.sharingGetSharedLinkFile({
 			url: "https://www.dropbox.com/s/" + urlParams.config
 		})
@@ -112,37 +96,41 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 
 			reader.readAsText(b);
 
+			reader.onloadend = function () {
+				personnalInfos();
+			}
+
 		})
 		.catch(function (error) {
 			console.error(error);
 		});
 
-		//recupere les fichiers lié depuis la dbx
+	//recupere les fichiers lié depuis la dbx
 	for (const file of urlParams.files) {
 		dbx.sharingGetSharedLinkFile({
 			url: "https://www.dropbox.com/s/" + file
 		}).then(function (data) {
-	
+
 			var b = data.result.fileBlob;
 			var reader = new FileReader();
-	
+
 			reader.onload = function () {
 				fileDataURL = this.result;
 			}
-	
+
 			reader.readAsDataURL(b);
 
 			const filename = file.substring(file.lastIndexOf('/') + 1);
-	
+
 			reader.onloadend = function () {
 				importedFiles.set(filename, dataURItoBlob(fileDataURL));
+
 				$('#loading').hide();
 			}
-	
+
 		})
 	}
-	
-	personnalInfos();
+
 }
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
@@ -304,24 +292,33 @@ function jumpToPage(pageNumber) { //utilisation du sommaire
 }
 
 function finishConfig() { //récup des infos et résulatats
+	myCsvLogs.addLine("END");
+	uploadResSyn();
+}
+
+function uploadResSyn() { // Upload les résultats dans la dbx
+
+	dbx.filesUpload({
+		path: '/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_syn" + ".csv",
+		contents: myJSONGeneral.toCSV()
+	})
+	.then(res => {
+		uploadResLogs()
+	})
+}
+
+function uploadResLogs() { // Upload les résultats dans la dbx
+
+	dbx.filesUpload({
+		path: '/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_logs" + ".csv",
+		contents: myCsvLogs
+	})
+	.then(res => {
+		
 	hideByClass("load");
 	hideByClass("pages-index")
 	showByClass("load-finish");
-	myCsvLogs.addLine("END");
-	console.log(myCsvLogs.toString());
-	console.log(myJSONGeneral);
-	dlcsv();
-}
-
-function dlcsv() { //génère le lien de téléchargement pour les CSVs
-	// NOTE: a décommenter dans la version final
-	var dlAnchorElem = document.getElementById('download-link');
-	dlAnchorElem.setAttribute("href", myJSONGeneral.toCSV());
-	dlAnchorElem.setAttribute("download", testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_syn" + ".csv");
-	dlAnchorElem.click()
-	dlAnchorElem.setAttribute("href", myCsvLogs);
-	dlAnchorElem.setAttribute("download", testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_logs" + ".csv");
-	dlAnchorElem.click();;
+	})
 }
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
@@ -1284,22 +1281,24 @@ function toNum(n) { //format un nombre à la "francaise" (virgule au lieu d'un p
 };
 
 function dataURItoBlob(dataURI) {
-    // convert base64 to raw binary data held in a string
-    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
-    var byteString = atob(dataURI.split(',')[1]);
+	// convert base64 to raw binary data held in a string
+	// doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+	var byteString = atob(dataURI.split(',')[1]);
 
-    // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+	// separate out the mime component
+	var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
-    // write the bytes of the string to an ArrayBuffer
-    var ab = new ArrayBuffer(byteString.length);
-    var ia = new Uint8Array(ab);
-    for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
+	// write the bytes of the string to an ArrayBuffer
+	var ab = new ArrayBuffer(byteString.length);
+	var ia = new Uint8Array(ab);
+	for (var i = 0; i < byteString.length; i++) {
+		ia[i] = byteString.charCodeAt(i);
+	}
 
-    //New Code
-    return new Blob([ab], {type: 'video/mp4'});
+	//New Code
+	return new Blob([ab], {
+		type: 'video/mp4'
+	});
 
 
 }
