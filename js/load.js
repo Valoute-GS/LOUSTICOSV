@@ -50,7 +50,7 @@ quill.disable()
 
 //Dropbox access
 const dbx = new Dropbox.Dropbox({
-	accessToken: 'nBgrEhMNQu8AAAAAAAAAAUn40_x7yO9FAQjLu7cB41tyF3LhkoQ72xeTYTmnrt5Z'
+	accessToken: '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
 })
 
 
@@ -84,6 +84,7 @@ var paramsUrl;
 var button = Dropbox.createChooseButton({
 	success: function (files) {
 		for (const file of files) {
+			console.log(file);
 				const splitURL = file.link.split('/');
 				const shortURL = (splitURL[splitURL.length-2] + '/' + splitURL[splitURL.length-1]).replace('?dl=0', '')
 				console.log(shortURL);
@@ -94,14 +95,27 @@ var button = Dropbox.createChooseButton({
 				}
 			}
 		paramsUrl = '?param=' + new URLSearchParams(JSON.stringify(params)); 
+		inputLink.value=paramsUrl;
 		console.log(("param URL : " + paramsUrl).slice(0,-1)); //slice pour supprimer le "=" en trop a la fin
-		loadConfig();
+		//loadConfig();
 	},
 	cancel: function () {
 	},
 	folderselect: false,
 	multiselect: true
 });
+
+function copyLink() {
+	/* Get the text field */
+	var copyText = document.getElementById("inputLink");
+
+	/* Select the text field */
+	copyText.select();
+	copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+  
+	/* Copy the text inside the text field */
+	document.execCommand("copy");
+}
 
 document.getElementById("dbxchooser").appendChild(button);
 
