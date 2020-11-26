@@ -5,6 +5,8 @@ const DBX_TOKEN = '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65B
 var nbPages = 0; //nb de page pour l'affichage au "compteur"
 var pagesState = []; //0: à configurer | 1 : configuré
 var myURLs = new Map(); //liste des URL utilisés pendant les configs
+var myFiles = new Map();
+
 var myPlayer = videojs('player', {});
 checkOptions();
 //empeche de quitter la page
@@ -452,6 +454,7 @@ function loadFiles(files) { //import des fichiers + affichage
 		} else { //fichier non-json, video/mp4, video/webm, video/quicktime --> restriction sur le format ?
 			imported.innerHTML += '<li class="list-group-item my-1">' + file.name + '</li>';
 			importedFiles.set(file.name, file);
+			myFiles.set(file.name, file);
 			controlConfig(false);
 		}
 	}
@@ -576,6 +579,8 @@ function handleFiles(file) { //gestion de l'input pour la video
 	if (isSomething(file[0])) {
 		document.getElementById("input-file-name").innerHTML = file[0].name;
 		//infos sur la video courante
+		myFiles.set(file[0].name, file[0]);
+
 		fileUrl = URL.createObjectURL(file[0]);
 		myURLs.set(file[0].name, fileUrl);
 		fileType = file[0].type;
@@ -748,6 +753,10 @@ function resetPdf() {
 function handlePdf(file) { //gestion input file pdf
 	//infos sur le pdf courante
 	if (isSomething(file[0])) {
+
+
+		myFiles.set(file[0].name, file[0]);
+
 		resetPdf();
 		fileUrl = URL.createObjectURL(file[0]);
 		pdfName = file[0].name
@@ -1050,52 +1059,59 @@ function finishConfig(localDownload) {
 
 }
 
+const dbx = new Dropbox.Dropbox({
+	accessToken: DBX_TOKEN
+})
+
 function checkDbx() {
 	var isok = true;
 
-	const dbx = new Dropbox.Dropbox({
-		accessToken: DBX_TOKEN
-	})
+
 
 	dbx.filesListFolder({
 			path: ''
 		})
 		.then(function (response) {
 			for (const entrie of response.result.entries) {
-				if(entrie.name === myConfig.name){
+				if (entrie.name === myConfig.name) {
 					mainerror.innerHTML += bAlert('La configuration ' + myConfig.name + ' existe déja dans la base, veuillez choisir un nouveau nom');
 					isok = false;
 				}
 			}
-			if(isok){
+			if (isok) {
 				uploadToDbx();
 			}
 		})
 		.catch(function (error) {
-			mainerror.innerHTML += bAlert('Impossible de vérifier l\'existance de la configuration dans la base' );
+			mainerror.innerHTML += bAlert('Impossible de vérifier l\'existance de la configuration dans la base');
 		});
 }
+
+var filesToUpload = []
 
 function uploadToDbx() {
 	$("#btnUploadDbxText").hide();
 	$("#btnUploadDbxSpinner").show();
 
 	var dataStr = JSON.stringify(myConfig);
+	filesToUpload = new Array()
 
-	var filesToUpload = new Map();
 	//parmis les médias en mémoire on garde ceux utiles pour la config
 	for (page of myConfig.pages) {
 		if (page.type == 'video') {
-			filesToUpload.set(page.videoName, myURLs.get(page.videoName));
+			//filesToUpload.set(page.videoName, myURLs.get(page.videoName));
+			filesToUpload.push({
+				name: page.videoName,
+				file: myFiles.get(page.videoName)
+			})
 		} else if (page.type == 'pdf') {
-			filesToUpload.set(page.pdf, myURLs.get(page.pdf));
+			//filesToUpload.set(page.pdf, myURLs.get(page.pdf));
+			filesToUpload.push({
+				name: page.pdf,
+				file: myFiles.get(page.pdf)
+			})
 		}
 	}
-
-	//Dropbox access
-	const dbx = new Dropbox.Dropbox({
-		accessToken: DBX_TOKEN
-	})
 
 	dbx.filesUpload({
 			path: '/' + myConfig.name + '/' + myConfig.name + ".json",
@@ -1106,36 +1122,41 @@ function uploadToDbx() {
 		})
 		.then(function (response) {
 			console.log(response);
+			if (filesToUpload.length > 0)
+				uploadFiles(0);
 		})
 		.catch(function (error) {
-			mainerror.innerHTML += bAlert('Impossible d\'envoyer les fichiers vers la base : ' + error);
+			mainerror.innerHTML += bAlert('Impossible d\'envoyer le fichier de config vers la base : ' + error);
 		});
 
 	console.log(filesToUpload);
-	var i = filesToUpload.size - 1
-	if(i === 0){
-		$("#btnUploadDbxText").show();
-		$("#btnUploadDbxSpinner").hide();
-	}
-	for (const file of filesToUpload) {
+}
+
+function uploadFiles(i) {
+
+	if (filesToUpload[i]) {
+
+		const file = filesToUpload[i].file
+		console.log(file);
+
 		dbx.filesUpload({
-				path: '/' + myConfig.name + '/' + file[0],
+				path: '/' + myConfig.name + '/' + filesToUpload[i].name,
 				mode: {
 					".tag": "overwrite"
 				},
-				contents: file[1]
+				contents: file
 			})
 			.then(function (response) {
 				console.log(response);
-				i--;
-				if (i === 0) {
-					$("#btnUploadDbxText").show();
-					$("#btnUploadDbxSpinner").hide();
-				}
+				uploadFiles(i + 1);
 			})
 			.catch(function (error) {
 				mainerror.innerHTML += bAlert('Impossible d\'envoyer les fichiers vers la base : ' + error);
 			});
+	} else {
+		console.log("finito");
+		$("#btnUploadDbxText").show();
+		$("#btnUploadDbxSpinner").hide();
 	}
 }
 
