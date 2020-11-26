@@ -1,6 +1,13 @@
 const DOMAIN = "";
 const DBX_TOKEN = '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
 
+//detection pour generer l'effet de fondu
+$(document).on('DOMSubtreeModified', function () {
+	$(function () {
+		$('.fadein').removeClass('fadein');
+	})
+});
+
 //Dropbox access
 const dbx = new Dropbox.Dropbox({
 	accessToken: DBX_TOKEN

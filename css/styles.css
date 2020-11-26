@@ -34,7 +34,8 @@ ul {
 
 /*fade effect*/
 .configurator,
-.load {
+.load,
+.linker {
     transition: opacity 0.7s;
     opacity: 1;
 }
