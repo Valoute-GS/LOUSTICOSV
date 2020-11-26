@@ -1,4 +1,7 @@
 /*eslint-env browser*/
+
+const DBX_TOKEN = '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
+
 var nbPages = 0; //nb de page pour l'affichage au "compteur"
 var pagesState = []; //0: à configurer | 1 : configuré
 var myURLs = new Map(); //liste des URL utilisés pendant les configs
@@ -1051,7 +1054,7 @@ function checkDbx() {
 	var isok = true;
 
 	const dbx = new Dropbox.Dropbox({
-		accessToken: '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
+		accessToken: DBX_TOKEN
 	})
 
 	dbx.filesListFolder({
@@ -1091,7 +1094,7 @@ function uploadToDbx() {
 
 	//Dropbox access
 	const dbx = new Dropbox.Dropbox({
-		accessToken: '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
+		accessToken: DBX_TOKEN
 	})
 
 	dbx.filesUpload({

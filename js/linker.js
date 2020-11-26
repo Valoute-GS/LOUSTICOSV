@@ -1,8 +1,9 @@
-const domain = "";
+const DOMAIN = "";
+const DBX_TOKEN = '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
 
 //Dropbox access
 const dbx = new Dropbox.Dropbox({
-	accessToken: '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
+	accessToken: DBX_TOKEN
 })
 
 var params = {
@@ -24,7 +25,7 @@ var button = Dropbox.createChooseButton({
 				}
 			}
 		paramsUrl = '?param=' + new URLSearchParams(JSON.stringify(params)); 
-		inputLink.value= domain + paramsUrl.slice(0,-1); //slice pour supprimer le "=" en trop a la fin
+		inputLink.value= DOMAIN + paramsUrl.slice(0,-1); //slice pour supprimer le "=" en trop a la fin
 	},
 	cancel: function () {
 	},
