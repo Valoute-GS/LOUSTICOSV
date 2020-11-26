@@ -1,7 +1,9 @@
 /*Base structure*/
-html{
-    overflow-y: scroll; /*on affiche la barre pour eviter le shaking*/
+html {
+    overflow-y: scroll;
+    /*on affiche la barre pour eviter le shaking*/
 }
+
 html,
 body {
     height: 100%;
@@ -16,21 +18,30 @@ ul {
     list-style-type: none;
 }
 
-.custom-control-label { /*curseur sur les checkbox + empecher la selection de texte*/
+.custom-control-label {
+    /*curseur sur les checkbox + empecher la selection de texte*/
     cursor: pointer;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently supported by Chrome and Opera */
 }
+
 /*fade effect*/
 .configurator,
 .load {
     transition: opacity 0.7s;
     opacity: 1;
 }
+
 .fadein {
     opacity: 0;
 }
@@ -91,6 +102,7 @@ ul {
     cursor: pointer;
     height: 100%;
 }
+
 .page-item.disabled-custom .page-link {
     color: #6c7d71;
     pointer-events: none;
@@ -103,14 +115,15 @@ ul {
     z-index: 1;
     color: #fff;
     background-color: #3a99ff;
-    border-color: #3a99ff
+    border-color: #3a99ff;
 }
 
 /*hover sur le btn Configuré*/
 .hover-btn {
     position: relative;
-    overflow: hidden;    
+    overflow: hidden;
 }
+
 .hover-btn:before {
     position: absolute;
     opacity: 0;
@@ -118,11 +131,12 @@ ul {
     width: 100%;
     content: attr(data-hover);
 }
+
 .hover-btn:hover:before {
     opacity: 1;
 }
 
-.hover-btn:hover span{
+.hover-btn:hover span {
     opacity: 0;
 }
 
@@ -130,4 +144,69 @@ ul {
 
 #viewport canvas {
     max-height: 80vh
+}
+
+.lds-ellipsis {
+    display: flex;
+    position: relative;
+    width: 42px;
+}
+
+.lds-ellipsis div {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3a99ff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis div:nth-child(1) {
+    left: 4px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(2) {
+    left: 4px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(3) {
+    left: 16px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(4) {
+    left: 32px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(16px, 0);
+    }
 }
