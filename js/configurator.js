@@ -1080,7 +1080,7 @@ function uploadToDbx() {
 	$("#btnUploadDbxText").hide();
 	$("#btnUploadDbxSpinner").show();
 
-	var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(myConfig));
+	var dataStr = JSON.stringify(myConfig);
 
 	var filesToUpload = new Map();
 	//parmis les médias en mémoire on garde ceux utiles pour la config
