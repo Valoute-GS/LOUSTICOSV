@@ -1069,7 +1069,7 @@ function checkDbx() {
 
 
 	dbx.filesListFolder({
-			path: ''
+			path: '/shared_folder'
 		})
 		.then(function (response) {
 			for (const entrie of response.result.entries) {
@@ -1114,7 +1114,7 @@ function uploadToDbx() {
 	}
 
 	dbx.filesUpload({
-			path: '/' + myConfig.name + '/' + myConfig.name + ".json",
+			path: '/shared_folder/' + myConfig.name + '/' + myConfig.name + ".json",
 			mode: {
 				".tag": "overwrite"
 			},
@@ -1140,7 +1140,7 @@ function uploadFiles(i) {
 		console.log(file);
 
 		dbx.filesUpload({
-				path: '/' + myConfig.name + '/' + filesToUpload[i].name,
+				path: '/shared_folder/' + myConfig.name + '/' + filesToUpload[i].name,
 				mode: {
 					".tag": "overwrite"
 				},
