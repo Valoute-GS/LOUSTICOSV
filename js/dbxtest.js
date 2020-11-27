@@ -73,13 +73,17 @@ const urlParams = JSON.parse(new URLSearchParams(queryString).get("param"));
 //console.log(urlParams);
 //const params = JSON.parse(urlParams.get("param"));
 
-loadConfig();
+if(urlParams != null){
+	loadConfig();
+}else{
+	hideByClass("load");
+	$('#errorLoading').show();
+}
 
 
 /* ╔══════DEBUT══════╗ CHARGEMENT CONFIG ==============================================*/
 
 function loadConfig() { //importde la config et des fichiers grace à l'url
-
 
 	//recupere la config depuis la dbx
 	dbx.sharingGetSharedLinkFile({
