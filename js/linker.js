@@ -1,4 +1,4 @@
-const DOMAIN = window.location.origin + window.location.pathname.replace('linker.html', 'dbxtest.html');
+const DOMAIN = 'wwww.loustic.net/BTT/' + 'dbxtest.html';
 console.log(window.location);
 const DBX_TOKEN = '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
 
