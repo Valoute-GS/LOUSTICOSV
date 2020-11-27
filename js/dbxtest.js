@@ -104,6 +104,8 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 
 		})
 		.catch(function (error) {
+			hideByClass("load");
+			$('#errorLoading').show();
 			console.error(error);
 		});
 
@@ -129,8 +131,12 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 
 				$('#loading').hide();
 			}
-
 		})
+		.catch(function (error) {
+			hideByClass("load");
+			$('#errorLoading').show();
+			console.error(error);
+		});
 	}
 
 }
