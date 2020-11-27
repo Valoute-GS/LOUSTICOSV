@@ -305,7 +305,7 @@ function finishConfig() { //récup des infos et résulatats
 function uploadResSyn() { // Upload les résultats dans la dbx
 
 	dbx.filesUpload({
-			path: '/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_syn" + ".csv",
+			path: '/shared_folder/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_syn" + ".csv",
 			contents: myJSONGeneral.toCSV()
 		})
 		.then(res => {
@@ -316,7 +316,7 @@ function uploadResSyn() { // Upload les résultats dans la dbx
 function uploadResLogs() { // Upload les résultats dans la dbx
 
 	dbx.filesUpload({
-			path: '/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_logs" + ".csv",
+			path: '/shared_folder/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_logs" + ".csv",
 			contents: myCsvLogs
 		})
 		.then(res => {
