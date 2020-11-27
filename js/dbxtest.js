@@ -1,5 +1,6 @@
 /*eslint-env browser*/
 
+const DBX_TOKEN = '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
 var myPlayer = videojs('myvideo');
 
 var nextChapButton = myPlayer.controlBar.addChild("button", {}, 1);
@@ -50,7 +51,7 @@ quill.disable()
 
 //Dropbox access
 const dbx = new Dropbox.Dropbox({
-	accessToken: 'ELOU0P2tYqcAAAAAAAAAAeYlgJGl4CChecfEb_uYsluDfcJi-WeodQbIwFgXSZqB'
+	accessToken: DBX_TOKEN
 })
 
 
@@ -90,6 +91,7 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 			var reader = new FileReader();
 
 			reader.onload = function () {
+                console.log(this.result);
 				myConfig = JSON.parse(this.result);
 				//console.log(myConfig);
 			}
