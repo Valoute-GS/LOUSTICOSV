@@ -1,5 +1,28 @@
-﻿# LOUSTIC OS - Outil de Suivi
+﻿# Documentation Temporaire
 
+Afin de faire fonctionner l'outil en local (sur votre ordinateur) il est pour le moment nécessaire qu'il tourne sur un serveur local. Pas de panique je vais vous expliquer comment faire cela très facilement.
+
+## Récuper l'application
+- Accéder à mon [dépot GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/btt)
+- **Code** > **Download ZIP**
+- Dézipper l'archive téléchargée à l'endroit voulu
+
+## Démarrage de l'application
+- [Installer Visual Studio Code](https://code.visualstudio.com) sur votre machine
+- Démarrer VS Code
+- Cliquer sur l'icone **Extensions** (dernière icone du bandeau latéral gauche) ou *Ctrl+Shift+X*
+- Dans la barre de recherche taper **Live Server** > Premier résultat (extension de Ritwick Dey) > **install**
+- **File** > **Open Folder** > Choisir le dossier de l'application
+- Cliquer sur l'icone **Explorer** (première icone du bandeau latéral gauche) ou *Ctrl+Shift+E*
+- Dans l'explorer cliquer sur **index.html** (un éditeur de fichier s'ouvre sur la droite)
+- **Go Live** (tout en bas à droite de la fenêtre, dans le bandeau inférieur)
+- L'application s'ouvre toute seule dans votre navigateur par défaut
+
+Pour arreter le serveur vous pouvez quitter VS Code ou bien cliquer de nouveau sur le bouton Live Server en bas à droite (**⊘ Port:5500** - ou autre chiffre)
+
+# (Refonte de la doc en cours, les liens peuvent etres mauvais et la documentation incomplète pour le moment)
+
+# LOUSTIC OS - Outil de Suivi 
 LOUSTIC OS est un outil de suivi basé sur les technologies HTML5/CSS3/Javascript8.
 L'objectif est de pouvoir créer une suite de médias qu'un participant pourra ensuite visionner, tout en récupérant son activité sur la page. 
 L'application se découpe en deux grandes parties :

@@ -1074,7 +1074,7 @@ function checkDbx() {
 		.then(function (response) {
 			for (const entrie of response.result.entries) {
 				if (entrie.name === myConfig.name) {
-					mainerror.innerHTML += bAlert('La configuration ' + myConfig.name + ' existe déja dans la base, veuillez choisir un nouveau nom');
+					mainerror.innerHTML += uploadAlert('La configuration ' + myConfig.name + ' existe déja dans la base, veuillez choisir un nouveau nom');
 					isok = false;
 				}
 			}
@@ -1090,6 +1090,7 @@ function checkDbx() {
 var filesToUpload = []
 
 function uploadToDbx() {
+	mainerror.innerHTML = '';
 	$("#btnUploadDbxText").hide();
 	$("#btnUploadDbxSpinner").show();
 
@@ -1196,6 +1197,17 @@ function bAlert(message) { //message d'erreur
 		'</span></button></div>';
 
 }
+
+function uploadAlert(message) { //message d'erreur
+	return '<div class="alert alert-warning alert-dismissible" role="alert">' +
+		'<button class="btn btn-sm btn-outline-danger"button" onclick="uploadToDbx()">Remplacer la configuration existantante</button>' +
+		'<strong>Erreur</strong> ' + message +
+		'<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+		'<span aria-hidden="true">&times;' +
+		'</span></button></div>';
+
+}
+
 
 function missingAlert(message) { //message de fichiers maquants
 	return '<div class="alert alert-info alert-dismissible" role="alert">' +
