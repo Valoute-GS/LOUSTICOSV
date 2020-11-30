@@ -3,7 +3,7 @@
 Afin de faire fonctionner l'outil en local (sur votre ordinateur) il est pour le moment nécessaire qu'il tourne sur un serveur local. Pas de panique je vais vous expliquer comment faire cela très facilement.
 
 ## Récuper l'application
-- Accéder à mon [dépot GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/btt)
+- Accéder à mon [dépot GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2)
 - **Code** > **Download ZIP**
 - Dézipper l'archive téléchargée à l'endroit voulu
 
