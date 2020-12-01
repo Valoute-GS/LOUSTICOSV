@@ -1,0 +1,78 @@
+<!doctype html>
+
+<html lang="fr">
+
+<head>
+    <!-- meta -->
+    <meta charset="utf-8">
+    <title>LOUSTIC OS</title>
+    <meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
+    <meta name="author" content="valentin_utiel">
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Bootstarp -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+
+</head>
+
+<body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-1 mx-auto flex-column">
+        <!-- Debut du header -->
+        <header class="mb-1">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <a class="navbar-brand" id="maintitle" href="#">LOUSTIC BTT</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav ml-auto">
+                        <a class="nav-item nav-link active" href="#">Accueil<span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link" href="configurator.html">Configurateur</a>
+                        <a class="nav-item nav-link" href="linker.html">Partager un test</a>
+                        <a class="nav-item nav-link" href="load.html">Lancer un test (local)</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <!-- FIN du header -->
+
+        <!-- debut de la main part -->
+        <main class="inner cover test test-selector my-auto">
+            <div class="container">
+                <div class="row">
+                    <div class="card col-md mx-1">
+                        <h5 class="card-header bg-transparent">Configurateur</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">Nouvelle configuration</h5>
+                            <p class="card-text">Créer/modifier une configuration personnalisée</p>
+                            <a href="configurator.html" class="btn btn-primary">Démarrer</a>
+                        </div>
+                    </div>
+                    <div class="card col-md mx-1">
+                        <h5 class="card-header bg-transparent">Lancer un test</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">Charger configuration</h5>
+                            <p class="card-text">Charger une configuration personnalisée et démarrer les tests</p>
+                            <a href="load.html" class="btn btn-primary">Démarrer</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- fin de la main part -->
+
+
+    </div>
+
+    <script src="js/jquery-3.3.1.slim.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>

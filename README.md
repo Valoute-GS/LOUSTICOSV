@@ -1,5 +1,28 @@
-﻿# LOUSTIC OS - Outil de Suivi
+﻿# Documentation Temporaire
 
+Afin de faire fonctionner l'outil en local (sur votre ordinateur) il est pour le moment nécessaire qu'il tourne sur un serveur local. Pas de panique je vais vous expliquer comment faire cela très facilement.
+
+## Récuper l'application
+- Accéder à mon [dépot GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2)
+- **Code** > **Download ZIP**
+- Dézipper l'archive téléchargée à l'endroit voulu
+
+## Démarrage de l'application
+- [Installer Visual Studio Code](https://code.visualstudio.com) sur votre machine
+- Démarrer VS Code
+- Cliquer sur l'icone **Extensions** (dernière icone du bandeau latéral gauche) ou *Ctrl+Shift+X*
+- Dans la barre de recherche taper **Live Server** > Premier résultat (extension de Ritwick Dey) > **install**
+- **File** > **Open Folder** > Choisir le dossier de l'application
+- Cliquer sur l'icone **Explorer** (première icone du bandeau latéral gauche) ou *Ctrl+Shift+E*
+- Dans l'explorer cliquer sur **index.html** (un éditeur de fichier s'ouvre sur la droite)
+- **Go Live** (tout en bas à droite de la fenêtre, dans le bandeau inférieur)
+- L'application s'ouvre toute seule dans votre navigateur par défaut
+
+Pour arreter le serveur vous pouvez quitter VS Code ou bien cliquer de nouveau sur le bouton Live Server en bas à droite (**⊘ Port:5500** - ou autre chiffre)
+
+# (Refonte de la doc en cours, les liens peuvent etres mauvais et la documentation incomplète pour le moment)
+
+# LOUSTIC OS - Outil de Suivi 
 LOUSTIC OS est un outil de suivi basé sur les technologies HTML5/CSS3/Javascript8.
 L'objectif est de pouvoir créer une suite de médias qu'un participant pourra ensuite visionner, tout en récupérant son activité sur la page. 
 L'application se découpe en deux grandes parties :
@@ -60,23 +83,16 @@ Une page de type **Vidéo** est composée de :
 
  - Un **fichier vidéo** : nécessaire au format .mp4 (conseillé), .webm, .mov (suivant les navigateurs certains formats ne son pas pris en charge), **fichier local** à importer dans le champs prévu
  - Des **Options** activables : changeant la mise en forme et les interactions possibles lors du test
- - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **Timer** nécessaires.
+ - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **Timestamp** nécessaires.
 
-Note : Le **Timer** d'un chapitre représente le début de ce dernier, c'est à dire que :
- - Le chapitre 1 dure du Timer 1 jusqu'au Timer 2.
- - Entre le début de la vidéo et le premier chapitre aucune statistique avancée ne sera recuillie, il est possible de creéer un chapitre commençant à 0:00 pour remédier à cela.
- - Le dernier chapitre dure de son Timer jusqu'à la fin de la vidéo.
- 
 ### Format Editeur de texte/médias
 Une page de type **Editeur de texte/médias** se configure de façon traditionnelle, c'est un éditeur de texte simple mais riche. Il est ainsi possible d'insérer des images, des vidéos du web (nécessite une connexion internet),etc. en plus des fonction d'éditions classiques.
 
 ### Format PDF
 Une page de type **PDF** est composé de :
- - Un **fichier PDF** : nécessaire au format .PDF, .webm, .mov (suivant les navigateurs certains formats ne son pas pris en charge), **fichier local** à importer dans le champ en bas de page
+ - - Un **fichier PDF** : nécessaire au format .PDF, .webm, .mov (suivant les navigateurs certains formats ne son pas pris en charge), **fichier local** à importer dans le champ en bas de page
  - Des **Options** activables : changeant la mise en forme et les interactions possibles lors du test
- - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **Numéro de page** nécessaires.
-
-Note : Le fonctionnement des chapitres est similaire à ceux d'une vidéo.
+ - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **numéro de pages** nécessaires.
 
 ### Modifier une configuration
 Il est possible de charger une configuration existante au format .json depuis le champs **Charger un fichier de configuration** puis ses **fichiers associés**. Une fois tous les fichiers importés, cliquer sur **Charger**. Ensuite cela se déroule comme pour une nouvelle configuration.
@@ -98,80 +114,10 @@ Il est ensuite possible de relancer une session avec un nouvel utilisateur sans 
 Une configuration et ses fichiers sont disponibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/master/examples).
 
 # Données de sortie
-A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/master/examples).
+A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples).
 
 ### Fichier de log
 Fichier contenant l'**intégralité de l'activité** du test.
 
 ### Fichier de synthèse
 Fichier contenant une **synthèse** du fichier log, avec des infos complémentaires/calculées comme les temps cumulés, des compteurs d'action etc.
-
-### Détail _log.csv
-| Nom de la colonne | Description |
-| ------ | ----------- |
-| Timer   | Date et heure à laquelle est survenu l'événement |
-| Current page | Numéro de la page en cours |
-| Current chap | Numéro du chapitre en cours (vidéo) |
-| Reached page | Numéro de la page atteinte lors d'un changement de page courante |
-| Reached chap | Numéro du chapitre atteint lors d'un changement de chapitre courant |
-| Action | Nature de l'événement |
-| Time from test begining | Temps en secondes depuis le début du test |
-| Time from page begining | Temps en secondes depuis le début de la page |
-| Video timer | Timer de la video courante |
-| Time from chap begining | Temps en secondes depuis le début du chapitre courant (vidéo) |
-| Time from PLAY | Temps en secondes depuis le dernier événement PLAY |
-| Curr slide Chap | Numéro du chapitre en cours (PDF) |
-| Reached slide Chap | Numéro du chapitre atteint lors d'un changement de chapitre courant |
-| Time from chap slide begining | Temps en secondes depuis le début du chapitre courant (pdf) |
-
-### Liste des actions
-| Nom de l'événement | Description |
-| ------ | ----------- |
-| START_PAGE | Une page commence |
-| CHAP_ATT | Un chapitre vidéo a été atteint (ie changement du chapitre courant) |
-| CHAP_USED | Le candidat a utilisé un **lien vers un chapitre** vidéo |
-| PREV_CHAP | Le candidat a utilisé le bouton **chapitre vidéo précédent** |
-| NEXT_CHAP | Le candidat a utilisé le bouton **chapitre vidéo suivant** |
-| VIDEO_START | Une vidéo a commencé à être lu (ie première lecture depuis l'arrivée sur la page) |
-| VIDEO_END | Une vidéo a finit sa lecture (cela ne signifie pas que toute la vidéo a été visionné, seulement que la dernière image de la vidéo a été lue) |
-| PLAY | Le candidat a utilisé le bouton de **lecture vidéo** |
-| PAUSE | Le candidat a utilisé le bouton de **pause vidéo** |
-| NAVBAR_USED | Le candidat a utilisé la **barre de navigation** pour se déplacer dans la vidéo |
-| NEXT_PAGE | Le candidat a utilisé le bouton **suivant** pour se rendre sur la page suivante |
-| PREV_PAGE | Le candidat a utilisé le bouton **précedent** pour se rendre sur la page suivante |
-| SOMMAIRE | Le candidat a utilisé le sommaire pour se rendre sur une page précise |
-| NEXT_SLIDE | Le candidat a utilisé le bouton **diapo suivant** |
-| PREV_SLIDE | Le candidat a utilisé le bouton **diapo précédente** |
-| GOTO_SLIDE | Le candidat a utilisé un **lien vers un chapitre pdf** (ie vers une page précise) |
-| CHAP_SLIDE_ATT | Un chapitre pdf a été atteint (ie changement du chapitre courant) |
-| END | Le test est fini |
-
-### Détail _syn.csv
-| Nom de la colonne | Description |
-| ------ | ----------- |
-| Participant | id du participant |
-| Config | nom de la config |
-|  |  |
-| Di-(Cj-)duree | Temps total cumulée en secondes passé sur la page *i* (sur le chapitre *j*)|
-| Di-(Cj-)durrePlay | Temps total cumulée en secondes passé en lecture vidéo sur la page *i* (sur le chapitre *j*) |
-| Di-(Cj-)dureePause | Temps total cumulée en secondes passé en pause vidéo sur la page *i* (sur le chapitre *j*) |
-| Di-(Cj-)nbPlay | Nombre total cumulée d'utilisation du bouton de lecture vidéo sur la page *i* (sur le chapitre *j*) |
-| Di-(Cj-)nbPause | Nombre total cumulée d'utilisation du bouton de pause vidéo sur la page *i* (sur le chapitre *j*) |
-|  |  |
-| Clics sommaire |  Nombre total cumulée d'utilisation du **sommaire** de pages |
-| Sommaire i | Nombre total cumulée d'utilisation du **sommaire** pour atteindre la page *i* |
-|  |  |
-| Diapo | Numéro de la page concernée |
-| Nieme visite | Combien-ième visite sur cette page |
-| Début | Temps (depuis le début du test) en seconde : **début de la lecture** de la page |
-| Fin | Temps (depuis le début du test) en seconde : **fin de la lecture** de la page |
-| Durée | Durée en seconde passé sur la page (ie Fin - début) |
-| Nb vid play | Nombre d'utilisation du bouton de **lecture vidéo** sur la page |
-| Nb vid pause | Nombre d'utilisation du bouton de **pause vidéo** sur la page |
-| Nb vid chap suiv | Nombre d'utilisation du bouton **chapitre vidéo suivant** sur la page |
-| Nb vid chap prec | Nombre d'utilisation du bouton **chapitre vidéo précédent** sur la page |
-| Nb vid chap list | Nombre d'utilisation de **lien vers un chapitre** vidéo sur la page |
-| Nb vid navbar | Nombre d'utilisation de la **barre de navigation** sur la page |
-| Nb pdf prec | Nombre d'utilisation du bouton **diapo suivant** sur la page |
-| Nb pdf suiv | Nombre d'utilisation du bouton **diapo précedent** sur la page |
-| Nb pdf chap liste | Nombre d'utilisation de **lien vers un chapitre** pdf sur la page |
