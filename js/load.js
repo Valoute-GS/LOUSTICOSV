@@ -39,13 +39,14 @@ var myReachedPage = 0; //page vers laquelle on se déplace
 var quill = new Quill('#editor', {
 	modules: {
 		imageResize: false,
-		toolbar: false
+		toolbar: [[{'background' : []}]]
 	},
-
 	theme: 'snow'
 });
 //on desactive l'edition
-quill.disable()
+//quill.disable()
+$(".ql-editor").attr("contenteditable", false);
+$(".ql-clipboard").attr("contenteditable", false);
 
 //gestion popover
 $(function () {
