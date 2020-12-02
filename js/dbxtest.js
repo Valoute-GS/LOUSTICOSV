@@ -98,12 +98,12 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
                 console.log(this.result);
 				myConfig = JSON.parse(this.result);
 				//console.log(myConfig);
+				loadFiles(0);
 			}
 
 			reader.readAsText(b);
 
 			reader.onloadend = function () {
-				personnalInfos();
 			}
 
 		})
@@ -113,8 +113,12 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 			console.error(error);
 		});
 
+}
+
+function loadFiles(i) {
 	//recupere les fichiers lié depuis la dbx
-	for (const file of urlParams.files) {
+	const file = urlParams.files[i];
+	if(file){
 		dbx.sharingGetSharedLinkFile({
 			url: "https://www.dropbox.com/s/" + file
 		}).then(function (data) {
@@ -132,18 +136,22 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 
 			reader.onloadend = function () {
 				importedFiles.set(filename, dataURItoBlob(fileDataURL));
-
-				$('#loading').hide();
+				loadFiles(i+1);
 			}
 		})
 		.catch(function (error) {
 			hideByClass("load");
 			$('#errorLoading').show();
+			console.log(file.substring(file.lastIndexOf('/') + 1));
 			console.error(error);
 		});
+	}else{
+				$('#loading').hide();
+				personnalInfos();
 	}
-
+	
 }
+
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
 
 /* ╔══════DEBUT══════╗ DEROULEMENT DU TEST ============================================*/
