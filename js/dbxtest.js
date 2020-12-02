@@ -70,12 +70,28 @@ $(document).on('DOMSubtreeModified', function () {
 const queryString = window.location.search;
 //console.log("Param : " + queryString);
 const urlParams = JSON.parse(new URLSearchParams(queryString).get("param"));
-//console.log(urlParams);
-//const params = JSON.parse(urlParams.get("param"));
+var files = [];
 
-if(urlParams != null){
-	loadConfig();
-}else{
+if (urlParams != null) {
+	const isFile = (data) => data[".tag"] === 'file'
+	const isNotJson = (data) => !data.name.includes('.json')
+
+	var tmpConfig;
+	var tmpConfigFiles = new Map();
+
+	dbx.filesListFolder({
+			path: '/shared_folder/' + urlParams
+		})
+		.then(function (response) {
+			console.log('response', response)
+			files = response.result.entries.filter(isFile).filter(isNotJson)
+			console.log(files);
+			loadConfig();
+		})
+		.catch(function (error) {
+			console.error(error);
+		});
+} else {
 	hideByClass("load");
 	$('#errorLoading').show();
 }
@@ -85,27 +101,26 @@ if(urlParams != null){
 
 function loadConfig() { //importde la config et des fichiers grace à l'url
 
-	//recupere la config depuis la dbx
-	dbx.sharingGetSharedLinkFile({
-			url: "https://www.dropbox.com/s/" + urlParams.config
+	dbx.filesDownload({
+			path: '/shared_folder/' + urlParams + '/' + urlParams + '.json'
 		})
-		.then(function (data) {
+		.then(function (response) {
+			console.log('response', response)
+			tmpConfig = response.result.fileBlob
 
-			var b = data.result.fileBlob;
 			var reader = new FileReader();
 
 			reader.onload = function () {
-                console.log(this.result);
+				console.log(this.result);
 				myConfig = JSON.parse(this.result);
 				//console.log(myConfig);
-				loadFiles(0);
 			}
 
-			reader.readAsText(b);
+			reader.readAsText(tmpConfig);
 
 			reader.onloadend = function () {
+				loadFiles(0);
 			}
-
 		})
 		.catch(function (error) {
 			hideByClass("load");
@@ -117,39 +132,38 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 
 function loadFiles(i) {
 	//recupere les fichiers lié depuis la dbx
-	const file = urlParams.files[i];
-	if(file){
-		dbx.sharingGetSharedLinkFile({
-			url: "https://www.dropbox.com/s/" + file
-		}).then(function (data) {
+	const file = files[i];
+	if (file) {
 
-			var b = data.result.fileBlob;
-			var reader = new FileReader();
+		dbx.filesDownload({
+				path: file.path_lower
+			})
+			.then(function (data) {
 
-			reader.onload = function () {
-				fileDataURL = this.result;
-			}
+				var b = data.result.fileBlob;
+				var reader = new FileReader();
 
-			reader.readAsDataURL(b);
+				reader.onload = function () {
+					fileDataURL = this.result;
+				}
 
-			const filename = file.substring(file.lastIndexOf('/') + 1);
+				reader.readAsDataURL(b);
 
-			reader.onloadend = function () {
-				importedFiles.set(filename, dataURItoBlob(fileDataURL));
-				loadFiles(i+1);
-			}
-		})
-		.catch(function (error) {
-			hideByClass("load");
-			$('#errorLoading').show();
-			console.log(file.substring(file.lastIndexOf('/') + 1));
-			console.error(error);
-		});
-	}else{
-				$('#loading').hide();
-				personnalInfos();
+				const filename = file.name
+
+				reader.onloadend = function () {
+					importedFiles.set(filename, dataURItoBlob(fileDataURL));
+					loadFiles(i + 1);
+				}
+			})
+			.catch(function (error) {
+				console.error(error);
+			});
+	} else {
+		$('#loading').hide();
+		personnalInfos();
 	}
-	
+
 }
 
 /* ╚═══════FIN═══════╝ CHARGEMENT CONFIG ==============================================*/
