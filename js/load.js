@@ -39,7 +39,11 @@ var myReachedPage = 0; //page vers laquelle on se déplace
 var quill = new Quill('#editor', {
 	modules: {
 		imageResize: false,
-		toolbar: [[{'background' : []}]]
+		toolbar: [
+			[{
+				'background': []
+			}]
+		]
 	},
 	theme: 'snow'
 });
@@ -683,6 +687,8 @@ function initPager() { //initialisation du pager aka les boutons
 
 function render() { //charger la page en cours du pdf (avec renderPage)
 	cursorIndex = Math.floor(currentPageIndex / pageMode);
+	var currentPage = myConfig.pages[currentPageNumber];
+	const VISIBLECHAP = currentPage.options[1];
 	const startPageIndex = cursorIndex * pageMode;
 	const endPageIndex =
 		startPageIndex + pageMode < totalPagesCount ?
@@ -710,11 +716,12 @@ function render() { //charger la page en cours du pdf (avec renderPage)
 		if (chap.date == (currentPageIndex + 1)) {
 			myCsvLogs.addLine("CHAP_SLIDE_ATT")
 		}
-
-		if (currentPageIndex + 1 >= chapChecker[i] && currentPageIndex + 1 < chapChecker[i + 1]) {
-			btn.classList.add("border-danger");
-		} else {
-			btn.classList.remove("border-danger");
+		if (VISIBLECHAP) {
+			if (currentPageIndex + 1 >= chapChecker[i] && currentPageIndex + 1 < chapChecker[i + 1]) {
+				btn.classList.add("border-danger");
+			} else {
+				btn.classList.remove("border-danger");
+			}
 		}
 		i++;
 	}
