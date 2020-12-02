@@ -1123,7 +1123,6 @@ function uploadToDbx() {
 		})
 		.then(function (response) {
 			console.log(response);
-			if (filesToUpload.length > 0)
 				uploadFiles(0);
 		})
 		.catch(function (error) {
