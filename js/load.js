@@ -438,14 +438,14 @@ function loadVideo() { //page de type video, change l'interface et remplit les c
 			}
 		}
 	}
-	//CHAPITRES CLIQUABLE
+	//CHAPITRES NON CLIQUABLE
 	if (!CLICKABLECHAP) {
 		for (const btn of document.getElementsByClassName("btn-chapter")) {
 			btn.disabled = "true";
-			btn.className = "btn btn-block text-primary btn-outline-secondary btn-chapter"
+			btn.className = "btn btn-block text-primary btn-outline-secondary btn-chapter p-0"
 		}
 	}
-	//CHAPITRES CLIQUABLE
+	//CHAPITRES NAVIGABLE
 	if (NAVIGABLECHAP) {
 		nextChapButtonDom.style.display = "block";
 		prevChapButtonDom.style.display = "block";
@@ -522,10 +522,12 @@ function chapTimerUpdate() { //permet de mettre a jour la barre de progression d
 				}
 				//on applique ce pourcentage via le CSS
 				chap.style.width = (100 * chapCurrentTime / chapDuration) + '%';
+				$(chap).parent().addClass('border-success');
 
 			} else {
 				//chapitre non en cours -> vide
 				chap.style.width = "0%";
+				$(chap).parent().removeClass('border-success');
 			}
 			i++;
 		}
@@ -533,10 +535,10 @@ function chapTimerUpdate() { //permet de mettre a jour la barre de progression d
 		var i = 1;
 		for (const btnchap of document.getElementsByClassName("btn-chapter")) {
 			if (i === currentChapterNumber) {
-				btnchap.classList.add("border-danger");
+				btnchap.classList.add("border-success");
 			} else {
 				//chapitre non en cours -> 
-				btnchap.classList.remove("border-danger");
+				btnchap.classList.remove("border-success");
 			}
 			i++;
 		}
@@ -718,9 +720,9 @@ function render() { //charger la page en cours du pdf (avec renderPage)
 		}
 		if (VISIBLECHAP) {
 			if (currentPageIndex + 1 >= chapChecker[i] && currentPageIndex + 1 < chapChecker[i + 1]) {
-				btn.classList.add("border-danger");
+				btn.classList.add("border-success");
 			} else {
-				btn.classList.remove("border-danger");
+				btn.classList.remove("border-success");
 			}
 		}
 		i++;
