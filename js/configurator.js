@@ -292,7 +292,10 @@ function configVideo() {
 		//recharge la source et variables fileType/Name
 		fileType = myConfig.pages[currentPageNumber - 1].videoType;
 		fileName = myConfig.pages[currentPageNumber - 1].videoName;
-		document.getElementById("input-file-name").innerHTML = fileName;
+		$('#input-file-name').html(fileName);
+		$('#importBtn').html('Importé');
+		$('#importBtn').addClass('btn-success');
+		$('#importBtn').removeClass('btn-primary');
 
 		myPlayer.src({
 			type: fileType,
@@ -301,7 +304,11 @@ function configVideo() {
 		myPlayer.pause();
 	} else {
 		var index = 0;
-		document.getElementById("input-file-name").innerHTML = "Choisir un fichier video";
+		$('#input-file-name').html('Choisir un fichier video');
+		$('#importBtn').html('🔍 Importer');
+		$('#importBtn').addClass('btn-primary');
+		$('#importBtn').removeClass('btn-success');
+
 		for (const option of document.getElementsByClassName("custom-control-input video-option")) {
 			option.checked = false;
 			index++;
@@ -326,7 +333,10 @@ function exitVideo() { //retour a la main page du configurateur
 	myPlayer.reset();
 	videoerror.innerHTML = "";
 	inputGroupVideo.value = "";
-	document.getElementById("input-file-name").innerHTML = "Choisir un fichier video";
+	$('#input-file-name').html('Choisir un fichier video');
+	$('#importBtn').html('🔍 Importer');
+	$('#importBtn').addClass('btn-primary');
+	$('#importBtn').removeClass('btn-success');
 }
 
 /* ======= TEXT EDITOR =======*/
@@ -387,7 +397,12 @@ function configPdf() {
 		pager.style.display = "block";
 		pdfName = myConfig.pages[currentPageNumber - 1].pdf;
 		initPDFViewer(myURLs.get(pdfName));
-		document.getElementById("input-pdf-name").innerHTML = pdfName;
+
+		$('#input-pdf-name').html(pdfName);
+		$('#importBtn').html('Importé');
+		$('#importBtn').addClass('btn-success');
+		$('#importBtn').removeClass('btn-primary');
+
 
 		for (const chap of myConfig.pages[currentPageNumber - 1].chapters) {
 			createPdfChapter()
@@ -577,7 +592,10 @@ $(document).on('click', '.browse', function () { //gestion du faux input file
 
 function handleFiles(file) { //gestion de l'input pour la video
 	if (isSomething(file[0])) {
-		document.getElementById("input-file-name").innerHTML = file[0].name;
+		$('#input-file-name').html(file[0].name);
+		$('#importBtn').html('Importé');
+		$('#importBtn').addClass('btn-success');
+		$('#importBtn').removeClass('btn-primary');
 		//infos sur la video courante
 		myFiles.set(file[0].name, file[0]);
 
@@ -747,7 +765,10 @@ function resetPdf() {
 	pdfInstance = null;
 	totalPagesCount = 0;
 	viewport.innerHTML = "";
-	document.getElementById("input-pdf-name").innerHTML = "Choisir un fichier pdf";
+	$('#input-pdf-name').html('Choisir un fichier pdf');
+	$('#importBtn').html('🔍 Importer');
+	$('#importBtn').addClass('btn-primary');
+	$('#importBtn').removeClass('btn-success');
 }
 
 function handlePdf(file) { //gestion input file pdf
@@ -760,7 +781,12 @@ function handlePdf(file) { //gestion input file pdf
 		resetPdf();
 		fileUrl = URL.createObjectURL(file[0]);
 		pdfName = file[0].name
-		document.getElementById("input-pdf-name").innerHTML = pdfName;
+
+		$('#input-pdf-name').html(pdfName);
+		$('#importBtn').html('Importé');
+		$('#importBtn').addClass('btn-success');
+		$('#importBtn').removeClass('btn-primary');
+
 		pager.style.display = "block";
 		myURLs.set(file[0].name, fileUrl);
 		initPDFViewer(fileUrl);
@@ -1123,7 +1149,7 @@ function uploadToDbx() {
 		})
 		.then(function (response) {
 			console.log(response);
-				uploadFiles(0);
+			uploadFiles(0);
 		})
 		.catch(function (error) {
 			mainerror.innerHTML += bAlert('Impossible d\'envoyer le fichier de config vers la base : ' + error);
