@@ -293,9 +293,9 @@ function configVideo() {
 		fileType = myConfig.pages[currentPageNumber - 1].videoType;
 		fileName = myConfig.pages[currentPageNumber - 1].videoName;
 		$('#input-file-name').html(fileName);
-		$('#importBtn').html('Importé');
-		$('#importBtn').addClass('btn-success');
-		$('#importBtn').removeClass('btn-primary');
+		$('.importBtn').html('Importé');
+		$('.importBtn').addClass('btn-success');
+		$('.importBtn').removeClass('btn-primary');
 
 		myPlayer.src({
 			type: fileType,
@@ -305,9 +305,9 @@ function configVideo() {
 	} else {
 		var index = 0;
 		$('#input-file-name').html('Choisir un fichier video');
-		$('#importBtn').html('🔍 Importer');
-		$('#importBtn').addClass('btn-primary');
-		$('#importBtn').removeClass('btn-success');
+		$('.importBtn').html('🔍 Importer');
+		$('.importBtn').addClass('btn-primary');
+		$('.importBtn').removeClass('btn-success');
 
 		for (const option of document.getElementsByClassName("custom-control-input video-option")) {
 			option.checked = false;
@@ -334,9 +334,9 @@ function exitVideo() { //retour a la main page du configurateur
 	videoerror.innerHTML = "";
 	inputGroupVideo.value = "";
 	$('#input-file-name').html('Choisir un fichier video');
-	$('#importBtn').html('🔍 Importer');
-	$('#importBtn').addClass('btn-primary');
-	$('#importBtn').removeClass('btn-success');
+	$('.importBtn').html('🔍 Importer');
+	$('.importBtn').addClass('btn-primary');
+	$('.importBtn').removeClass('btn-success');
 }
 
 /* ======= TEXT EDITOR =======*/
@@ -399,9 +399,9 @@ function configPdf() {
 		initPDFViewer(myURLs.get(pdfName));
 
 		$('#input-pdf-name').html(pdfName);
-		$('#importBtn').html('Importé');
-		$('#importBtn').addClass('btn-success');
-		$('#importBtn').removeClass('btn-primary');
+		$('.importBtn').html('Importé');
+		$('.importBtn').addClass('btn-success');
+		$('.importBtn').removeClass('btn-primary');
 
 
 		for (const chap of myConfig.pages[currentPageNumber - 1].chapters) {
@@ -593,9 +593,9 @@ $(document).on('click', '.browse', function () { //gestion du faux input file
 function handleFiles(file) { //gestion de l'input pour la video
 	if (isSomething(file[0])) {
 		$('#input-file-name').html(file[0].name);
-		$('#importBtn').html('Importé');
-		$('#importBtn').addClass('btn-success');
-		$('#importBtn').removeClass('btn-primary');
+		$('.importBtn').html('Importé');
+		$('.importBtn').addClass('btn-success');
+		$('.importBtn').removeClass('btn-primary');
 		//infos sur la video courante
 		myFiles.set(file[0].name, file[0]);
 
@@ -766,9 +766,9 @@ function resetPdf() {
 	totalPagesCount = 0;
 	viewport.innerHTML = "";
 	$('#input-pdf-name').html('Choisir un fichier pdf');
-	$('#importBtn').html('🔍 Importer');
-	$('#importBtn').addClass('btn-primary');
-	$('#importBtn').removeClass('btn-success');
+	$('.importBtn').html('🔍 Importer');
+	$('.importBtn').addClass('btn-primary');
+	$('.importBtn').removeClass('btn-success');
 }
 
 function handlePdf(file) { //gestion input file pdf
@@ -783,9 +783,9 @@ function handlePdf(file) { //gestion input file pdf
 		pdfName = file[0].name
 
 		$('#input-pdf-name').html(pdfName);
-		$('#importBtn').html('Importé');
-		$('#importBtn').addClass('btn-success');
-		$('#importBtn').removeClass('btn-primary');
+		$('.importBtn').html('Importé');
+		$('.importBtn').addClass('btn-success');
+		$('.importBtn').removeClass('btn-primary');
 
 		pager.style.display = "block";
 		myURLs.set(file[0].name, fileUrl);
