@@ -809,7 +809,7 @@ var tChap = 0; //pour calculer le temps passé sur un chap
 class CsvLogs extends Csv { //TODO: melange csvlog et json tres complexe dans la methode addline : THE MONSTROUS PART
 	constructor() {
 		super();
-		this.lines.push('data:text/csv;charset=utf-8,');
+		//this.lines.push('data:text/csv;charset=utf-8,');
 		this.lines.push('Timer;Current page;Current chap;Reached page;Reched chap;Action;Time from test begining;Time from page begining;Video timer;Time from chap begining;Time from PLAY;Curr slide Chap;Reached slide Chap;Time from chap slide begining');
 	}
 
@@ -1173,7 +1173,8 @@ class InfosGeneralJSON {
 				visite.nbPdfChap + "\r\n";
 		}
 		res += titles + "\r\n" + values + titlesV + valuesV;
-		return 'data:text/csv;charset=utf-8,' + res;
+		//return 'data:text/csv;charset=utf-8,' + res;
+		return res;
 	}
 }
 class InfosSommaire {
