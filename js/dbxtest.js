@@ -131,6 +131,44 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 }
 
 function loadFiles(i) {
+
+	var filesReady = 0;
+
+	if (files.length > 0) {
+		for (const file of files) {
+			dbx.filesDownload({
+				path: file.path_lower
+			})
+			.then(function (data) {
+
+				var b = data.result.fileBlob;
+				var reader = new FileReader();
+
+				reader.onload = function () {
+					fileDataURL = this.result;
+				}
+
+				reader.readAsDataURL(b);
+
+				const filename = file.name
+
+				reader.onloadend = function () {
+					importedFiles.set(filename, dataURItoBlob(fileDataURL));
+					filesReady++;
+					if(filesReady + 1 === files.length){
+						personnalInfos();
+					}
+				}
+			})
+			.catch(function (error) {
+				console.error(error);
+			});
+		}
+	}else{
+		personnalInfos();
+	}
+
+	/*
 	//recupere les fichiers lié depuis la dbx
 	const file = files[i];
 	if (file) {
@@ -162,7 +200,7 @@ function loadFiles(i) {
 	} else {
 		$('#loading').hide();
 		personnalInfos();
-	}
+	}*/
 
 }
 
