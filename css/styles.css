@@ -97,6 +97,11 @@ ul {
     display: none;
 }
 
+.btn.disabled,
+.btn:disabled {
+    cursor: auto !important;
+}
+
 /*chargement sur la lecture des chapitre*/
 .background {
     position: absolute;

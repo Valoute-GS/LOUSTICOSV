@@ -119,7 +119,7 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 			reader.readAsText(tmpConfig);
 
 			reader.onloadend = function () {
-				loadFiles(0);
+				loadFiles();
 			}
 		})
 		.catch(function (error) {
@@ -130,7 +130,7 @@ function loadConfig() { //importde la config et des fichiers grace à l'url
 
 }
 
-function loadFiles(i) {
+function loadFiles() {
 
 	var filesReady = 0;
 
