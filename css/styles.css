@@ -15,6 +15,11 @@ ul {
     list-style-type: none;
 }
 
+/* remove Picture in picture btn */
+body+div {
+    display: none;
+}
+
 .custom-control-label {
     /*curseur sur les checkbox + empecher la selection de texte*/
     cursor: pointer;
@@ -101,6 +106,7 @@ ul {
 .btn:disabled {
     cursor: auto !important;
 }
+
 
 /*chargement sur la lecture des chapitre*/
 .background {
