@@ -1,0 +1,75 @@
+<!doctype html>
+
+<html lang="fr">
+
+<head>
+    <!-- meta -->
+    <meta charset="utf-8">
+    <title>LOUSTIC OS</title>
+    <meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
+    <meta name="author" content="valentin_utiel">
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Bootstarp -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    
+	<script src="js/Dropbox-sdk.min.js"></script>
+	<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs"
+		data-app-key="ezifyzafacskw8e"></script>
+
+
+</head>
+
+<body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-1 mx-auto flex-column">
+        <!-- Debut du header -->
+        <header class="mb-1">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <a class="navbar-brand" id="maintitle" href="index.html">LOUSTIC BTT - Partager un test</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav ml-auto">
+                        <a class="nav-item nav-link" href="index.html">Accueil<span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link" href="configurator.html">Configurateur</a>
+                        <a class="nav-item nav-link active" href="#">Partager un test</a>
+                        <a class="nav-item nav-link" href="load.html">Lancer un test (local)</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <!-- FIN du header -->
+
+        <!-- debut de la main part -->
+        <main class="inner cover test test-selector my-auto fadein linker">
+            <div>Choisir une configuration et ses fichiers pour générer un lien</div>
+			
+			<div class="input-group">
+				<input type="text" class="form-control ml-3" value="" id="inputLink" readonly placeholder="Lien de partage">
+				<div class="input-group-append">
+				  <button class="btn btn-outline-primary mr-3" type="button" onclick="copyLink()">Copier le lien</button>
+				</div>
+            </div>
+            
+            <ul id="files" class="list-group"></ul>
+        </main>
+        <!-- fin de la main part -->
+
+
+    </div>
+
+	<script src="js/jquery-3.3.1.slim.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/linker.js"></script>
+
+
+</body>
+
+</html>

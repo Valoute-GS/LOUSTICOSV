@@ -1,0 +1,374 @@
+<!doctype html>
+
+<html lang="fr">
+
+<head>
+	<!-- meta -->
+	<meta charset="utf-8">
+	<title>LOUSTIC OS</title>
+	<meta name="description" content="Outil de suivi video de la plateforme LOUSTIC">
+	<meta name="author" content="valentin_utiel">
+	<link rel="icon" type="image/png" href="img/favicon.png" />
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/styles.css">
+
+	<!-- Bootstarp -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+
+	<!-- videoJS -->
+	<link href="css/video-js.min.css" rel="stylesheet">
+	<script src="js/videojs-ie8.min.js"></script>
+
+	<!-- Quill -->
+	<link rel="stylesheet" href="css/katex.min.css">
+	<script src="js/katex.min.js"></script>
+	<link href="css/quill.snow.css" rel="stylesheet">
+
+	<script src="js/html5sortable.js"></script>
+
+	<script src="js/Dropbox-sdk.min.js"></script>
+	<script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs"
+		data-app-key="ezifyzafacskw8e"></script>
+
+</head>
+
+<body class="text-center">
+	<div class="cover-container d-flex w-100 h-100 p-1 mx-auto flex-column">
+		<!-- Debut du header -->
+		<header class="mb-1">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+				<a class="navbar-brand" id="maintitle" href="index.html">LOUSTIC BTT - Créer</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+					aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+					<div class="navbar-nav ml-auto">
+						<a class="nav-item nav-link" href="index.html">Accueil</a>
+						<a class="nav-item nav-link active" href="#">Configurateur
+							<span class="sr-only">(current)</span></a>
+						<a class="nav-item nav-link" href="linker.html">Partager un test</a>
+						<a class="nav-item nav-link" href="load.html">Lancer un test (local)</a>
+					</div>
+				</div>
+			</nav>
+		</header>
+		<!-- FIN du header -->
+
+		<!-- DEBUT de la main part -->
+
+
+		<!-- Page principale de configuration -->
+		<div class="configurator configurator-main fadein">
+			<!-- charger une config precdmt créée -->
+			<div id="loadConfigInput">
+				<div id="mainerror"></div>
+				<ul class="list-group" id="imported"></ul>
+				<div class="btn-toolbar" role="toolbar">
+					<input type="file" name="img[]" class="custom-file-input loadfile" id="input"
+						onchange="loadFiles(this.files)" accept="application/json">
+					<div class="btn-group mx-auto">
+						<div class="btn-group mr-1" role="group">
+							<button class="load btn btn-outline-primary" type="button" id="load-file-name"
+								data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
+								data-content="Charger et modifer une configuration existante.">
+								Charger un fichier de configuration (.json)</button>
+							<button class="load btn btn-primary" type="button" id="importload-btn">🔍 Importer</button>
+							<button class="btn btn-success" id="btnSelectConfig" type="button"
+								onclick="controlConfig(true)" style="display: none;">Charger</button>
+						</div>
+						<div class="btn-group mr-2" role="group" id="cancel-load-btn">
+							<button class="btn btn-outline-danger" type="button" onclick="emptyLoad()">Annuler</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- page principale de l'editeur -->
+			<div id="configMainPart">
+				<div id="alertmain"></div>
+
+
+				<div class="input-group mt-5 mb-3">
+					<input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration" onchange="checkConfigName(this)">
+					<div class="ml-5">
+						<div class="btn-group" role="group">
+							<button class="btn btn-outline-success" type="button" onclick="addPage()"
+								data-hover="">Ajouter une page</button>
+							<button class="btn btn-outline-danger" type="button" onclick="rmPage()">
+								Retirer une page</button>
+						</div>
+						<div class="btn-group" role="group">
+							<button class="btn btn-primary" disabled style="cursor: auto;">Sauvegarder :</button>
+							<button class="btn btn-outline-primary" type="button" onclick="finishConfig(true)"
+								data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
+								data-content="Télécharger la configuration sur votre ordinateur">
+								Local
+							</button>
+							<button id="btnUploadDbx" class="btn btn-outline-primary" type="button"
+								onclick="finishConfig(false)"
+								data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
+								data-content="Envoyer votre configuration et ses fichiers liés dans la Dropbox (nécessite une connexion internet)">
+								<div id="btnUploadDbxText">Dropbox</div>
+								<div id="btnUploadDbxSpinner" class="lds-ellipsis" style="display: none;">
+									<div></div>
+									<div></div>
+									<div></div>
+									<div></div>
+								</div>
+							</button>
+						</div>
+
+					</div>
+				</div>
+				<div onchange="checkOptions()">
+					<div class="custom-control custom-checkbox custom-control-inline">
+						<input type="checkbox" class="custom-control-input config-option" id="switch1">
+						<label class="custom-control-label" for="switch1" data-container="body" data-toggle="popover"
+							data-trigger="hover" data-placement="top"
+							data-content="Affiche la liste des pages et permet au participant de se déplacer d'une page à l'autre.">
+							Sommaire visible</label>
+					</div>
+					<div class="custom-control custom-checkbox custom-control-inline">
+						<input type="checkbox" class="custom-control-input config-option" id="switch3">
+						<label class="custom-control-label" for="switch3" data-container="body" data-toggle="popover"
+							data-trigger="hover" data-placement="top"
+							data-content="Affiche le nom de la page dans le sommaire, si désactivé le numéro de la page sera affiché à la place.">
+							Nom de la page</label>
+					</div>
+					<div class="custom-control custom-checkbox custom-control-inline">
+						<input type="checkbox" class="custom-control-input config-option" id="switch2">
+						<label class="custom-control-label" for="switch2" data-container="body" data-toggle="popover"
+							data-trigger="hover" data-placement="top"
+							data-content="Permet au participant de naviguer vers la page précédente (ie la page d'index-1).">
+							Bouton page précédente</label>
+					</div>
+				</div>
+				<ul id="pcontainer" class="mt-3 js-sortable sortable list flex flex-column">
+					<!-- Insertion JS d'inputs pages -->
+				</ul>
+			</div>
+		</div>
+		<!-- Configuration editeur de text -->
+		<div class="configurator configurator-text-editor" style="display: none">
+			<div class="mb-3">
+				<button class="btn btn-primary" type="button" onclick="saveText()">Sauvegarder</button>
+				<button type="button" class="btn btn-danger ml-3" onclick="exitText()">Annuler</button>
+			</div>
+			<div class="mb-3" onchange="">
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!---->
+					<input type="checkbox" class="custom-control-input text-option" id="textOption1">
+					<label class="custom-control-label" for="textOption1" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="L'utilisateur peut surligner du texte (son résultat sera exporté)">
+						Surligneur</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!---->
+					<input type="checkbox" class="custom-control-input text-option" id="textOption2">
+					<label class="custom-control-label" for="textOption2" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="L'utilisateur à le controle total de l'édition (son résultat sera exporté)">
+						Editable</label>
+				</div>
+			</div>
+
+			<div id="editor">
+				<p>Entrez du texte ici</p>
+				<p><br></p>
+			</div>
+		</div>
+		<!-- Configuration editeur pdf -->
+		<div class="configurator configurator-pdf" style="display: none">
+			<div id="pdferror"></div>
+			<div class="mt-3 mb-1">
+				<!-- import -->
+				<div class="btn-group" role="group">
+					<div class="btn-toolbar" role="toolbar">
+						<input type="file" name="img[]" class="custom-pdf-input file" onchange="handlePdf(this.files)"
+							id="inputGroupPdf" accept="application/pdf">
+						<div class="btn-group mx-auto">
+							<div class="btn-group mr-5" role="group">
+								<button class="browse btn btn-outline-primary" type="button" id="input-pdf-name"
+									data-container="body" data-toggle="popover" data-trigger="hover"
+									data-placement="bottom"
+									data-content="Importer un fichier .pdf, le format portrait est déconseillé pour faciliter la lecture.">
+									Choisir un fichier pdf</button>
+								<button class="importBtn browse btn btn-primary" type="button">🔍 Importer</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<button type="button" class="btn btn-outline-success" onclick="createPdfChapter()">Ajouter un
+					chapitre</button>
+				<button type="button" class="btn btn-outline-danger mr-5" onclick="removePdfChapter()">Retirer un
+					chapitre</button>
+				<button class="btn btn-primary" type="button" onclick="savePdf()">Sauvegarder</button>
+				<button class="btn btn-danger ml-1" type="button" onclick="exitPdf()">Annuler</button>
+			</div>
+
+			<div class="mb-3" onchange="checkPdfOptions()">
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--ZONECHAP-->
+					<input type="checkbox" class="custom-control-input pdf-option" id="pdfOption1">
+					<label class="custom-control-label" for="pdfOption1" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Laisse un espace sur la gauche du pdf (où les eventuels chapitres seront afichés).">
+						Zone Chapitre</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--CHAPVISIBLE-->
+					<input type="checkbox" class="custom-control-input pdf-option" id="pdfOption2">
+					<label class="custom-control-label" for="pdfOption2" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="La liste des chapitres sera visible dans l'espace réservé. REQUIS : Zone chapitre + un chapitre ou plus.">
+						Chapitres visibles</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--CHAPCLICK-->
+					<input type="checkbox" class="custom-control-input pdf-option" id="pdfOption3">
+					<label class="custom-control-label" for="pdfOption3" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Le participant peut atteindre un chapitre en cliquant dessus. REQUIS : Chapitres visibles.">
+						Chapitres cliquables</label>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md mb-3 ml-3" role="toolbar">
+					<div class="mt-3" id="pager">
+						<button class="btn btn-sm btn-outline-info" data-pager="prev">Diapo précédente</button>
+						<button class="btn btn-sm btn-outline-info" data-pager="next">Diapo suivante</button>
+						<button class="btn btn-sm btn-outline-info disabled" style="cursor: default"
+							id="pagecounter">-/-</button>
+					</div>
+					<div id="chappdfcontainer">
+						<!--insertion en JS-->
+					</div>
+				</div>
+				<div class="col-md-7 mx-auto" id="app">
+					<div id="viewport-container">
+						<div role="main" id="viewport"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Configuration video -->
+		<div class="configurator configurator-video" style="display: none">
+			<div id="videoerror"></div>
+			<div class="mt-3 mb-1">
+				<button type="button" class="btn btn-outline-success" onclick="createChapterInput()">Ajouter un
+					chapitre</button>
+				<button type="button" class="btn btn-outline-danger" onclick="removeChapterInput()">Retirer un
+					chapitre</button>
+				<button type="button" class="btn btn-primary ml-3" onclick="saveVideo()">Sauvegarder</button>
+				<button type="button" class="btn btn-danger ml-3" onclick="exitVideo()">Annuler</button>
+			</div>
+			<div class="mb-3" onchange="checkVideoOptions()">
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--PPLLOWED-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck1">
+					<label class="custom-control-label" for="customCheck1" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Autorise le participant à mettre la vidéo en pause et à reprendre la lecture à sa guise.">
+						Play/Pause autorisé</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--FREENAV-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck2">
+					<label class="custom-control-label" for="customCheck2" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Autorise le participant à utiliser la barre de navigation, et donc à sa deplacer où il veut sur la vidéo.">
+						Barre de navigation utilisable</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--VISIBLECHAPZONE-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck3">
+					<label class="custom-control-label" for="customCheck3" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Laisse un espace sur la gauche de la vidéo (où les eventuels chapitres seront afichés).">
+						Zone chapitres</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--VISIBLECHAP-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck4">
+					<label class="custom-control-label" for="customCheck4" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="La liste des chapitres sera visible dans l'espace réservé. REQUIS : Zone chapitre + un chapitre ou plus.">
+						Chapitres visibles</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--VISIBLEDATECHAP-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck5">
+					<label class="custom-control-label" for="customCheck5" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="En plus du nom du chapitre sera affiché sa date. REQUIS : Chapitres visibles.">
+						Timer chapitre visibles</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--CLICKABLECHAP-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck6">
+					<label class="custom-control-label" for="customCheck6" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Le participant peut atteindre un chapitre en cliquant dessus. REQUIS : Chapitres visibles.">
+						Chapitres cliquables</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!--NAVIGABLECHAP-->
+					<input type="checkbox" class="custom-control-input video-option" id="customCheck7">
+					<label class="custom-control-label" for="customCheck7" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="Le participant peut naviguer vers le chapitre précédent/suivant. REQUIS : Un chapitre ou plus.">
+						Chapitre suiv/prec</label>
+				</div>
+			</div>
+
+			<div class="row">
+				<div id="chapcontainer" class="card col-md py-3 ml-3">
+					<!-- Insertion JS d'inputs -->
+				</div>
+				<div class="col-md">
+					<!-- video player -->
+					<div class="full-vid">
+						<video oncontextmenu="return false;" id="player"
+							class="video-js vjs-default-skin vjs-big-play-centered"
+							onerror="alert('Veuillez selectionner une video valide');" controls
+							data-setup='{ "aspectRatio":"16:9", "fluid": true }'></video>
+					</div>
+				</div>
+			</div>
+			<div class="btn-toolbar" role="toolbar">
+				<input type="file" name="img[]" class="custom-file-input file" onchange="handleFiles(this.files)"
+					id="inputGroupVideo" accept="video/mp4, video/webm, video/quicktime">
+				<div class="btn-group mx-auto">
+					<div class="btn-group mr-1" role="group">
+						<button class="browse btn btn-outline-primary" type="button" id="input-file-name"
+							data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom"
+							data-content="Formats conseillés : .mp4 .mov .webm. Certains navigateurs supportent plus ou moins de formats que ceux conseillés (risque de lecture impossible).">
+							Choisir un fichier video</button>
+						<button class="importBtn browse btn btn-primary" type="button">🔍 Importer</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<a id='download-config'></a>
+		<!-- FIN de la main part -->
+
+	</div>
+	<!-- Javascript -->
+	<script src="js/pdf.min.js"></script>
+	<script src="js/quill.min.js"></script>
+	<script src="js/image-resize.min.js"></script>
+	<script src='js/video.min.js'></script>
+	<script src="js/jquery-3.3.1.slim.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/configurator.js"></script>
+
+</body>
+
+</html>

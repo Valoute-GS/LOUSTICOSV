@@ -1,0 +1,272 @@
+/*Base structure*/
+html {
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+
+ul {
+    padding: 0;
+    list-style-type: none;
+}
+
+.custom-control-label {
+    /*curseur sur les checkbox + empecher la selection de texte*/
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+/*fade effect*/
+.configurator,
+.load,
+.linker {
+    transition: opacity 0.7s;
+    opacity: 1;
+}
+
+.fadein {
+    opacity: 0;
+}
+
+/*Cacher les inputs qui sont remplacé par des inputs custom avec trigger sur l'input caché*/
+.file,
+.loadfile {
+    visibility: hidden;
+    position: absolute;
+}
+
+/*card page d'accueil*/
+.card-columns {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*navbar item*/
+.active {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 0px;
+}
+
+.nav-item {
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+}
+
+.nav-item.nav-link:not(.active) {
+    color: white !important;
+}
+
+.nav-item.nav-link:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/*Video JS*/
+.vjs-default-skin.vjs-paused .vjs-big-play-button {
+    display: block;
+}
+
+/*bar de navigation toujours visible*/
+.vjs-default-skin.vjs-has-started .vjs-control-bar {
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: rgba(7, 20, 30, 1) !important;
+}
+
+/*afficher le temps ecoulé/total et cacher le temps restant*/
+.vjs-default-skin.vjs-has-started .vjs-time-control {
+    display: block;
+}
+
+.vjs-default-skin.vjs-has-started .vjs-remaining-time {
+    display: none;
+}
+
+/*chargement sur la lecture des chapitre*/
+.background {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 0%;
+    height: 100%;
+    background-color: rgba(2, 58, 65, 0.25);
+    z-index: 98;
+}
+
+/*sommaire des pages*/
+.page-item .page-link {
+    cursor: pointer;
+    height: 100%;
+}
+
+.page-item.disabled-custom .page-link {
+    color: #6c7d71;
+    pointer-events: none;
+    cursor: auto;
+    background-color: #fff;
+    border-color: #007bff
+}
+
+.page-item.active-custom .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: #3a99ff;
+    border-color: #3a99ff;
+}
+
+/*hover sur le btn Configuré*/
+.hover-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.hover-btn:before {
+    position: absolute;
+    opacity: 0;
+    left: 0;
+    width: 100%;
+    content: attr(data-hover);
+}
+
+.hover-btn:hover:before {
+    opacity: 1;
+}
+
+.hover-btn:hover span {
+    opacity: 0;
+}
+
+/*pdf*/
+
+#viewport canvas {
+    max-height: 80vh
+}
+
+
+/* Loading upload*/
+.lds-ellipsis {
+    display: flex;
+    position: relative;
+    width: 42px;
+}
+
+.lds-ellipsis div {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3a99ff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis div:nth-child(1) {
+    left: 4px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(2) {
+    left: 4px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(3) {
+    left: 16px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(4) {
+    left: 32px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(16px, 0);
+    }
+}
+
+.lds-ellipsis2 {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-ellipsis2 div {
+    position: absolute;
+    top: 33px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #3a99ff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis2 div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+
+.lds-ellipsis2 div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2bis 0.6s infinite;
+}
+
+.lds-ellipsis2 div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2bis 0.6s infinite;
+}
+
+.lds-ellipsis2 div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis2bis {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(24px, 0);
+    }
+}
