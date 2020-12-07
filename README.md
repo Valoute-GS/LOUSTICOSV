@@ -1,8 +1,7 @@
-﻿# 🚧🚧🚧 Refonte de la doc en cours, les liens peuvent êtres mauvais et la documentation incomplète pour le moment
-
+﻿### ✔️ Vous êtes au bon endroit pour télécharger l'outil !
 # LOUSTIC BTT - Behavior Tracking Tool
 
-LOUSTIC BTT est un outil de suivi basé sur les technologies HTML5/CSS3/Javascript8.
+BTT est un outil de suivi basé sur les technologies HTML5/CSS3/Javascript8.
 L'objectif est de pouvoir créer une suite de médias qu'un participant pourra ensuite visionner, tout en récupérant son activité sur la page. 
 L'application se découpe en trois grandes parties :
 
@@ -18,7 +17,7 @@ De plus une application en ligne est déployée afin de pouvoir réaliser des te
  - Créer / Modifier une configuration
  - Lancer un test
  - Données de sortie
- - Modification du domaine
+ - Modification du domaine et déploiement tests en ligne
 
  *(Ceci étant un projet en cours de développement, toutes ces informations sont susceptibles d'être mises à jour à chaque update.)*
 
@@ -28,7 +27,9 @@ Un tutoriel détaillé et imagé est disponible via [ce lien](https://docs.googl
 
  1. Sur [cette page](https://github.com/Valoute-GS/LOUSTICOSV/tree/master) si ce n'est pas déja le cas 
 **⤓ Code** ➔ **Download ZIP**
-![Download ZIP](https://srv-store1.gofile.io/download/t810qj/download.png)
+<p align="center">
+  <img src=".\img\download.png" alt="Télécharger l'app"/>
+</p>
  2. Extraire l'archive dans le répertoire désiré.
  3. Entrer dans le dossier
  4. Exécuter le ficher `index.html` dans votre navigateur dépféré
@@ -115,10 +116,10 @@ A la fin du test les fichiers de suivi d'activité sont téléchargés automatiq
 Il est ensuite possible de relancer une session avec un nouvel utilisateur sans avoir à recharger les données en cliquant sur le bouton **Relancer le même test**. Il est aussi possible de **Charger un nouveau test**
 
 ### Exemple
-Une configuration et ses fichiers sont disponibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/master/examples). **lien a mettre a jour**
+Une configuration et ses fichiers sont disponibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/master/examples).
 
 # Données de sortie
-A la fin de chaque test sont téléchargés/envoyés vers la dropbox deux fichiers CSV ainsi que d'éventuels fichiers HTML. Deux exemples de fichiers CSV sont disponnibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples) **lien a mettre a jour**.
+A la fin de chaque test sont téléchargés/envoyés vers la dropbox deux fichiers CSV ainsi que d'éventuels fichiers HTML. Deux exemples de fichiers CSV sont disponnibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/master/examples).
 
 ### Fichier de log
 Fichier contenant l'**intégralité de l'activité** du test.
@@ -199,8 +200,9 @@ Fichier contenant **une version simplifiée des textes** modifiés/créés par l
 | Nb pdf suiv | Nombre d'utilisation du bouton **diapo précedent** sur la page |
 | Nb pdf chap liste | Nombre d'utilisation de **lien vers un chapitre** pdf sur la page |
 
-# Modification du domaine
+# Modification du domaine et déploiement tests en ligne
 
+### Modification du domaine
 Si l'hébergeur de l'outil de test en ligne venait à changer, et donc son domaine, il est nécessaire de modifier le générateur de lien de l'outil.
 
 Il suffit de modifier la variable `DOMAIN` du fichier **js/linker.js**
@@ -210,3 +212,7 @@ Il suffit de modifier la variable `DOMAIN` du fichier **js/linker.js**
 </p>
 
 **⚠️ Il faudra impérativement que les chercheurs téléchargent la version modifiée ou effectuent la modification eux même pour que le générateur fonctionne correctement.**
+
+### Déploiement tests en ligne
+
+Le code et la documentation de l'outil de test en ligne, a déployer sur le serveur de votre choix, est displonnible sur la [branche BTT](https://github.com/Valoute-GS/LOUSTICOSV/tree/btt).
