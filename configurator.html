@@ -91,20 +91,25 @@
 
 
 				<div class="input-group mt-5 mb-3">
-					<input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration">
+					<input type="text" class="form-control" id="config-name" placeholder="Nom de la configuration" onchange="checkConfigName(this)">
 					<div class="ml-5">
 						<div class="btn-group" role="group">
 							<button class="btn btn-outline-success" type="button" onclick="addPage()"
-								data-hover="">Ajouter une
-								page</button>
-							<button class="btn btn-outline-danger" type="button" onclick="rmPage()">Retirer une
-								page</button>
+								data-hover="">Ajouter une page</button>
+							<button class="btn btn-outline-danger" type="button" onclick="rmPage()">
+								Retirer une page</button>
 						</div>
 						<div class="btn-group" role="group">
-							<button class="btn btn-outline-primary" type="button"
-								onclick="finishConfig(true)">Télécharger</button>
+							<button class="btn btn-primary" disabled style="cursor: auto;">Sauvegarder :</button>
+							<button class="btn btn-outline-primary" type="button" onclick="finishConfig(true)"
+								data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
+								data-content="Télécharger la configuration sur votre ordinateur">
+								Local
+							</button>
 							<button id="btnUploadDbx" class="btn btn-outline-primary" type="button"
-								onclick="finishConfig(false)">
+								onclick="finishConfig(false)"
+								data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top"
+								data-content="Envoyer votre configuration et ses fichiers liés dans la Dropbox (nécessite une connexion internet)">
 								<div id="btnUploadDbxText">Dropbox</div>
 								<div id="btnUploadDbxSpinner" class="lds-ellipsis" style="display: none;">
 									<div></div>
@@ -151,6 +156,25 @@
 				<button class="btn btn-primary" type="button" onclick="saveText()">Sauvegarder</button>
 				<button type="button" class="btn btn-danger ml-3" onclick="exitText()">Annuler</button>
 			</div>
+			<div class="mb-3" onchange="">
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!---->
+					<input type="checkbox" class="custom-control-input text-option" id="textOption1">
+					<label class="custom-control-label" for="textOption1" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="L'utilisateur peut surligner du texte (son résultat sera exporté)">
+						Surligneur</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline">
+					<!---->
+					<input type="checkbox" class="custom-control-input text-option" id="textOption2">
+					<label class="custom-control-label" for="textOption2" data-container="body" data-toggle="popover"
+						data-trigger="hover" data-placement="bottom"
+						data-content="L'utilisateur à le controle total de l'édition (son résultat sera exporté)">
+						Editable</label>
+				</div>
+			</div>
+
 			<div id="editor">
 				<p>Entrez du texte ici</p>
 				<p><br></p>

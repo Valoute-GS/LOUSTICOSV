@@ -352,14 +352,25 @@ quill.getHTML = () => {
 function configTextEditor() {
 	hideByClass("configurator");
 
+	
+	for (const option of document.getElementsByClassName("text-option")) {
+		option.checked = false;
+	}
+	
+
 	// restauration de la cofiguration si deja faite
 	let state = pagesState[currentPageNumber - 1];
 	if (state === 1) { // si c'est un text qui a deja ete config
-		quill.setContents(myConfig.pages[currentPageNumber - 1].text)
+		quill.setContents(myConfig.pages[currentPageNumber - 1].text);
+		var i = 0;
+		for (const option of myConfig.pages[currentPageNumber - 1].options) {
+			document.getElementsByClassName("text-option")[i].checked = option;
+			i++;
+		}
 	} else { //deja config dans un autre format
 		quill.setText('')
 	}
-
+	
 	showByClass("configurator-text-editor")
 }
 
@@ -860,10 +871,11 @@ class ChapJson {
 	}
 }
 class ConfigTextJson {
-	constructor(text) {
+	constructor(options, text) {
 		this.pageName = currentPageName;
 		this.pageNumber = currentPageNumber;
 		this.type = "text";
+		this.options = options
 		this.text = text;
 	}
 }
@@ -961,8 +973,14 @@ function saveVideoConfig() {
 /* ======= TEXT ========*/
 function saveTextConfig() {
 	var cont = quill.getContents();
-	let newTextConfig = new ConfigTextJson(cont);
-	myConfig.pages[currentPageNumber - 1] = newTextConfig; //On sauvergarde les infosde la page (type video) pour le futur export
+	var options = [];
+
+	for (const optionElt of document.getElementsByClassName("text-option")) { //on recupere les options selectionnees ou non dans les checkboxes
+		options.push(optionElt.checked);
+	}
+
+	let newTextConfig = new ConfigTextJson(options, cont);
+	myConfig.pages[currentPageNumber - 1] = newTextConfig; //On sauvergarde les infosde la page (type texte) pour le futur export
 	updatePagesState(1);
 	return true;
 }
@@ -1085,14 +1103,20 @@ function finishConfig(localDownload) {
 
 }
 
+function checkConfigName(input) {
+	if (!isSomething(input.value)) {
+		document.getElementById("config-name").className = "form-control border-danger";
+	} else {
+		document.getElementById("config-name").className = "form-control border-success";
+	}
+}
+
 const dbx = new Dropbox.Dropbox({
 	accessToken: DBX_TOKEN
 })
 
 function checkDbx() {
 	var isok = true;
-
-
 
 	dbx.filesListFolder({
 			path: '/shared_folder'

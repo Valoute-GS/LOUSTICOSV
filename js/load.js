@@ -17,6 +17,8 @@ prevChapButtonDom.onclick = function () {
 }
 
 var myConfig = ""; //json de la config chargé
+var tmpConfig = ""; //copie de la config (avec modifications)
+var editableTextHtml = new Map(); //save des textes ayant été modifiés par l'utulisateur, pour le téléchargement à la fin
 var importedFiles = new Map(); //tab des fichiers (autre que le json) importés
 var currentChapters = new Map(); // date -> index in the json
 
@@ -35,18 +37,65 @@ var startTimeOnPage = 0;
 var previousTime = 0; //timer de la video mis a jour tout le temps (utile pour connaitre le timer avant et apres une action comme nav sur seekbar)
 var myReachedPage = 0; //page vers laquelle on se déplace
 
+var toolbarOptions = [
+	['bold', 'italic', 'underline', 'strike'], // toggled buttons
+	['blockquote', 'code-block'],
+
+	[{
+		'header': 1
+	}, {
+		'header': 2
+	}], // custom button values
+	[{
+		'list': 'ordered'
+	}, {
+		'list': 'bullet'
+	}],
+	[{
+		'script': 'sub'
+	}, {
+		'script': 'super'
+	}], // superscript/subscript
+	[{
+		'indent': '-1'
+	}, {
+		'indent': '+1'
+	}], // outdent/indent
+	[{
+		'direction': 'rtl'
+	}], // text direction
+
+	[{
+		'size': ['small', false, 'large', 'huge']
+	}], // custom dropdown
+	[{
+		'header': [1, 2, 3, 4, 5, 6, false]
+	}],
+	['link', 'image', 'video', 'formula'], // add's image support
+	[{
+		'color': []
+	}, {
+		'background': []
+	}], // dropdown with defaults from theme
+	[{
+		'font': []
+	}],
+	[{
+		'align': []
+	}],
+
+	['clean'] // remove formatting button
+];
+
 //editeur de texte Quill (ici juste un conteneur)
 var quill = new Quill('#editor', {
 	modules: {
 		imageResize: false,
-		toolbar: [
-			[{
-				'background': []
-			}]
-		]
+		toolbar: toolbarOptions
 	},
 	theme: 'snow'
 });
+
 //on desactive l'edition
 //quill.disable()
 $(".ql-editor").attr("contenteditable", false);
@@ -142,7 +191,7 @@ function controlConfig(continueToInfos) { //check si tous les fichiers nécessai
 			window.onbeforeunload = function () {
 				return "";
 			};
-			personnalInfos()
+			personnalInfos();
 		};
 	} else { //sinon on affiches les erreurs
 		//document.getElementById("input-file-name").className = "browse btn btn-outline-primary";
@@ -240,6 +289,18 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
 			myJSONGeneral.nth.push(0); //pour compter les visites sur chaque page
 		}
 
+		//init des var de l'etat de la config
+		tmpConfig = JSON.parse(JSON.stringify(myConfig));
+		editableTextHtml = new Map();
+
+		for (const page of myConfig.pages) {
+			if (page.type === 'text') {
+				if (page.options[0] || page.options[1]) {
+					editableTextHtml.set(page.pageName, $('.ql-editor').html());
+				}
+			}
+		}
+
 		startTimeOnTest = Date.now();
 		loadPage();
 	}
@@ -295,17 +356,32 @@ function loadPage() { //charge la page suivante en fonction de son type et inc d
 
 function nextPage() { //page suivante
 	myCsvLogs.addLine("NEXT_PAGE");
+	if (myConfig.pages[currentPageNumber].type === 'text') {
+		var cont = quill.getContents();
+		tmpConfig.pages[currentPageNumber].text = cont;
+		editableTextHtml.set(myConfig.pages[currentPageNumber].pageName, $('.ql-editor').html());
+	}
 	currentPageNumber++;
 	loadPage();
 }
 
 function prevPage() { //page precedente
 	myCsvLogs.addLine("PREV_PAGE");
+	if (myConfig.pages[currentPageNumber].type === 'text') {
+		var cont = quill.getContents();
+		tmpConfig.pages[currentPageNumber].text = cont;
+		editableTextHtml.set(myConfig.pages[currentPageNumber].pageName, $('.ql-editor').html());
+	}
 	currentPageNumber--;
 	loadPage();
 }
 
 function jumpToPage(pageNumber) { //utilisation du sommaire
+	if (myConfig.pages[currentPageNumber].type === 'text') {
+		var cont = quill.getContents();
+		tmpConfig.pages[currentPageNumber].text = cont;
+		editableTextHtml.set(myConfig.pages[currentPageNumber].pageName, $('.ql-editor').html());
+	}
 	myReachedPage = pageNumber;
 	myCsvLogs.addLine("SOMMAIRE");
 	console.log("SOMMAIRE : " + currentPageNumber + "-->" + pageNumber);
@@ -320,12 +396,27 @@ function finishConfig() { //récup des infos et résulatats
 	myCsvLogs.addLine("END");
 	console.log(myCsvLogs.toString());
 	console.log(myJSONGeneral);
-	dlcsv();
+	dlFiles();
 }
 
-function dlcsv() { //génère le lien de téléchargement pour les CSVs
-	// NOTE: a décommenter dans la version final
+function dlFiles() { //génère le lien de téléchargement pour les CSVs
+
 	var dlAnchorElem = document.getElementById('download-link');
+
+	for (const page of myConfig.pages) {
+		if (page.type === 'text') {
+			if (page.options[0] || page.options[1]) {
+				const htmlContent = editableTextHtml.get(page.pageName).toString();
+
+				var blob = new Blob([htmlContent], {
+					type: 'text/html'
+				})
+				dlAnchorElem.setAttribute("href", URL.createObjectURL(blob));
+				dlAnchorElem.setAttribute("download", testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_" + page.pageName + ".html");
+				dlAnchorElem.click()
+			}
+		}
+	}
 
 	const encoded_myJSONGeneral = encodeURI(myJSONGeneral.toCSV());
 	const encoded_myCsvLogs = encodeURI(myCsvLogs);
@@ -336,6 +427,7 @@ function dlcsv() { //génère le lien de téléchargement pour les CSVs
 	dlAnchorElem.setAttribute("href", encoded_myCsvLogs);
 	dlAnchorElem.setAttribute("download", testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_logs" + ".csv");
 	dlAnchorElem.click();
+
 }
 /* ╚═══════FIN═══════╝ DEROULEMENT DU TEST ============================================*/
 
@@ -575,7 +667,29 @@ function loadText() { //page de type texte
 	hideByClass("load");
 	showByClass("load-text");
 
-	quill.setContents(myConfig.pages[currentPageNumber].text)
+	$('.ql-color.ql-picker.ql-color-picker').show();
+
+	//fullcontrol
+	if (myConfig.pages[currentPageNumber].options[1]) {
+		$('.ql-formats').show();
+		$(".ql-editor").attr("contenteditable", true);
+		$(".ql-clipboard").attr("contenteditable", true);
+	} else {
+		$('.ql-formats').hide();
+		$(".ql-editor").attr("contenteditable", false);
+		$(".ql-clipboard").attr("contenteditable", false);
+		//surlignage
+		if (myConfig.pages[currentPageNumber].options[0]) {
+			console.log(quill);
+			$('.ql-background.ql-picker.ql-color-picker').parent().show();
+			$('.ql-color.ql-picker.ql-color-picker').hide();
+		} else {
+			console.log(quill);
+			$('.ql-background.ql-picker.ql-color-picker').parent().hide();
+		}
+	}
+
+	quill.setContents(tmpConfig.pages[currentPageNumber].text);
 }
 /* ╚═══════FIN═══════╝ TEXT  ==========================================================*/
 
