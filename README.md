@@ -22,6 +22,10 @@ De plus une application en ligne est déployée afin de pouvoir réaliser des te
  *(Ceci étant un projet en cours de développement, toutes ces informations sont susceptibles d'être mises à jour à chaque update.)*
 
 Un tutoriel détaillé et imagé est disponible via [ce lien](https://docs.google.com/presentation/d/1lUJykDOnX4R6eeXbdpBOb0G16N9s28p8Di44IV6U5E0/edit?usp=sharing)
+
+⚠️ **Attention certaines configurations faites avant les dernières mise à jour ne sont plus compatibles avec l'outil (celles ayant des média de type texte). La rétrocompatibilté avec l'ancien format des textes n'ayant pas pu être développée à temps.** 
+Il est possible de les réparer à la main si cela est vraiment nécessaire ([voir guide](https://docs.google.com/document/d/1yaFlWgYcKNZGbDMxfdlW4_AiBWo89dJncKYN1kq3vW0/edit?usp=sharing)).
+
 # Installation
 **Sous Windows :**
 
