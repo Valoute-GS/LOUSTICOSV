@@ -1,34 +1,15 @@
-﻿# Documentation Temporaire
+﻿# (Refonte de la doc en cours, les liens peuvent etres mauvais et la documentation incomplète pour le moment)
 
-Afin de faire fonctionner l'outil en local (sur votre ordinateur) il est pour le moment nécessaire qu'il tourne sur un serveur local. Pas de panique je vais vous expliquer comment faire cela très facilement.
-
-## Récuper l'application
-- Accéder à mon [dépot GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2)
-- **Code** > **Download ZIP**
-- Dézipper l'archive téléchargée à l'endroit voulu
-
-## Démarrage de l'application
-- [Installer Visual Studio Code](https://code.visualstudio.com) sur votre machine
-- Démarrer VS Code
-- Cliquer sur l'icone **Extensions** (dernière icone du bandeau latéral gauche) ou *Ctrl+Shift+X*
-- Dans la barre de recherche taper **Live Server** > Premier résultat (extension de Ritwick Dey) > **install**
-- **File** > **Open Folder** > Choisir le dossier de l'application
-- Cliquer sur l'icone **Explorer** (première icone du bandeau latéral gauche) ou *Ctrl+Shift+E*
-- Dans l'explorer cliquer sur **index.html** (un éditeur de fichier s'ouvre sur la droite)
-- **Go Live** (tout en bas à droite de la fenêtre, dans le bandeau inférieur)
-- L'application s'ouvre toute seule dans votre navigateur par défaut
-
-Pour arreter le serveur vous pouvez quitter VS Code ou bien cliquer de nouveau sur le bouton Live Server en bas à droite (**⊘ Port:5500** - ou autre chiffre)
-
-# (Refonte de la doc en cours, les liens peuvent etres mauvais et la documentation incomplète pour le moment)
-
-# LOUSTIC OS - Outil de Suivi 
+# LOUSTIC BTT - Behavior Tracking Tool
 LOUSTIC OS est un outil de suivi basé sur les technologies HTML5/CSS3/Javascript8.
 L'objectif est de pouvoir créer une suite de médias qu'un participant pourra ensuite visionner, tout en récupérant son activité sur la page. 
-L'application se découpe en deux grandes parties :
+L'application se découpe en trois grandes parties :
 
  - Une interface de **configuration** : onglet **Configurateur**
- - Une interface de **test** : onglet **Lancer un test**
+ - Un générateur de **lien** pour réaliser un test en ligne : onglet **Partager un test**
+ - Une interface de **test** locale : onglet **Lancer un test (Local)**
+
+De plus une application en ligne est déployée afin de pouvoir réaliser des tests en ligne. Cette interface est accessible depuis un lien spécifique généré par l'outil de configuration présent. Les résultats de ces tests en ligne seront automatiquement envoyés dans une Dropbox. 
 
 ### Sommaire :
 
@@ -43,20 +24,14 @@ Un tutoriel détaillé et imagé est disponible via [ce lien](https://docs.googl
 # Installation
 **Sous Windows :**
 
- 1. Télécharger le dossier compressé sur la [Dropbox du LOUSTIC](https://www.dropbox.com/home/Valentin%20Utiel-%20stage%20outil%20suivi) ou sur [GitHub](https://github.com/Valoute-GS/LOUSTICOSV/tree/master) **Clone or Download -> Download ZIP**
- 2. L'extraire dans le répertoire désiré.
- 3. Exécuter `Loustic - OS` dans votre navigateur préféré.
-
-*Alternative*
-
- 3. Entrer dans le dossier `./src`
- 4. Exécuter le ficher `index.html` 
+ 1. Sur [cette page](https://github.com/Valoute-GS/LOUSTICOSV/tree/master) si ce n'est pas déja le cas 
+**⤓ Code** ➔ **Download ZIP**
+ 2. Extraire l'archive dans le répertoire désiré.
+ 3. Entrer dans le dossier
+ 4. Exécuter le ficher `index.html` dans votre navigateur dépféré
 
 
  Navigateurs testées : Chrome/Mozilla/Opéra
-
-~~**Sous Android :**~~
-*abandonnée par manque de temps*
 
 # Créer / modifier une configuration
 Cette fonction est accessible depuis l'accueil ou depuis l'onglet **Configurateur** dans la barre de navigation.
@@ -76,7 +51,9 @@ Chaque **Page** est définie par :
 La page peut être configurée en appuyant sur le bouton **Configurer**, cette action menant sur une page spécifique en fonction du format sélectionné au préalable.
 Une page, une fois finie et valide, peut être sauvegardée via le bouton **Sauvegarder**. Il est aussi possible d'abandonner les modifications avec le bouton **Annuler**.
 
-La configuration, une fois finie et valide, peut être téléchargée via le bouton **Sauvegarder**, cela entraine le téléchargement d'un fichier de configuration au format `.json`.
+La configuration, une fois finie et valide, peut être : 
+ - Téléchargée en local via le bouton **Local**, cela déclenche le téléchargement d'un fichier de configuration au format `.json`
+ - Envoyée dans une Dropbox via le bouton **Dropbox**, cela déclenche l'envoi des fichiers, si une configuration similaire existe déjà vous pouvez la renomer, ou bien il vous sera proposé de l'écraser.
 
 ### Format Vidéo
 Une page de type **Vidéo** est composée de :
@@ -86,18 +63,26 @@ Une page de type **Vidéo** est composée de :
  - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **Timestamp** nécessaires.
 
 ### Format Editeur de texte/médias
-Une page de type **Editeur de texte/médias** se configure de façon traditionnelle, c'est un éditeur de texte simple mais riche. Il est ainsi possible d'insérer des images, des vidéos du web (nécessite une connexion internet),etc. en plus des fonction d'éditions classiques.
+Une page de type **Editeur de texte/médias** est composée de :
+ - Une **zone de texte** simple mais riche. Il est ainsi possible d'insérer des images, des vidéos du web (nécessite une connexion internet),etc. en plus des fonction d'éditions classiques.
+ - Des **Options** activables : changeant les interactions de l'utilisateur possible avec l'éditeur de text.
 
 ### Format PDF
 Une page de type **PDF** est composé de :
- - - Un **fichier PDF** : nécessaire au format .PDF, .webm, .mov (suivant les navigateurs certains formats ne son pas pris en charge), **fichier local** à importer dans le champ en bas de page
+ - Un **fichier PDF** : nécessaire au format .PDF, .webm, .mov (suivant les navigateurs certains formats ne son pas pris en charge), **fichier local** à importer dans le champ en bas de page
  - Des **Options** activables : changeant la mise en forme et les interactions possibles lors du test
  - Une liste de **Chapitres** (facultatifs) :  composé d'un **Titre** et d'un **numéro de pages** nécessaires.
 
 ### Modifier une configuration
-Il est possible de charger une configuration existante au format .json depuis le champs **Charger un fichier de configuration** puis ses **fichiers associés**. Une fois tous les fichiers importés, cliquer sur **Charger**. Ensuite cela se déroule comme pour une nouvelle configuration.
+Il est possible de charger une configuration, présente sur l'ordinateur, au format .json depuis le champs **Charger un fichier de configuration** puis ses **fichiers associés**. Une fois tous les fichiers importés, cliquer sur **Charger**. Ensuite cela se déroule comme pour une nouvelle configuration.
 
-Info : le fichier de configuration téléchargé n'écrasera pas la configuration source.
+Infos : afin de garder les modification il est nécessaire de télécharger de nouveau la configuration, le fichier de configuration téléchargé n'écrasera pas la configuration source même si elle a le même nom.
+De plus une configuration dsponnible sur le Dropbox ne peut pour le moment pas directement être modifiée. Il faut la télécharger sur votre ordinateur avec ses fichiers liés pour la modifier dans l'outil, vous pourrez tout de même la réenvoyer vers la Dropbox pour la remplacer.
+
+# Partager un test
+
+Cette interface permet de générer des liens de partage permettant de réaliser un test en ligne. Il peut donc être diffusé, les résultats seront concentrés dans la Dropbox.
+La liste de toutes les configurations existantes s'affiche, en cliquant sur l'une d'entre elle un lien cera généré dans le champ supérieur. Vous pourrez ensuite copier ce lien pour le partager ou accéder à un test en ligne.
 
 # Lancer un test
 Cette fonction est accessible depuis l'accueil ou depuis l'onglet **Lancer un test** dans la barre de navigation. Elle permet de charger puis d'exécuter une configuration précédemment créée et sauvegardée localement. Il est nécessaire d'importer la **configuration** au format .json puis ses **fichiers associés**.
@@ -111,13 +96,16 @@ A la fin du test les fichiers de suivi d'activité sont téléchargés automatiq
 Il est ensuite possible de relancer une session avec un nouvel utilisateur sans avoir à recharger les données en cliquant sur le bouton **Relancer**.
 
 ### Exemple
-Une configuration et ses fichiers sont disponibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/master/examples).
+Une configuration et ses fichiers sont disponibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/master/examples). **lien a mettre a jour**
 
 # Données de sortie
-A la fin de chaque test sont téléchargés deux fichiers CSV. Deux exemples de fichiers sont disponnibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples).
+A la fin de chaque test sont téléchargés/envoyés vers la dropbox deux fichiers CSV ainsi que d'éventuel fichiers HTML. Deux exemples de fichiers CSV sont disponnibles dans le dossier [examples](https://github.com/Valoute-GS/LOUSTICOSV/tree/v2/output_examples) **lien a mettre a jour**.
 
 ### Fichier de log
 Fichier contenant l'**intégralité de l'activité** du test.
 
 ### Fichier de synthèse
 Fichier contenant une **synthèse** du fichier log, avec des infos complémentaires/calculées comme les temps cumulés, des compteurs d'action etc.
+
+### Fichiers HTML
+Fichier contenant **une version simplifiée des textes** modifiés/créés par l'utilisateur (surlignage, saisie libre). Il est possible de les visualiser en les ouvrant dans votre navigateur préféré. 
