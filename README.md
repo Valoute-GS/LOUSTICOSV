@@ -58,13 +58,13 @@ La configuration, une fois finie et valide, peut être :
  - Téléchargée en local via le bouton **Local**, cela déclenche le téléchargement d'un fichier de configuration au format `.json`
 
 <p align="center">
-  <img src="https://srv-store2.gofile.io/download/GLJaGO/sauvegarder.png" alt="Sauvegarder en local"/>
+  <img src=".\img\sauvegarder.png" alt="Sauvegarder en local"/>
 </p>
 
  - Envoyée dans une Dropbox via le bouton **Dropbox**, cela déclenche l'envoi des fichiers, si une configuration similaire existe déjà vous pouvez la renomer, ou bien il vous sera proposé de l'écraser.
 
 <p align="center">
-  <img src="https://srv-store2.gofile.io/download/GLJaGO/upload.png" alt="Upload vers Dropbox"/>
+  <img src="./img/upload.png" alt="Upload vers Dropbox"/>
 </p>
 
 ### Format Vidéo
@@ -88,7 +88,7 @@ Une page de type **PDF** est composé de :
 ### Modifier une configuration
 Il est possible de charger une configuration, présente sur l'ordinateur, au format .json depuis le champs **Charger un fichier de configuration** puis ses **fichiers associés**. Une fois tous les fichiers importés, cliquer sur **Charger**. Ensuite cela se déroule comme pour une nouvelle configuration.
 <p align="center">
-  <img src="https://srv-store1.gofile.io/download/YOx7aY/modifier%20config.png" alt="Modifier une configuration"/>
+  <img src="./img/modifier config.png" alt="Modifier une configuration"/>
 </p>
 
 **Infos** : afin de sauvegarder les modifications il est nécessaire de sauvergarder de nouveau la configuration, le fichier de configuration téléchargé n'écrasera pas la configuration source même si elle a le même nom.
@@ -100,7 +100,7 @@ Cette fonction est accessible depuis l'accueil ou depuis l'onglet **Partager un 
 Elle permet de générer des liens de partage permettant de réaliser un test en ligne. Il peut donc être diffusé, les résultats seront concentrés dans la Dropbox.
 La liste de toutes les configurations existantes s'affiche, en cliquant sur l'une d'entre elle un lien cera généré dans le champ supérieur. Vous pourrez ensuite copier ce lien pour le partager ou accéder à un test en ligne.
 <p align="center">
-  <img src="https://srv-store5.gofile.io/download/nwAcGN/partager.png" alt="Partager un test"/>
+  <img src="./img/partager.png" alt="Partager un test"/>
 </p>
 
 # Lancer un test (local)
@@ -206,7 +206,7 @@ Si l'hébergeur de l'outil de test en ligne venait à changer, et donc son domai
 Il suffit de modifier la variable `DOMAIN` du fichier **js/linker.js**
 
 <p align="center">
-  <img src="https://srv-store5.gofile.io/download/yciqLV/domain.png" alt="Domaine"/>
+  <img src="./img/domain.png" alt="Domaine"/>
 </p>
 
 **⚠️ Il faudra impérativement que les chercheurs téléchargent la version modifiée ou effectuent la modification eux même pour que le générateur fonctionne correctement.**
