@@ -209,7 +209,8 @@ function loadFiles() {
 				reader.onloadend = function () {
 					importedFiles.set(filename, dataURItoBlob(fileDataURL));
 					filesReady++;
-					if(filesReady + 1 === files.length){
+					console.log('ready : ' + filesReady + '        needed : ' + files.length);
+					if(filesReady == files.length){
 						personnalInfos();
 					}
 				}
