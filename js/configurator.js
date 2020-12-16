@@ -634,7 +634,7 @@ function createChapterInput() {
 		'<div class="input-group-prepend">' +
 		'<span class="input-group-text">Chapitre ' + nbOfChapters + '</span>' +
 		'</div>' +
-		'<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required pattern="^[A-Za-zÀ-ÖØ-öø-ÿ0-9_.,!:-? ]*$">' +
+		'<input type="text" class="form-control chapter-title" id="input-title-' + nbOfChapters + '" placeholder="Titre" required >' +
 		'<input type="text" class="form-control chapter-date" id="input-date-' + nbOfChapters + '" placeholder="(HH:)MM:SS" required pattern="((0?[0-9]|1[0-9]):)?([0-5]?[0-9]:)([0-5][0-9])">';
 	chapcontainer.appendChild(div1);
 	checkVideoOptions();
@@ -813,7 +813,7 @@ function createPdfChapter() { //ajoute un chapitre
 	div1.innerHTML = '<div class="input-group-prepend">' +
 		'<span class="input-group-text">Chapitre ' + nbPdfChapters + '</span>' +
 		'</div>' +
-		'<input type="text" class="form-control pdfchapter-title" id="pdfinput-title-' + nbPdfChapters + '" placeholder="Titre" required pattern="^[A-Za-zÀ-ÖØ-öø-ÿ0-9_.,!:-? ]*$">' +
+		'<input type="text" class="form-control pdfchapter-title" id="pdfinput-title-' + nbPdfChapters + '" placeholder="Titre" required >' +
 		'<input type="number" min="0" class="form-control pdfchapter-slide" id="pdfinput-slide-' + nbPdfChapters + '" placeholder="N° page" required >';
 	//on utilise pas directement chappdfcontainer.innerHTML sinon les inputs se reset
 	chappdfcontainer.appendChild(div1);
