@@ -257,16 +257,24 @@ function startConfig() { //démarre le test si les infos saisies sont conformes
 		if (myConfig.options[0]) { //on affiche la liste des pages si l'option dans la config est cochée
 			if (myConfig.options[1]) { //on affiche le bouton page precedente
 				pagesNameIndex.innerHTML += '<li class="page-item" id="btnPrevPage"><a class="page-link" onclick="prevPage()">Précédent</a></li>'
+				for (const page of myConfig.pages) {
+					//Si la page n'a pas de nom on lui met un nom par defaut (son index)
+					var name = (page.pageNumber)
+					if (myConfig.options[2] && page.pageName != "") {
+						name = page.pageName;
+					}
+					pagesNameIndex.innerHTML += '<li class="page-item"><a class="btn page-link" onclick="jumpToPage(' + (page.pageNumber - 1) + ')">' + name + '&#8203</a></li>'
+				}
 			} else {
 				pagesNameIndex.innerHTML += '<li class="page-item" id="btnPrevPage" style="display : none"><a class="page-link" onclick="prevPage()">&laquo;</a></li>'
-			}
-			for (const page of myConfig.pages) {
-				//Si la page n'a pas de nom on lui met un nom par defaut (son index)
-				var name = (page.pageNumber)
-				if (myConfig.options[2] && page.pageName != "") {
-					name = page.pageName;
+				for (const page of myConfig.pages) {
+					//Si la page n'a pas de nom on lui met un nom par defaut (son index)
+					var name = (page.pageNumber)
+					if (myConfig.options[2] && page.pageName != "") {
+						name = page.pageName;
+					}
+					pagesNameIndex.innerHTML += '<li class="page-item"><a class="btn disabled page-link" onclick="jumpToPage(' + (page.pageNumber - 1) + ')">' + name + '&#8203</a></li>'
 				}
-				pagesNameIndex.innerHTML += '<li class="page-item"><a class="page-link" onclick="jumpToPage(' + (page.pageNumber - 1) + ')">' + name + '&#8203</a></li>'
 			}
 		}
 		//on affiche toujour le bouton page suivant

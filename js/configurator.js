@@ -1058,9 +1058,11 @@ function finishConfig(localDownload) {
 	var options = [];
 	mainerror.innerHTML = "";
 	var errorMessages = new Set([]);
-	for (const optionElt of document.getElementsByClassName("config-option")) {
-		options.push(optionElt.checked);
-	}
+
+	options.push(document.getElementsByClassName("config-option")[0].checked)
+	options.push(document.getElementsByClassName("config-option")[2].checked)
+	options.push(document.getElementsByClassName("config-option")[1].checked)
+
 	//ajout des infos a la config
 	myConfig.name = document.getElementById("config-name").value;
 	myConfig.options = options;
