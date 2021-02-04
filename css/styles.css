@@ -86,6 +86,10 @@ body+div {
     display: block;
 }
 
+#detach-button-host {
+    display: none !important;
+}
+
 /*bar de navigation toujours visible*/
 .vjs-default-skin.vjs-has-started .vjs-control-bar {
     visibility: visible !important;
