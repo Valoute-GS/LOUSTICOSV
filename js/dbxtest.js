@@ -462,7 +462,7 @@ function uploadHtmlText() {
 				})
 				
 				dbx.filesUpload({
-					path: '/shared_folder/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_" + page.pageName + ".html",
+					path: '/shared_folder/' + myConfig.name + '/res/' + testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_" + page.pageName + "_" + page.pageNumber + ".html",
 					contents: blob
 				})
 				.then(res => {
