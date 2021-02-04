@@ -420,7 +420,7 @@ function dlFiles() { //génère le lien de téléchargement pour les CSVs
 					type: 'text/html'
 				})
 				dlAnchorElem.setAttribute("href", URL.createObjectURL(blob));
-				dlAnchorElem.setAttribute("download", testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_" + page.pageName + ".html");
+				dlAnchorElem.setAttribute("download", testID + "_" + document.getElementsByClassName("infos-perso")[0].value + "_" + page.pageName + "_" + page.pageNumber + ".html");
 				dlAnchorElem.click()
 			}
 		}
