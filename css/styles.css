@@ -86,6 +86,10 @@ body+div {
     display: block;
 }
 
+:picture-in-picture {
+    display: none !important;
+}
+
 #detach-button-host {
     display: none !important;
 }
