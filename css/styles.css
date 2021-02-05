@@ -85,6 +85,10 @@ ul {
     display: none !important;
 }
 
+:picture-in-picture {
+    display: none !important;
+}
+
 /*bar de navigation toujours visible*/
 .vjs-default-skin.vjs-has-started .vjs-control-bar {
     visibility: visible !important;
