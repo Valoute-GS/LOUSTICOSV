@@ -1,5 +1,5 @@
 
-const DOMAIN = 'http://satellites.univ-rennes2.fr/loustic.net/BTT' + 'index.html';
+const DOMAIN = 'https://satellites.univ-rennes2.fr/loustic.net/BTT' + 'index.html';
 
 console.log(window.location);
 const DBX_TOKEN = '1zR2wsLvoWYAAAAAAAAAAU4A4cnN-u5xGrQrXagFL9iUWQa42RNViPnO_g65BzKg'
